@@ -1,15 +1,14 @@
 # B - E - V
-
-FE19 TP2 - Dashboard
-
-## Installation
-
-```bash
-npm install
-
-npm start
-```
-
+###### (a KYH team project)
+#
+### Data chart UI for corp clients
+#### - Login system/auth.
+#### - Customization of data presentation (based on user role)
+#### - Stack: Firebase 🤝 ReactJs
+#
+#
+#
+#
 ## How to Pull Request
 
 1. Create a new feature branch:
