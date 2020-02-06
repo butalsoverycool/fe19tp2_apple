@@ -19,13 +19,14 @@ const SignInPage = () => {
 
 const INITIAL_STATE = {
   email: '',
-  passowrd: '',
+  password: '',
   error: null
 };
 class SignInFormBase extends Component {
   constructor(props) {
     super(props);
     this.state = { ...INITIAL_STATE };
+
   }
   onSubmit = event => {
     const { email, password } = this.state;
