@@ -2,7 +2,7 @@
 export const NitroOxide = {
   title: "Sweden nitrogen oxide (NOx) emission",
   subtitle: "(inc. international transports)",
-  chartHeader: state => {
+  chartTitle: state => {
     const { from, to } = state.limit;
     return (from + 1990 || 1990) + "-" + (to + 1990 || 2018);
   },
@@ -40,7 +40,7 @@ export const NitroOxide = {
 export const Soot = {
   title: "Sweden soot (BC) emission 1990-2018",
   subtitle: "(inc. international transports)",
-  chartHeader: state => {
+  chartTitle: state => {
     const { from, to } = state.limit;
     return (from + 1990 || 1990) + "-" + (to + 1990 || 2018);
   },
