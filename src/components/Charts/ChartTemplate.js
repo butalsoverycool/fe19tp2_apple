@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import styled from "styled-components";
 import {
   LineChart,
@@ -40,24 +40,17 @@ const CustomTooltip = ({ active, label, payload, unit }, ...props) => {
 };
 
 const ChartTemplate = props => {
-  const data = props.data.map(item => {
-    let year = Object.keys(item)[0];
-    let val = Object.values(item)[0];
-
-    return { name: year, val: val };
-  });
-
   return (
     <>
       <LineChart
         width={600}
         height={300}
-        data={data}
+        data={props.data}
         margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
       >
         <Line type="monotone" dataKey="val" stroke="black" />
         <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-        <XAxis dataKey="name" />
+        <XAxis dataKey="year" />
         <YAxis tickMargin={10} fontSize=".7em" />
         <Tooltip content={<CustomTooltip unit={props.unit} />} />
       </LineChart>
