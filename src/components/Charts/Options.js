@@ -7,6 +7,7 @@ import { Container, Row, Col } from "react-awesome-styled-grid";
 import QueryParams from "./queryParams";
 import Timespan from "./Timespan";
 import Table from "./Table";
+import Preview from "./Preview";
 
 const FlexTable = styled.div`
   width: 90vw;
@@ -66,27 +67,13 @@ const DropdownContainer = styled.div`
   }
 `;
 
-// STEPS
-// blank paper
-// choose options:
-// chart type
-// substance(s)
-// sector(s)
-// timespan
-
-// COMPONENTS
-// Chart instance
-// Preview
-
-// Options
-// Emission
-//
-
 // Table of emission
 class Options extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+
+    this.updateConfig = this.updateConfig.bind(this);
   }
 
   componentWillMount() {
@@ -97,24 +84,45 @@ class Options extends Component {
     );
   }
 
-  componentWillUpdate(prevProps, prevState) {}
+  componentWillUpdate(prevProps, prevState) {
+    if (prevProps.data !== this.state.data) {
+      const data = this.props.data;
+      this.setState({ data }, () =>
+        console.log("STATE in options", this.state)
+      );
+    }
+  }
+
+  updateConfig(key, val) {
+    const config = this.state.config;
+    config[key] = val;
+
+    this.setState({
+      config
+    });
+  }
 
   render() {
-    /* if (!this.state.substances || !this.state.sectors || !this.state.timespan)
-      return ""; */
-
     const errorMsg = this.state.error
       ? "Something went wrong when fetching data from SCB. Try refreshing the page or come back later."
       : "";
 
+    const totalTimespan = this.state.data ? this.state.data.length : 0;
+
     return (
       <>
         <div className="options">
-          <Timespan />
-          <Table />
+          <Preview data={this.state.data} limit={this.state.config.limit} />
+
+          <Timespan
+            config={this.state.config}
+            update={(key, val) => this.updateConfig(key, val)}
+            totalTimespan={totalTimespan}
+          />
+
+          <Table update={(key, val) => this.updateConfig(key, val)} />
 
           <button onClick={this.update}>UPDATE</button>
-          {/* <Chart data={this.state.chartData} /> */}
         </div>
       </>
     );

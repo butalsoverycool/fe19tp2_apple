@@ -129,13 +129,9 @@ class Table extends Component {
       timespan: null,
       error: null,
 
-      isOptionActive: [], //test state
-
       sectorAdded: [],
       substancesAdded: [],
-      timespanAdded: [],
-
-      chartData: null
+      timespanAdded: []
     };
   }
 
@@ -188,12 +184,14 @@ class Table extends Component {
     arr.includes(item)
       ? this.setState(prevState => {
           const newArr = prevState[category].filter(el => el !== item);
+          this.props.update(category, newArr);
           return {
             [category]: newArr
           };
         })
       : this.setState(state => {
           const newArr = [...state[category], item];
+          this.props.update(category, newArr);
           return {
             [category]: newArr
           };

@@ -71,13 +71,12 @@ class Chart extends Component {
   loadConfig() {
     // get config from database //*neess work
     const exampleConfig = {
-      substances: ["BC"],
-      sectors: ["0.5"],
+      substances: [],
+      sectors: [],
       limit: { from: 0, to: 27 },
       layout: {},
       sectorsAdded: [],
-      substancesAdded: [],
-      yearsAdded: []
+      substancesAdded: []
     }; // **temp
     const config = exampleConfig;
 
@@ -161,16 +160,16 @@ class Chart extends Component {
 
   render() {
     const totalTimespan = this.state.data ? this.state.data.length - 1 : null;
-    const data = this.state.data ? this.state.data : [];
-    console.log("DATA", data);
+    //const data = this.state.data ? this.state.data : [];
+    //console.log("DATA", data);
     return (
       <div className="Chart">
-        <Preview data={this.state.data} limit={this.state.config.limit} />
+        {/* <Preview data={this.state.data} limit={this.state.config.limit} /> */}
         <Options
           config={this.state.config}
           updateConfig={this.updateConfig}
           totalTimespan={totalTimespan}
-          data={data}
+          data={this.state.data}
         />
       </div>
     );

@@ -65,166 +65,61 @@ const DropdownContainer = styled.div`
   }
 `;
 
-// STEPS
-// blank paper
-// choose options:
-// chart type
-// substance(s)
-// sector(s)
-// timespan
-
-// COMPONENTS
-// Chart instance
-// Preview
-
-// Options
-// Emission
-//
-
 // Table of emission
 class Timespan extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      config: this.props.config || null
+    };
 
     this.pushLimit = this.pushLimit.bind(this);
     this.lastLimit = this.lastLimit.bind(this);
-    this.addData = this.addData.bind(this);
-    this.delData = this.delData.bind(this);
+    /* this.addData = this.addData.bind(this);
+    this.delData = this.delData.bind(this); */
   }
 
-  componentWillMount() {
-    const config = this.props.config;
-    const data = this.props.data;
-    this.setState({ config, data }, () =>
-      console.log("STATE in options", this.state)
-    );
-  }
-
-  componentWillUpdate(prevProps, prevState) {
-    /* for (let prop in prevProps.config) {
-          if (prevProps.config[prop] !== this.props.config[prop]) {
-            const config = this.props.config;
-            this.setState(
-              config,
-              console.log("config in options", this.state.config)
-            );
-            break;
-          }
-        }
-    
-        for (let prop in prevProps.data) {
-          if (prevProps.data[prop] !== this.props.data[prop]) {
-            const data = this.props.data;
-            this.setState(data, console.log("data in options", this.state.data));
-            break;
-          }
-        } */
-    //console.log("state in options", this.state);
+  componentDidMount() {
+    if (!this.state.config) {
+      const config = this.props.config;
+      const data = this.props.data;
+      this.setState({ config, data }, () =>
+        console.log("STATE in options", this.state)
+      );
+    }
   }
 
   // THESE FUNCS NEED WORK...
   pushLimit(endPoint, reaseType) {
-    let newState = this.state;
+    let config = this.props.config;
 
     if (reaseType === "dec") {
-      newState.limit[endPoint]--;
+      config.limit[endPoint]--;
     } else {
-      newState.limit[endPoint]++;
+      config.limit[endPoint]++;
     }
 
-    if (
-      newState.limit.from < 0 ||
-      newState.limit.to > this.props.totalTimespan - 1
-    ) {
-      console.log("Range limit reached");
-      return;
-    }
-
-    this.setState(
-      {
-        newState
-      },
-      () => {
-        this.props.updateConfig(newState);
-      }
-    );
-
-    /* this.setState({
-          limit: {
-            ...this.state.limit,
-            [endPoint]: newLimit
-          }
-        }, () => {
-          this.props.update()
-        }); */
+    this.props.update("limit", {
+      from: config.limit.from,
+      to: config.limit.to
+    });
   }
 
   lastLimit(limit) {
     const newState = this.state;
 
-    newState.limit.from = this.props.totalTimespan - 1 - limit;
-    newState.limit.to = this.props.totalTimespan;
+    let config = this.props.config;
 
-    this.setState(
-      {
-        newState
-      },
-      () => {
-        this.props.updateConfig(newState);
-      }
-    );
-  }
+    config.limit.from = this.props.totalTimespan - 1 - limit;
+    config.limit.to = this.props.totalTimespan;
 
-  addData(type, val) {
-    const currentVals = this.state[type];
-
-    currentVals.push(val);
-
-    this.setState({
-      [type]: currentVals
+    this.props.update("limit", {
+      from: config.limit.from,
+      to: config.limit.to
     });
   }
-
-  delData(type, val) {
-    const currentVals = this.state[type];
-
-    const index = currentVals.indexOf(val);
-
-    currentVals.splice(index, 1, val);
-
-    this.setState({
-      [type]: currentVals
-    });
-  }
-
-  tableHandler = (item, category) => {
-    const arr = this.state[category];
-
-    arr.includes(item)
-      ? this.setState(prevState => {
-          const newArr = prevState[category].filter(el => el !== item);
-          return {
-            [category]: newArr
-          };
-        })
-      : this.setState(state => {
-          const newArr = [...state[category], item];
-          return {
-            [category]: newArr
-          };
-        });
-  };
-
-  setActiveClass = (item, thisState) => {
-    const arr = thisState;
-    return arr.includes(item) ? "active" : "";
-  };
 
   render() {
-    /* if (!this.state.substances || !this.state.sectors || !this.state.timespan)
-          return ""; */
-
     const errorMsg = this.state.error
       ? "Something went wrong when fetching data from SCB. Try refreshing the page or come back later."
       : "";
@@ -287,39 +182,7 @@ class Timespan extends Component {
               </div>
             </Styled.CustomizeBox>
           </Styled.Wrapper>
-
-          {/* <FlexTable className="emissionTable">
-            <Column className="column substance">
-              <Thead className="thead substance">Substance</Thead>
-              <List className="list substance">
-                {this.state.substances.map(item => (
-                  <TD key={item.code}>{item.name}</TD>
-                ))}
-              </List>
-            </Column>
-
-            <Column className="column sector">
-              <Thead className="thead sector">Sector</Thead>
-              <List className="list sector">
-                {this.state.sectors.map(item => (
-                  <TD key={item.code}>{item.name}</TD>
-                ))}
-              </List>
-            </Column>
-
-            <Column className="column timespan">
-              <Thead className="thead timespan">Timespan</Thead>
-              <List className="list timespan">
-                {this.state.timespan.map(item => (
-                  <TD key={item}>{item}</TD>
-                ))}
-              </List>
-            </Column>
-          </FlexTable> */}
-
           <button onClick={this.update}>UPDATE</button>
-
-          {/* <Chart data={this.state.chartData} /> */}
         </div>
       </>
     );
