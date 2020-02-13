@@ -1,47 +1,137 @@
 import React, { Component } from "react";
 import axios from "axios";
-import ChartTemplate from "./ChartTemplate";
-import * as Styled from "./Styled";
-import Table from "./Table";
+import src from "./src";
+import Options from "./Options";
+import Preview from "./Preview";
+import queryParams from "./queryParams";
+
+// get query based on args
+const queryBakery = ({ substances, sectors }) => {
+  // defaults
+  substances = substances.lengt > 1 ? substances : ["BC"];
+  sectors = sectors.lengt > 1 ? sectors : ["0.5"];
+
+  return {
+    query: [
+      {
+        code: "Luftfororening",
+        selection: {
+          filter: "item",
+          values: substances
+        }
+      },
+      {
+        code: "Sektor",
+        selection: {
+          filter: "item",
+          values: ["0.5"]
+        }
+      }
+    ],
+    response: { format: "json" }
+  };
+};
 
 class Chart extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      id: this.props.id,
+      config: {
+        substances: [],
+        sectors: [],
+        limit: { from: 0, to: 0 },
+        layout: {}
+      },
       data: null,
-      display: null,
-      limit: { from: 0, to: 0 },
       error: null
     };
   }
 
-  apiData = (() => this.props.apiData)();
+  // load config on start
+  componentDidMount() {
+    this.loadConfig();
+  }
 
-  getMatches() {
-    const proxy = "https://cors-anywhere.herokuapp.com/";
-    const url = proxy + this.props.apiData.url;
+  loadConfig() {
+    // get config from database //*neess work
+    const exampleConfig = {
+      substances: ["BC"],
+      sectors: ["0.5"],
+      limit: { from: 0, to: 27 },
+      layout: {}
+    }; // **temp
+    const config = exampleConfig;
 
+    // update state, then load the data
+    this.setState(
+      {
+        config
+      },
+      () => {
+        this.updateData();
+      }
+    );
+  }
+
+  updateConfig(key, val) {
+    // get prev config
+    const config = this.state.config;
+
+    // update with new config
+    config[key] = val;
+
+    // update state, then load the data
+    this.setState(
+      {
+        config
+      },
+      () => {
+        this.updateData();
+      }
+    );
+  }
+
+  // load the data based on config
+  updateData() {
+    // bake query
+    const query = queryBakery(this.state.config);
+
+    // fetch data
     axios
-      .post(url, this.props.apiData.query, {
-        headers: { Authorization: "Access-Control-Allow-Origin" }
-      })
+      .post(src.proxy + src.emissionTable, query)
       .then(res => {
-        console.log("POST Success", res);
+        console.log("POST Success (chartData)");
 
-        const data = this.props.apiData.callback(res);
+        const data = res.data.data.map(item => {
+          const year = item.key[2];
 
-        console.log("DATA processed", data);
+          const sector = queryParams.sectors.filter(
+            sector => sector.code === item.key[1]
+          )[0];
 
+          const substance = queryParams.substances.filter(
+            substance => substance.code === item.key[0]
+          )[0];
+
+          const val = item.values[0];
+
+          return {
+            year,
+            sector,
+            substance,
+            val
+          };
+        });
+
+        // update state
         this.setState({
-          data,
-          limit: {
-            from: 0,
-            to: data.length - 1
-          }
+          data
         });
       })
+      // handle error
       .catch(error => {
-        console.log("GET Fail", error);
+        console.log("POST Fail (chartData)", error);
 
         if (this.state.error === null) {
           this.setState({
@@ -51,121 +141,14 @@ class Chart extends Component {
       });
   }
 
-  componentDidMount() {
-    this.getMatches();
-  }
-
-  pushLimit(endPoint, reaseType) {
-    let newLimit;
-
-    if (reaseType === "dec") {
-      newLimit = this.state.limit[endPoint] - 1;
-    } else {
-      newLimit = this.state.limit[endPoint] + 1;
-    }
-
-    if (newLimit < 0 || newLimit > this.state.data.length - 1) {
-      console.log("Range limit reached");
-      return;
-    }
-
-    this.setState({
-      limit: {
-        ...this.state.limit,
-        [endPoint]: newLimit
-      }
-    });
-  }
-
-  lastLimit(limit) {
-    const from = this.state.data.length - 1 - limit;
-    const to = this.state.data.length - 1;
-
-    this.setState({
-      limit: {
-        from,
-        to
-      }
-    });
-  }
-
   render() {
-    const { data, limit, error } = this.state || null;
-
-    if (!data) return "";
-
-    const formatLimit = this.state.limit || data.length || null;
-
-    const displayData = data.slice(limit.from, limit.to + 1) || data;
-
     return (
-      <div>
-        <Styled.Wrapper>
-          <Styled.Title>{this.props.apiData.title}</Styled.Title>
-
-          <Styled.Subtitle>{this.props.apiData.subtitle}</Styled.Subtitle>
-
-          <Styled.ChartHeader>
-            {this.props.apiData.chartHeader(this.state)}
-          </Styled.ChartHeader>
-
-          <ChartTemplate data={displayData} unit={this.props.apiData.unit} />
-
-          <Styled.CustomizeBox justifyContent="space-between">
-            <div>
-              <p>FROM</p>
-              <Styled.CustomizeBtn
-                onClick={() => this.pushLimit("from", "dec")}
-                margin="0"
-              >
-                -
-              </Styled.CustomizeBtn>
-              <Styled.CustomizeBtn
-                onClick={() => this.pushLimit("from", "inc")}
-                margin="0"
-              >
-                +
-              </Styled.CustomizeBtn>
-            </div>
-
-            <Styled.InnerTable>
-              <Styled.CustomizeBtn onClick={() => this.lastLimit(1)} w="80px">
-                last 1
-              </Styled.CustomizeBtn>
-              <Styled.CustomizeBtn onClick={() => this.lastLimit(3)} w="80px">
-                last 3
-              </Styled.CustomizeBtn>
-              <Styled.CustomizeBtn onClick={() => this.lastLimit(5)} w="80px">
-                last 5
-              </Styled.CustomizeBtn>
-              <Styled.CustomizeBtn
-                onClick={() => this.lastLimit(this.state.data.length - 1)}
-                w="80px"
-              >
-                max
-              </Styled.CustomizeBtn>
-            </Styled.InnerTable>
-
-            <div>
-              <p>TO</p>
-              <Styled.CustomizeBtn
-                onClick={() => this.pushLimit("to", "dec")}
-                margin="0"
-              >
-                -
-              </Styled.CustomizeBtn>
-              <Styled.CustomizeBtn
-                onClick={() => this.pushLimit("to", "inc")}
-                margin="0"
-              >
-                +
-              </Styled.CustomizeBtn>
-            </div>
-          </Styled.CustomizeBox>
-          <p className="error">{error}</p>
-        </Styled.Wrapper>
-
-        <Table />
+      <div className="Chart">
+        <Preview data={this.state.data} config={this.state.config} />
+        <Options
+          config={this.state.config}
+          update={newConfig => this.updateConfig(newConfig)}
+        />
       </div>
     );
   }
