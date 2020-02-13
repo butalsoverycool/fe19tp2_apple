@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import styled, { ThemeConsumer } from "styled-components";
-import { Container, Row, Col } from 'react-awesome-styled-grid'
+import { Container, Row, Col } from "react-awesome-styled-grid";
 import Chart from "./Chart";
 
 // URLS to work with
@@ -57,7 +57,6 @@ const Column = styled.div`
   flex-direction: column;
 `;
 
-
 /* class Column extends Component {
   constructor(props) {
     super(props);
@@ -94,8 +93,9 @@ const TD = styled.p`
   display: block;
 
   &.active {
-  background-color: lightgrey;
-}
+    background-color: lightgrey;
+    curspor: ...;
+  }
 `;
 
 const List = styled.div`
@@ -103,20 +103,20 @@ const List = styled.div`
   position: absolute;
   background-color: #f9f9f9;
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
   height: 30rem;
   overflow: scroll;
-  `;
+`;
 
 const DropdownContainer = styled.div`
   position: relative;
   display: inline-block;
   width: 100px;
 
-&:hover ${List} {
-  display: block;
-}
+  &:hover ${List} {
+    display: block;
+  }
 `;
 
 // Table of emission
@@ -213,88 +213,84 @@ class Table extends Component {
       }
     } */
 
-
   //refactor to use as one function for all dropdowns by calling in this.state.xAdded as argument
-  optionsHandler = (item) => {
+  optionsHandler = item => {
     const arr = this.state.isOptionActive;
     if (arr.includes(item)) {
       this.setState(state => {
         const isOptionActive = state.isOptionActive.filter(el => el !== item);
         return {
-          isOptionActive,
-        }
-      })
+          isOptionActive
+        };
+      });
     } else
       this.setState(state => {
-        console.log()
+        console.log();
         const isOptionActive = [...state.isOptionActive, item];
         return {
-          isOptionActive,
+          isOptionActive
+        };
+      });
+  };
 
-        }
-      })
-  }
-
-
-  sectorHandler = (item) => {
+  sectorHandler = item => {
     const arr = this.state.sectorAdded;
-    arr.includes(item) ?
-      this.setState(state => {
-        const sectorAdded = state.sectorAdded.filter(el => el !== item);
-        return {
-          sectorAdded,
-        }
-      })
-      :
-      this.setState(state => {
-        const sectorAdded = [...state.sectorAdded, item];
-        return {
-          sectorAdded,
-        }
-      })
-  }
+    arr.includes(item)
+      ? this.setState(state => {
+          const sectorAdded = state.sectorAdded.filter(el => el !== item);
+          return {
+            sectorAdded
+          };
+        })
+      : this.setState(state => {
+          const sectorAdded = [...state.sectorAdded, item];
+          return {
+            sectorAdded
+          };
+        });
+  };
 
-  substanceHandler = (item) => {
+  substanceHandler = item => {
     const arr = this.state.substancesAdded;
-    arr.includes(item) ?
-      this.setState(state => {
-        const substancesAdded = state.substancesAdded.filter(el => el !== item);
-        return {
-          substancesAdded,
-        }
-      })
-      :
-      this.setState(state => {
-        const substancesAdded = [...state.substancesAdded, item];
-        return {
-          substancesAdded,
-        }
-      })
-  }
+    arr.includes(item)
+      ? this.setState(state => {
+          const substancesAdded = state.substancesAdded.filter(
+            el => el !== item
+          );
+          return {
+            substancesAdded
+          };
+        })
+      : this.setState(state => {
+          const substancesAdded = [...state.substancesAdded, item];
+          return {
+            substancesAdded
+          };
+        });
+  };
 
-  timespanHandler = (item) => {
-    const arr = this.state.timespanAdded;
-    arr.includes(item) ?
-      this.setState(state => {
-        const timespanAdded = state.timespanAdded.filter(el => el !== item);
-        return {
-          timespanAdded,
-        }
-      })
-      :
-      this.setState(state => {
-        const timespanAdded = [...state.timespanAdded, item];
-        return {
-          timespanAdded,
-        }
-      })
-  }
+  tableHandler = (item, category) => {
+    const arr = this.state[category];
+
+    arr.includes(item)
+      ? this.setState(prevState => {
+          const newArr = prevState[category].filter(el => el !== item);
+          return {
+            [category]: newArr
+          };
+        })
+      : this.setState(state => {
+          const newArr = [...state[category], item];
+          return {
+            [category]: newArr
+          };
+        });
+  };
 
   setActiveClass = (item, thisState) => {
     const arr = thisState;
-    return (arr.includes(item) ? 'active' : '');
-  }
-
+    return arr.includes(item) ? "active" : "";
+  };
 
   getEmissionData(choice) {
     if (
@@ -345,19 +341,23 @@ class Table extends Component {
 
     console.log("Emission Table", this.state);
 
-    return ( //Dropdown menus, one for substance and one for sector (year will generated )
+    return (
+      //Dropdown menus, one for substance and one for sector (year will generated )
       <>
         <Container>
           <Row>
-
             <Col xs={2} sm={2} md={1} lg={4} xl={4}>
-              <DropdownContainer className='dropdown-container'>
-                <Thead className='dropdown-button'>Substance</Thead>
+              <DropdownContainer className="dropdown-container">
+                <Thead className="dropdown-button">Substance</Thead>
                 <List className="dropdown-content">
                   {this.state.substances.map((item, index) => (
-                    <TD key={item.code}
-                      onClick={() => this.substanceHandler(item, index)}
-                      className={this.setActiveClass(item, this.state.substancesAdded)}
+                    <TD
+                      key={item.code}
+                      onClick={() => this.tableHandler(item, "substancesAdded")}
+                      className={this.setActiveClass(
+                        item,
+                        this.state.substancesAdded
+                      )}
                     >
                       {item.name}
                     </TD>
@@ -373,8 +373,11 @@ class Table extends Component {
                   {this.state.sectors.map((item, index) => (
                     <TD
                       key={item.code}
-                      onClick={() => this.sectorHandler(item, index)}
-                      className={this.setActiveClass(item, this.state.sectorAdded)}
+                      onClick={() => this.tableHandler(item, "sectorAdded")}
+                      className={this.setActiveClass(
+                        item,
+                        this.state.sectorAdded
+                      )}
                     >
                       {item.name}
                     </TD>
@@ -390,8 +393,11 @@ class Table extends Component {
                   {this.state.timespan.map((item, index) => (
                     <TD
                       key={item}
-                      onClick={() => this.timespanHandler(item, index)}
-                      className={this.setActiveClass(item, this.state.timespanAdded)}
+                      onClick={() => this.tableHandler(item, "timespanAdded")}
+                      className={this.setActiveClass(
+                        item,
+                        this.state.timespanAdded
+                      )}
                     >
                       {item}
                     </TD>
@@ -399,7 +405,6 @@ class Table extends Component {
                 </List>
               </DropdownContainer>
             </Col>
-
           </Row>
         </Container>
 

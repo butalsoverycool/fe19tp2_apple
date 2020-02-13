@@ -61,7 +61,10 @@ class Chart extends Component {
       substances: ["BC"],
       sectors: ["0.5"],
       limit: { from: 0, to: 27 },
-      layout: {}
+      layout: {},
+      sectorsAdded: [],
+      substancesAdded: [],
+      yearsAdded: []
     }; // **temp
     const config = exampleConfig;
 
@@ -145,6 +148,8 @@ class Chart extends Component {
 
   render() {
     const totalTimespan = this.state.data ? this.state.data.length - 1 : null;
+    const data = this.state.data ? this.state.data : [];
+    console.log("DATA", data);
     return (
       <div className="Chart">
         <Preview data={this.state.data} config={this.state.config} />
@@ -152,6 +157,7 @@ class Chart extends Component {
           config={this.state.config}
           updateConfig={this.updateConfig}
           totalTimespan={totalTimespan}
+          data={data}
         />
       </div>
     );

@@ -3,7 +3,9 @@ import React, { Component } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import * as Styled from "./Styled";
+import { Container, Row, Col } from "react-awesome-styled-grid";
 import QueryParams from "./queryParams";
+import Table from "./Table";
 
 const FlexTable = styled.div`
   width: 90vw;
@@ -18,13 +20,50 @@ const Column = styled.div`
   flex-direction: column;
 `;
 
-const List = styled.div``;
-
-const Thead = styled.p`
-  font-weight: 700;
+const Thead = styled.button`
+  background-color: lightgrey;
+  height: 2rem;
+  border-radius: 5px;
+  text-align: center;
+  width: 8rem;
+  padding: 0;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
 `;
 
-const TD = styled.p``;
+const TD = styled.p`
+  color: black;
+  padding: 0rem 1rem 0rem 1rem;
+  text-decoration: none;
+  display: block;
+
+  &.active {
+    background-color: lightgrey;
+    curspor: ...;
+  }
+`;
+
+const List = styled.div`
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  height: 30rem;
+  overflow: scroll;
+`;
+
+const DropdownContainer = styled.div`
+  position: relative;
+  display: inline-block;
+  width: 100px;
+
+  &:hover ${List} {
+    display: block;
+  }
+`;
 
 // STEPS
 // blank paper
@@ -56,22 +95,33 @@ class Options extends Component {
 
   componentWillMount() {
     const config = this.props.config;
-    this.setState(config, console.log("state in options", this.state));
+    this.setState(config, console.log("config in options", this.state.config));
+
+    const data = this.props.data;
+    this.setState(data, console.log("data in options", this.state.data));
   }
 
   componentWillUpdate(prevProps, prevState) {
+    console.log("HALLELUJA");
     for (let prop in prevProps.config) {
-      /* console.log(
-        "compare, chart:",
-        prevProps.config[prop],
-        this.props.config[prop]
-      ); */
       if (prevProps.config[prop] !== this.props.config[prop]) {
         const config = this.props.config;
-        this.setState(config, console.log("state in options", this.state));
+        this.setState(
+          config,
+          console.log("config in options", this.state.config)
+        );
         break;
       }
     }
+
+    for (let prop in prevProps.data) {
+      if (prevProps.data[prop] !== this.props.data[prop]) {
+        const data = this.props.data;
+        this.setState(data, console.log("data in options", this.state.data));
+        break;
+      }
+    }
+
     console.log("state in options", this.state);
   }
 
@@ -150,6 +200,29 @@ class Options extends Component {
     });
   }
 
+  tableHandler = (item, category) => {
+    const arr = this.state[category];
+
+    arr.includes(item)
+      ? this.setState(prevState => {
+          const newArr = prevState[category].filter(el => el !== item);
+          return {
+            [category]: newArr
+          };
+        })
+      : this.setState(state => {
+          const newArr = [...state[category], item];
+          return {
+            [category]: newArr
+          };
+        });
+  };
+
+  setActiveClass = (item, thisState) => {
+    const arr = thisState;
+    return arr.includes(item) ? "active" : "";
+  };
+
   render() {
     /* if (!this.state.substances || !this.state.sectors || !this.state.timespan)
       return ""; */
@@ -162,6 +235,72 @@ class Options extends Component {
       <>
         <div className="options">
           <div className="errorMsg">{errorMsg}</div>
+
+          <Container>
+            <Row>
+              <Col xs={2} sm={2} md={1} lg={4} xl={4}>
+                <DropdownContainer className="dropdown-container">
+                  <Thead className="dropdown-button">Substance</Thead>
+                  <List className="dropdown-content">
+                    {this.state.substances.map((item, index) => (
+                      <TD
+                        key={item.code}
+                        onClick={() =>
+                          this.tableHandler(item, "substancesAdded")
+                        }
+                        className={this.setActiveClass(
+                          item,
+                          this.state.substancesAdded
+                        )}
+                      >
+                        {item.name}
+                      </TD>
+                    ))}
+                  </List>
+                </DropdownContainer>
+              </Col>
+
+              <Col xs={2} sm={2} md={1} lg={4} xl={4}>
+                <DropdownContainer>
+                  <Thead className="dropdown-button">Sector</Thead>
+                  <List className="dropdown-content">
+                    {this.props.data.map((item, index) => (
+                      <TD
+                        key={item.sector.code + "-" + index}
+                        onClick={() => this.tableHandler(item, "sectorsAdded")}
+                        className={this.setActiveClass(
+                          item,
+                          this.state.sectorsAdded
+                        )}
+                      >
+                        {item.name}
+                      </TD>
+                    ))}
+                  </List>
+                </DropdownContainer>
+              </Col>
+
+              {/* <Col xs={2} sm={2} md={1} lg={4} xl={4}>
+                <DropdownContainer>
+                  <Thead className="dropdown-button">Timespan</Thead>
+                  <List className="dropdown-content">
+                    {this.state.timespan.map((item, index) => (
+                      <TD
+                        key={item}
+                        onClick={() => this.tableHandler(item, "yearsAdded")}
+                        className={this.setActiveClass(
+                          item,
+                          this.state.yearsAdded
+                        )}
+                      >
+                        {item}
+                      </TD>
+                    ))}
+                  </List>
+                </DropdownContainer>
+              </Col> */}
+            </Row>
+          </Container>
 
           <Styled.Wrapper>
             <Styled.CustomizeBox justifyContent="space-between">
