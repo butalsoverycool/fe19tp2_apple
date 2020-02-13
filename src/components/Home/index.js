@@ -1,6 +1,7 @@
 import React from "react";
 import Charts from "../Charts";
 import VictoryChart from "../VictoryChart";
+import { ScreenBadge } from 'react-awesome-styled-grid'
 
 const Home = () => {
   return (
@@ -9,6 +10,7 @@ const Home = () => {
       {/* <VictoryChart /> */}
 
       <Charts />
+      <ScreenBadge></ScreenBadge>
     </div>
   );
 };

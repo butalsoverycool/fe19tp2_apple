@@ -1,7 +1,8 @@
 // all substances
 import React, { Component } from "react";
 import axios from "axios";
-import styled from "styled-components";
+import styled, { ThemeConsumer } from "styled-components";
+import { Container, Row, Col } from 'react-awesome-styled-grid'
 import Chart from "./Chart";
 
 // URLS to work with
@@ -56,7 +57,6 @@ const Column = styled.div`
   flex-direction: column;
 `;
 
-const List = styled.div``;
 
 /* class Column extends Component {
   constructor(props) {
@@ -75,13 +75,49 @@ const List = styled.div``;
   }
 } */
 
-const Thead = styled.p`
-  font-weight: 700;
+const Thead = styled.button`
+  background-color: lightgrey;
+  height: 2rem;
+  border-radius: 5px;
+  text-align: center;
+  width: 8rem;
+  padding: 0;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
 `;
 
-const TD = styled.p``;
+const TD = styled.p`
+  color: black;
+  padding: 0rem 1rem 0rem 1rem;
+  text-decoration: none;
+  display: block;
 
-//
+  &.active {
+  background-color: lightgrey;
+}
+`;
+
+const List = styled.div`
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  height: 30rem;
+  overflow: scroll;
+  `;
+
+const DropdownContainer = styled.div`
+  position: relative;
+  display: inline-block;
+  width: 100px;
+
+&:hover ${List} {
+  display: block;
+}
+`;
 
 // Table of emission
 class Table extends Component {
@@ -93,11 +129,11 @@ class Table extends Component {
       timespan: null,
       error: null,
 
-      choice: {
-        substances: [],
-        sectors: [],
-        timespan: []
-      },
+      isOptionActive: [], //test state
+
+      sectorAdded: [],
+      substancesAdded: [],
+      timespanAdded: [],
 
       chartData: null
     };
@@ -146,27 +182,119 @@ class Table extends Component {
       });
   }
 
-  addChoice(type, val) {
-    const currentVals = this.state[type];
+  /*  addChoiceHandler(type, val) {
+     const currentVals = this.state[type];
+ 
+     currentVals.push(val);
+ 
+     this.setState({
+       [type]: currentVals
+     });
+   }
+ 
+   deleteChoiceHandler(type, val) {
+     const currentVals = this.state[type];
+ 
+     const index = currentVals.indexOf(val);
+ 
+     currentVals.splice(index, 1, val);
+ 
+     this.setState({
+       [type]: currentVals
+     });
+   }
+  */
+  /*   isOptionAdded = (item) => {
+      const arr = this.state.isOptionActive;
+      if (arr.includes(item)) {
+        return true;
+      } else {
+        return false;
+      }
+    } */
 
-    currentVals.push(val);
 
-    this.setState({
-      [type]: currentVals
-    });
+  //refactor to use as one function for all dropdowns by calling in this.state.xAdded as argument
+  optionsHandler = (item) => {
+    const arr = this.state.isOptionActive;
+    if (arr.includes(item)) {
+      this.setState(state => {
+        const isOptionActive = state.isOptionActive.filter(el => el !== item);
+        return {
+          isOptionActive,
+        }
+      })
+    } else
+      this.setState(state => {
+        console.log()
+        const isOptionActive = [...state.isOptionActive, item];
+        return {
+          isOptionActive,
+
+        }
+      })
   }
 
-  deleteChoice(type, val) {
-    const currentVals = this.state[type];
 
-    const index = currentVals.indexOf(val);
-
-    currentVals.splice(index, 1, val);
-
-    this.setState({
-      [type]: currentVals
-    });
+  sectorHandler = (item) => {
+    const arr = this.state.sectorAdded;
+    arr.includes(item) ?
+      this.setState(state => {
+        const sectorAdded = state.sectorAdded.filter(el => el !== item);
+        return {
+          sectorAdded,
+        }
+      })
+      :
+      this.setState(state => {
+        const sectorAdded = [...state.sectorAdded, item];
+        return {
+          sectorAdded,
+        }
+      })
   }
+
+  substanceHandler = (item) => {
+    const arr = this.state.substancesAdded;
+    arr.includes(item) ?
+      this.setState(state => {
+        const substancesAdded = state.substancesAdded.filter(el => el !== item);
+        return {
+          substancesAdded,
+        }
+      })
+      :
+      this.setState(state => {
+        const substancesAdded = [...state.substancesAdded, item];
+        return {
+          substancesAdded,
+        }
+      })
+  }
+
+  timespanHandler = (item) => {
+    const arr = this.state.timespanAdded;
+    arr.includes(item) ?
+      this.setState(state => {
+        const timespanAdded = state.timespanAdded.filter(el => el !== item);
+        return {
+          timespanAdded,
+        }
+      })
+      :
+      this.setState(state => {
+        const timespanAdded = [...state.timespanAdded, item];
+        return {
+          timespanAdded,
+        }
+      })
+  }
+
+  setActiveClass = (item, thisState) => {
+    const arr = thisState;
+    return (arr.includes(item) ? 'active' : '');
+  }
+
 
   getEmissionData(choice) {
     if (
@@ -217,36 +345,63 @@ class Table extends Component {
 
     console.log("Emission Table", this.state);
 
-    return (
+    return ( //Dropdown menus, one for substance and one for sector (year will generated )
       <>
-        <FlexTable className="emissionTable">
-          <Column className="column substance">
-            <Thead className="thead substance">Substance</Thead>
-            <List className="list substance">
-              {this.state.substances.map(item => (
-                <TD key={item.code}>{item.name}</TD>
-              ))}
-            </List>
-          </Column>
+        <Container>
+          <Row>
 
-          <Column className="column sector">
-            <Thead className="thead sector">Sector</Thead>
-            <List className="list sector">
-              {this.state.sectors.map(item => (
-                <TD key={item.code}>{item.name}</TD>
-              ))}
-            </List>
-          </Column>
+            <Col xs={2} sm={2} md={1} lg={4} xl={4}>
+              <DropdownContainer className='dropdown-container'>
+                <Thead className='dropdown-button'>Substance</Thead>
+                <List className="dropdown-content">
+                  {this.state.substances.map((item, index) => (
+                    <TD key={item.code}
+                      onClick={() => this.substanceHandler(item, index)}
+                      className={this.setActiveClass(item, this.state.substancesAdded)}
+                    >
+                      {item.name}
+                    </TD>
+                  ))}
+                </List>
+              </DropdownContainer>
+            </Col>
 
-          <Column className="column timespan">
-            <Thead className="thead timespan">Timespan</Thead>
-            <List className="list timespan">
-              {this.state.timespan.map(item => (
-                <TD key={item}>{item}</TD>
-              ))}
-            </List>
-          </Column>
-        </FlexTable>
+            <Col xs={2} sm={2} md={1} lg={4} xl={4}>
+              <DropdownContainer>
+                <Thead className="dropdown-button">Sector</Thead>
+                <List className="dropdown-content">
+                  {this.state.sectors.map((item, index) => (
+                    <TD
+                      key={item.code}
+                      onClick={() => this.sectorHandler(item, index)}
+                      className={this.setActiveClass(item, this.state.sectorAdded)}
+                    >
+                      {item.name}
+                    </TD>
+                  ))}
+                </List>
+              </DropdownContainer>
+            </Col>
+
+            <Col xs={2} sm={2} md={1} lg={4} xl={4}>
+              <DropdownContainer>
+                <Thead className="dropdown-button">Timespan</Thead>
+                <List className="dropdown-content">
+                  {this.state.timespan.map((item, index) => (
+                    <TD
+                      key={item}
+                      onClick={() => this.timespanHandler(item, index)}
+                      className={this.setActiveClass(item, this.state.timespanAdded)}
+                    >
+                      {item}
+                    </TD>
+                  ))}
+                </List>
+              </DropdownContainer>
+            </Col>
+
+          </Row>
+        </Container>
 
         <div className="error">{errMsg}</div>
 
