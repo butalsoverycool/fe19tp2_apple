@@ -51,7 +51,7 @@ const ChartTemplate = props => {
         <Line type="monotone" dataKey="val" stroke="black" />
         <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
         <XAxis dataKey="year" />
-        <YAxis tickMargin={10} fontSize=".7em" />
+        <YAxis tickMargin={10} fontSize={".7em"} />
         <Tooltip content={<CustomTooltip unit={props.unit} />} />
       </LineChart>
     </>

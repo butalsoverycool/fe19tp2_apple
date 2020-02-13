@@ -46,10 +46,12 @@ class Chart extends Component {
       data: null,
       error: null
     };
+
+    this.updateConfig = this.updateConfig.bind(this);
   }
 
   // load config on start
-  componentDidMount() {
+  componentWillMount() {
     this.loadConfig();
   }
 
@@ -70,24 +72,24 @@ class Chart extends Component {
       },
       () => {
         this.updateData();
+        console.log("chart config", this.state.config);
       }
     );
   }
 
-  updateConfig(key, val) {
-    // get prev config
-    const config = this.state.config;
+  updateConfig(newConfig) {
+    console.log("UPDATE CONF IN CHART!", newConfig);
 
-    // update with new config
-    config[key] = val;
+    if (this.state.config === newConfig) return;
 
     // update state, then load the data
     this.setState(
       {
-        config
+        config: newConfig
       },
       () => {
         this.updateData();
+        console.log("chart config", this.state.config);
       }
     );
   }
@@ -142,12 +144,14 @@ class Chart extends Component {
   }
 
   render() {
+    const totalTimespan = this.state.data ? this.state.data.length - 1 : null;
     return (
       <div className="Chart">
         <Preview data={this.state.data} config={this.state.config} />
         <Options
           config={this.state.config}
-          update={newConfig => this.updateConfig(newConfig)}
+          updateConfig={this.updateConfig}
+          totalTimespan={totalTimespan}
         />
       </div>
     );

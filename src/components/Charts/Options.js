@@ -46,30 +46,58 @@ const TD = styled.p``;
 class Options extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      config: this.props.config,
-      error: null
-    };
+    this.state = {};
 
-    console.log("options config", this.state.config);
+    this.pushLimit = this.pushLimit.bind(this);
+    this.lastLimit = this.lastLimit.bind(this);
+    this.addData = this.addData.bind(this);
+    this.delData = this.delData.bind(this);
+  }
+
+  componentWillMount() {
+    const config = this.props.config;
+    this.setState(config, console.log("state in options", this.state));
+  }
+
+  componentWillUpdate(prevProps, prevState) {
+    for (let prop in prevProps.config) {
+      /* console.log(
+        "compare, chart:",
+        prevProps.config[prop],
+        this.props.config[prop]
+      ); */
+      if (prevProps.config[prop] !== this.props.config[prop]) {
+        const config = this.props.config;
+        this.setState(config, console.log("state in options", this.state));
+        break;
+      }
+    }
+    console.log("state in options", this.state);
   }
 
   // THESE FUNCS NEED WORK...
   pushLimit(endPoint, reaseType) {
-    let newLimit;
+    let newState = this.state;
 
     if (reaseType === "dec") {
-      newLimit = this.state.config.limit[endPoint] - 1;
+      newState.limit[endPoint]--;
     } else {
-      newLimit = this.state.config.limit[endPoint] + 1;
+      newState.limit[endPoint]++;
     }
 
-    /* if (newLimit < 0 || newLimit > this.state.data.length - 1) {
+    if (newLimit.limit.from < 0 || newLimit > this.state.data.length - 1) {
       console.log("Range limit reached");
       return;
-    } */
+    }
 
-    this.props.update("limit", newLimit);
+    this.setState(
+      {
+        newState
+      },
+      () => {
+        this.props.updateConfig(newState);
+      }
+    );
 
     /* this.setState({
       limit: {
@@ -82,15 +110,19 @@ class Options extends Component {
   }
 
   lastLimit(limit) {
-    const from = this.state.data.length - 1 - limit;
-    const to = this.state.data.length - 1;
+    const newState = this.state;
 
-    this.setState({
-      limit: {
-        from,
-        to
+    newState.limit.from = this.props.totalTimespan - 1 - limit;
+    newState.limit.to = this.props.totalTimespan;
+
+    this.setState(
+      {
+        newState
+      },
+      () => {
+        this.props.updateConfig(newState);
       }
-    });
+    );
   }
 
   addData(type, val) {
@@ -103,7 +135,7 @@ class Options extends Component {
     });
   }
 
-  deleteData(type, val) {
+  delData(type, val) {
     const currentVals = this.state[type];
 
     const index = currentVals.indexOf(val);
@@ -113,10 +145,6 @@ class Options extends Component {
     this.setState({
       [type]: currentVals
     });
-  }
-
-  update() {
-    this.props.updatePreview(this.state);
   }
 
   render() {
@@ -161,7 +189,7 @@ class Options extends Component {
                   last 5
                 </Styled.CustomizeBtn>
                 <Styled.CustomizeBtn
-                  onClick={() => this.lastLimit(this.state.data.length - 1)}
+                  onClick={() => this.lastLimit(this.props.totalTimespan - 1)}
                   w="80px"
                 >
                   max
