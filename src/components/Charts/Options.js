@@ -85,7 +85,10 @@ class Options extends Component {
       newState.limit[endPoint]++;
     }
 
-    if (newLimit.limit.from < 0 || newLimit > this.state.data.length - 1) {
+    if (
+      newState.limit.from < 0 ||
+      newState.limit.to > this.props.totalTimespan - 1
+    ) {
       console.log("Range limit reached");
       return;
     }
