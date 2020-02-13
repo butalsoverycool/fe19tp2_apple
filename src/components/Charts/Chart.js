@@ -5,6 +5,16 @@ import Options from "./Options";
 import Preview from "./Preview";
 import queryParams from "./queryParams";
 
+//CHART STATE
+
+//PREVIEW
+//config
+//limit (data)
+
+//OPTIONS
+//config
+//data
+
 // get query based on args
 const queryBakery = ({ substances, sectors }) => {
   // defaults
@@ -38,10 +48,13 @@ class Chart extends Component {
     this.state = {
       id: this.props.id,
       config: {
-        substances: [],
-        sectors: [],
-        limit: { from: 0, to: 0 },
-        layout: {}
+        substances: ["BC"],
+        sectors: ["0.5"],
+        limit: { from: 0, to: null },
+        layout: {},
+        sectorsAdded: [],
+        substancesAdded: [],
+        yearsAdded: []
       },
       data: null,
       error: null
@@ -152,7 +165,7 @@ class Chart extends Component {
     console.log("DATA", data);
     return (
       <div className="Chart">
-        <Preview data={this.state.data} config={this.state.config} />
+        <Preview data={this.state.data} limit={this.state.config.limit} />
         <Options
           config={this.state.config}
           updateConfig={this.updateConfig}

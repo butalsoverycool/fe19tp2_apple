@@ -31,8 +31,8 @@ const Preview = props => {
 
   // slice data-arr based on limit in chart state
   const data = props.data.slice(
-    props.config.limit.from,
-    props.config.limit.to + 1
+    props.limit.from,
+    props.limit.to + 1 || props.data.length - 1
   );
 
   const title = `Emission of ${data[0].substance.name}`;
