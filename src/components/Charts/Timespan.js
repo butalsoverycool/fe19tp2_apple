@@ -64,7 +64,7 @@ class Timespan extends Component {
                 </Styled.CustomizeBtn>
               </div>
 
-              <Styled.InnerTable>
+              {/* <Styled.InnerTable>
                 <Styled.CustomizeBtn onClick={() => this.lastLimit(1)} w="80px">
                   last 1
                 </Styled.CustomizeBtn>
@@ -80,7 +80,7 @@ class Timespan extends Component {
                 >
                   max
                 </Styled.CustomizeBtn>
-              </Styled.InnerTable>
+              </Styled.InnerTable> */}
 
               <div>
                 <p>TO</p>
