@@ -26,7 +26,6 @@ class SignInFormBase extends Component {
   constructor(props) {
     super(props);
     this.state = { ...INITIAL_STATE };
-
   }
   onSubmit = event => {
     const { email, password } = this.state;

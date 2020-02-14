@@ -23,3 +23,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# files 
+src/components/Data/structure.txt
+src/components/Data/test.js
