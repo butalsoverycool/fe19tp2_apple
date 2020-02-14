@@ -1,72 +1,154 @@
 import React, { Component } from "react";
-import Chart from "./Chart";
+import axios from 'axios';
 
-const exampleChart = {
-  id: 0,
-  config: {
-    type: "line",
-    substances: ["BC"],
-    sectors: ["05"],
-    limit: { from: 0, to: 18 },
-    layout: {}
-  },
-  error: null
-};
+import Table from './Table';
+import ChartTemplate from './ChartTemplate';
+
+
+const proxy = "https://cors-anywhere.herokuapp.com/"
+const emissionTable = "http://api.scb.se/OV0104/v1/doris/en/ssd/START/MI/MI0108/TotaltUtslapp"
+
+const queryBakery = {
+  query: [
+    {
+      code: "Luftfororening",
+      selection: {
+        filter: "item",
+        values: ["BC"],
+      }
+    },
+    {
+      code: "Sektor",
+      selection: {
+        filter: "item",
+        values: ["0.5"],
+      }
+    }
+  ],
+  response: { format: "json" }
+}
+
 
 class Charts extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      charts: [exampleChart]
-    };
+
+      dataRequest: [],
+      substances: [],
+      sectors: [],
+      years: [],
+
+      substancesAdded: [],
+      sectorsAdded: [],
+      yearsAdded: []
+    }
+    this.getEmissionData = this.getEmissionData.bind(this);
+    this.postEmissionData = this.postEmissionData.bind(this);
+    this.tableHandler = this.tableHandler.bind(this);
+    this.setActiveClass = this.setActiveClass.bind(this);
   }
 
-  addChart() {
-    const charts = this.state.charts;
-
-    const newChart = {
-      id: charts.length,
-      config: {
-        substances: [],
-        sectors: [],
-        limit: { from: 0, to: 0 },
-        layout: {}
-      },
-      error: null
-    };
-
-    charts.push(newChart);
-
-    this.setState({
-      charts
-    });
+  componentDidMount() {
+    this.getEmissionData()
   }
 
-  removeChart(id) {
-    const charts = this.state.charts;
+  tableHandler = (item, array) => {
+    const oldArray = this.state[array];
 
-    const nth = charts.map(chart => chart.id).indexOf(id);
+    oldArray.includes(item)
+      ? this.setState(prevState => {
+        const newArr = prevState[array].filter(el => el !== item);
+        return {
+          [array]: newArr
+        };
+      })
+      : this.setState(state => {
+        const newArr = [...state[array], item];
+        return {
+          [array]: newArr
+        };
+      });
+  };
 
-    charts.splice(nth, 1);
+  setActiveClass = (item, array) => {
+    const ifArray = array;
+    return ifArray.includes(item) ? "active" : "";
+  };
 
-    this.setState({
-      charts
-    });
+  getEmissionData() {
+    axios
+      .get(proxy + emissionTable)
+      .then(res => {
+        console.log("GET Succes (emissionTable)");
+        console.log(res)
+        // format res-data
+        // table-cats: substances, sectors, timespan
+        const substances = res.data.variables[0].values.map((item, nth) => ({
+          name: res.data.variables[0].valueTexts[nth],
+          code: item
+        }));
+
+        const sectors = res.data.variables[1].values.map((item, nth) => ({
+          name: res.data.variables[1].valueTexts[nth],
+          code: item
+        }));
+
+        const years = res.data.variables[3].values;
+
+        const data = res;
+
+        this.setState({
+          substances,
+          sectors,
+          years,
+          data
+        });
+      })
+  }
+
+
+  postEmissionData() {
+    const query = queryBakery;
+    axios
+      .post(proxy + emissionTable, query)
+      .then(res => {
+        console.log('POST SUCCESS')
+        /* const data = res.data.data.map(item => {
+          const year = item.key[2];
+
+          const sector = queryParams.sectors.filter(
+            sector => sector.code === item.key[1]
+          )[0];
+
+          const substance = queryParams.substances.filter(
+            substance => substance.code === item.key[0]
+          )[0];
+
+          const val = item.values[0]; */
+        return {
+          res,
+        }
+
+        //setstate here
+      })
+      .catch(error => {
+        console.log('POST ERROR', error)
+      })
+
   }
 
   render() {
+    this.postEmissionData();
     return (
-      <>
-        <div className="Charts">
-          {this.state.charts.map((chart, i) => (
-            <div className="chartContainer" key={i}>
-              <Chart id={i} />
-              <button onClick={() => this.removeChart(i)}>DELETE CHART</button>
-            </div>
-          ))}
-        </div>
-        <button onClick={this.addChart.bind(this)}>NEW CHART</button>
-      </>
+      <div>
+        <Table
+          setActiveClass={this.setActiveClass}
+          tableHandler={this.tableHandler}
+          category={this.state}
+        />
+        <ChartTemplate />
+      </div>
     );
   }
 }

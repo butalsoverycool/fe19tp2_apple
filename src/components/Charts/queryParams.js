@@ -1,4 +1,3 @@
-import React, { createContext } from "react";
 import axios from "axios";
 import src from "./src";
 
@@ -14,7 +13,7 @@ const queryParams = (() => {
     .get(src.proxy + src.emissionTable)
     .then(res => {
       console.log("GET Succes (queryParams)");
-
+      console.log(data)
       // format res-data
       // table-cats: substances, sectors, timespan
       data.substances = res.data.variables[0].values.map((item, nth) => ({
@@ -38,6 +37,6 @@ const queryParams = (() => {
   return data;
 })();
 
-console.log("queryParams:", queryParams);
+
 
 export default queryParams;

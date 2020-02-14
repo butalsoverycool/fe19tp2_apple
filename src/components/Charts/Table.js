@@ -1,9 +1,8 @@
 // all substances
 import React, { Component } from "react";
 import axios from "axios";
-import styled, { ThemeConsumer } from "styled-components";
+import styled from "styled-components";
 import { Container, Row, Col } from "react-awesome-styled-grid";
-import Chart from "./Chart";
 
 // URLS to work with
 const url = {
@@ -13,28 +12,28 @@ const url = {
 };
 
 // get query based on args
-const queryBakery = ({ substances, sector, timespan }) => {
+const query = ({ substancesAdded, sectorAdded, timespanAdded }) => {
   return {
     query: [
       {
         code: "Luftfororening",
         selection: {
           filter: "item",
-          values: substances.code
+          values: substancesAdded.code
         }
       },
       {
         code: "Sektor",
         selection: {
           filter: "item",
-          values: sector.code
+          values: sectorAdded.code
         }
       },
       {
         code: "Tid",
         selection: {
           filter: "item",
-          values: timespan
+          values: timespanAdded
         }
       }
     ],
@@ -44,35 +43,6 @@ const queryBakery = ({ substances, sector, timespan }) => {
   };
 };
 
-const FlexTable = styled.div`
-  width: 90vw;
-  max-width: 600px;
-  margin: auto;
-  display: flex;
-  justify-content: space-between;
-`;
-
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-/* class Column extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      displayList: false
-    };
-  }
-
-  render() {
-    return (
-      <>
-        <List></List>
-      </>
-    );
-  }
-} */
 
 const Thead = styled.button`
   background-color: lightgrey;
@@ -94,7 +64,9 @@ const TD = styled.p`
 
   &.active {
     background-color: lightgrey;
-    curspor: ...;
+  }
+  &:hover {
+    cursor: pointer;
   }
 `;
 
@@ -119,212 +91,93 @@ const DropdownContainer = styled.div`
   }
 `;
 
-// Table of emission
 class Table extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      substances: null,
-      sectors: null,
-      timespan: null,
-      error: null,
-
-      sectorAdded: [],
-      substancesAdded: [],
-      timespanAdded: []
-    };
-  }
-
-  componentDidMount() {
-    this.getEmissionTable();
-  }
-
-  getEmissionTable() {
-    axios
-      .get(url.proxy + url.emissionTable)
-      .then(res => {
-        console.log("GET Succes (emissionTable)");
-
-        // format res-data
-        // table-cats: substances, sectors, timespan
-        const substances = res.data.variables[0].values.map((item, nth) => ({
-          name: res.data.variables[0].valueTexts[nth],
-          code: item
-        }));
-
-        const sectors = res.data.variables[1].values.map((item, nth) => ({
-          name: res.data.variables[1].valueTexts[nth],
-          code: item
-        }));
-
-        const timespan = res.data.variables[3].values;
-
-        // update state
-        this.setState({
-          substances,
-          sectors,
-          timespan
-        });
-      })
-      // handle get-error
-      .catch(error => {
-        console.log("GET Fail (emissionTable)", error);
-
-        if (this.state.error === null) {
-          this.setState({
-            error
-          });
-        }
-      });
-  }
-
-  tableHandler = (item, category) => {
-    const arr = this.state[category];
-
-    arr.includes(item)
-      ? this.setState(prevState => {
-          const newArr = prevState[category].filter(el => el !== item);
-          this.props.update(category, newArr);
-          return {
-            [category]: newArr
-          };
-        })
-      : this.setState(state => {
-          const newArr = [...state[category], item];
-          this.props.update(category, newArr);
-          return {
-            [category]: newArr
-          };
-        });
-  };
-
-  setActiveClass = (item, thisState) => {
-    const arr = thisState;
-    return arr.includes(item) ? "active" : "";
-  };
-
-  getEmissionData(choice) {
-    if (
-      this.state.choice.substances.length < 1 ||
-      this.state.choice.sectors.length < 1 ||
-      this.state.choice.timespan.length < 1
-    ) {
-      const errorMsg = "You have to choose substance, sector and timespan";
-
-      this.setState({
-        error: errorMsg
-      });
-
-      return;
-    }
-
-    const query = queryBakery(choice);
-
-    axios
-      .post(url.proxy + url.emissionTable, query)
-      .then(res => {
-        console.log("POST Success (chartData)", res);
-
-        const chartData = res.data.data; // format later
-
-        this.setState({
-          chartData
-        });
-      })
-      .catch(error => {
-        console.log("POST Fail (chartData)", error);
-
-        if (this.state.error === null) {
-          this.setState({
-            error
-          });
-        }
-      });
-  }
 
   render() {
-    if (!this.state.substances || !this.state.sectors || !this.state.timespan)
-      return "";
-
-    const errMsg = this.state.error
-      ? "Something went wrong when fetching data from SCB. Try refreshing the page or come back later."
-      : "";
-
-    console.log("Emission Table", this.state);
-
+    const { tableHandler, category, setActiveClass } = this.props;
     return (
       //Dropdown menus, one for substance and one for sector (year will generated )
-      <>
-        <Container>
-          <Row>
-            <Col xs={2} sm={2} md={1} lg={4} xl={4}>
-              <DropdownContainer className="dropdown-container">
-                <Thead className="dropdown-button">Substance</Thead>
-                <List className="dropdown-content">
-                  {this.state.substances.map((item, index) => (
-                    <TD
-                      key={item.code}
-                      onClick={() => this.tableHandler(item, "substancesAdded")}
-                      className={this.setActiveClass(
-                        item,
-                        this.state.substancesAdded
-                      )}
-                    >
-                      {item.name}
-                    </TD>
-                  ))}
-                </List>
-              </DropdownContainer>
-            </Col>
+      <Container>
+        <Row>
+          <Col xs={2} sm={2} md={1} lg={4} xl={4}>
+            <DropdownContainer className="dropdown-container">
+              <Thead className="dropdown-button">Substance</Thead>
+              <List className="dropdown-content">
+                {category.substances.map((item) => (
+                  <TD
+                    key={item.code}
+                    onClick={() => tableHandler(item, 'substancesAdded')}
+                    className={setActiveClass(item, category.substancesAdded)}
+                  >
+                    {item.name}
+                  </TD>
+                ))}
+              </List>
+            </DropdownContainer>
+          </Col>
 
-            <Col xs={2} sm={2} md={1} lg={4} xl={4}>
-              <DropdownContainer>
-                <Thead className="dropdown-button">Sector</Thead>
-                <List className="dropdown-content">
-                  {this.state.sectors.map((item, index) => (
-                    <TD
-                      key={item.code}
-                      onClick={() => this.tableHandler(item, "sectorAdded")}
-                      className={this.setActiveClass(
-                        item,
-                        this.state.sectorAdded
-                      )}
-                    >
-                      {item.name}
-                    </TD>
-                  ))}
-                </List>
-              </DropdownContainer>
-            </Col>
+          <Col xs={2} sm={2} md={1} lg={4} xl={4}>
+            <DropdownContainer>
+              <Thead className="dropdown-button">Sector</Thead>
+              <List className="dropdown-content">
+                {category.sectors.map((item) => (
+                  <TD
+                    key={item.code}
+                    onClick={() => this.props.tableHandler(item, "sectorsAdded")}
+                    className={setActiveClass(item, category.sectorsAdded)}
+                  >
+                    {item.name}
+                  </TD>
+                ))}
+              </List>
+            </DropdownContainer>
+          </Col>
 
-            <Col xs={2} sm={2} md={1} lg={4} xl={4}>
-              <DropdownContainer>
-                <Thead className="dropdown-button">Timespan</Thead>
-                <List className="dropdown-content">
-                  {this.state.timespan.map((item, index) => (
-                    <TD
-                      key={item}
-                      onClick={() => this.tableHandler(item, "timespanAdded")}
-                      className={this.setActiveClass(
-                        item,
-                        this.state.timespanAdded
-                      )}
-                    >
-                      {item}
-                    </TD>
-                  ))}
-                </List>
-              </DropdownContainer>
-            </Col>
-          </Row>
-        </Container>
-
-        <div className="error">{errMsg}</div>
-
-        {/* <Chart data={this.state.chartData} /> */}
-      </>
+          <Col xs={2} sm={2} md={1} lg={4} xl={4}>
+            <DropdownContainer>
+              <Thead className="dropdown-button">Timespan</Thead>
+              <List className="dropdown-content">
+                {category.years.map((item) => (
+                  <TD
+                    key={item}
+                    onClick={() => this.props.tableHandler(item, "yearsAdded")}
+                    className={setActiveClass(item, category.yearsAdded)}
+                  >
+                    {item}
+                  </TD>
+                ))}
+              </List>
+            </DropdownContainer>
+          </Col >
+        </Row >
+      </Container >
     );
   }
 }
-
 export default Table;
+
+/* getEmissionData(choice) {
+
+  const query = queryBakery(choice);
+
+  axios
+    .post(url.proxy + url.emissionTable, query)
+    .then(res => {
+      console.log("POST Success (chartData)", res);
+
+      const chartData = res.data.data; // format later
+      console.log(chartData);
+      this.setState({
+        chartData
+      });
+    })
+    .catch(error => {
+      console.log("POST Fail (chartData)", error);
+
+      if (this.state.error === null) {
+        this.setState({
+          error
+        });
+      }
+    });
+} */

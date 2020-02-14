@@ -1,13 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip
-} from "recharts";
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
 
 const TooltipStyled = styled.div`
   padding: 5px;
@@ -40,6 +33,7 @@ const CustomTooltip = ({ active, label, payload, unit }, ...props) => {
 };
 
 const ChartTemplate = props => {
+  console.dir(props.data)
   return (
     <>
       <LineChart

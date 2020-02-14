@@ -44,3 +44,8 @@ export const CustomizeBtn = styled.button`
     margin: ${props => props.margin || '5px'};
     outline: none;
 `;
+
+export const ChartWrapper = styled.div`
+border: 2px solid black; 
+border-radius: 5px;
+`;

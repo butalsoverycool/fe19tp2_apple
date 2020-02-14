@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import axios from "axios";
 import src from "./src";
 import Options from "./Options";
-import Preview from "./Preview";
 import queryParams from "./queryParams";
+import Table from './Table';
+import ChartTemplate from './ChartTemplate';
+import * as Styled from './Styled'
 
 //CHART STATE
 
@@ -18,8 +20,8 @@ import queryParams from "./queryParams";
 // get query based on args
 const queryBakery = ({ substances, sectors }) => {
   // defaults
-  substances = substances.lengt > 1 ? substances : ["BC"];
-  sectors = sectors.lengt > 1 ? sectors : ["0.5"];
+  substances = substances.length > 1 ? substances : ["BC"];
+  sectors = sectors.length > 1 ? sectors : ["0.5"];
 
   return {
     query: [
@@ -113,7 +115,6 @@ class Chart extends Component {
   updateData() {
     // bake query
     const query = queryBakery(this.state.config);
-
     // fetch data
     axios
       .post(src.proxy + src.emissionTable, query)
@@ -163,15 +164,16 @@ class Chart extends Component {
     //const data = this.state.data ? this.state.data : [];
     //console.log("DATA", data);
     return (
-      <div className="Chart">
-        {/* <Preview data={this.state.data} limit={this.state.config.limit} /> */}
+      <Styled.ChartWrapper className="Chart">
+
+        <Table />
         <Options
           config={this.state.config}
           updateConfig={this.updateConfig}
           totalTimespan={totalTimespan}
           data={this.state.data}
         />
-      </div>
+      </Styled.ChartWrapper>
     );
   }
 }
