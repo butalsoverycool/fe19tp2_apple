@@ -1,6 +1,5 @@
 // all substances
 import React, { Component } from "react";
-import axios from "axios";
 import styled from "styled-components";
 import { Container, Row, Col } from "react-awesome-styled-grid";
 
@@ -44,7 +43,7 @@ const query = ({ substancesAdded, sectorAdded, timespanAdded }) => {
 };
 
 
-const Thead = styled.button`
+const TableHead = styled.button`
   background-color: lightgrey;
   height: 2rem;
   border-radius: 5px;
@@ -101,7 +100,7 @@ class Table extends Component {
         <Row>
           <Col xs={2} sm={2} md={1} lg={4} xl={4}>
             <DropdownContainer className="dropdown-container">
-              <Thead className="dropdown-button">Substance</Thead>
+              <TableHead className="dropdown-button">Substance</TableHead>
               <List className="dropdown-content">
                 {category.substances.map((item) => (
                   <TD
@@ -118,7 +117,7 @@ class Table extends Component {
 
           <Col xs={2} sm={2} md={1} lg={4} xl={4}>
             <DropdownContainer>
-              <Thead className="dropdown-button">Sector</Thead>
+              <TableHead className="dropdown-button">Sector</TableHead>
               <List className="dropdown-content">
                 {category.sectors.map((item) => (
                   <TD
@@ -135,7 +134,7 @@ class Table extends Component {
 
           <Col xs={2} sm={2} md={1} lg={4} xl={4}>
             <DropdownContainer>
-              <Thead className="dropdown-button">Timespan</Thead>
+              <TableHead className="dropdown-button">Timespan</TableHead>
               <List className="dropdown-content">
                 {category.years.map((item) => (
                   <TD
@@ -156,28 +155,3 @@ class Table extends Component {
 }
 export default Table;
 
-/* getEmissionData(choice) {
-
-  const query = queryBakery(choice);
-
-  axios
-    .post(url.proxy + url.emissionTable, query)
-    .then(res => {
-      console.log("POST Success (chartData)", res);
-
-      const chartData = res.data.data; // format later
-      console.log(chartData);
-      this.setState({
-        chartData
-      });
-    })
-    .catch(error => {
-      console.log("POST Fail (chartData)", error);
-
-      if (this.state.error === null) {
-        this.setState({
-          error
-        });
-      }
-    });
-} */

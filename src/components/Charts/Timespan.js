@@ -6,19 +6,14 @@ import * as Styled from "./Styled";
 
 // Table of emission
 class Timespan extends Component {
-  constructor(props) {
+  /* constructor(props) {
     super(props);
-    this.state = {
-      config: this.props.config || null
-    };
 
     this.pushLimit = this.pushLimit.bind(this);
     this.lastLimit = this.lastLimit.bind(this);
-    /* this.addData = this.addData.bind(this);
-    this.delData = this.delData.bind(this); */
-  }
+  } */
 
-  componentDidMount() {
+  /* componentDidMount() {
     if (!this.state.config) {
       const config = this.props.config;
       const data = this.props.data;
@@ -26,60 +21,43 @@ class Timespan extends Component {
         console.log("STATE in options", this.state)
       );
     }
-  }
+  } */
 
   // THESE FUNCS NEED WORK...
-  pushLimit(endPoint, reaseType) {
-    let config = this.props.config;
 
-    if (reaseType === "dec") {
-      config.limit[endPoint]--;
-    } else {
-      config.limit[endPoint]++;
-    }
 
-    this.props.update("limit", {
-      from: config.limit.from,
-      to: config.limit.to
-    });
-  }
-
-  lastLimit(limit) {
-    const newState = this.state;
-
-    let config = this.props.config;
-
-    config.limit.from = this.props.totalTimespan - 1 - limit;
-    config.limit.to = this.props.totalTimespan;
-
-    this.props.update("limit", {
-      from: config.limit.from,
-      to: config.limit.to
-    });
-  }
+  /*   lastLimit(limit) {
+      const newState = this.state;
+  
+      let config = this.props.config;
+  
+      config.limit.from = this.props.totalTimespan - 1 - limit;
+      config.limit.to = this.props.totalTimespan;
+  
+      this.props.update("limit", {
+        from: config.limit.from,
+        to: config.limit.to
+      });
+    } */
 
   render() {
-    const errorMsg = this.state.error
-      ? "Something went wrong when fetching data from SCB. Try refreshing the page or come back later."
-      : "";
 
     return (
       <>
         <div className="options">
-          <div className="errorMsg">{errorMsg}</div>
 
           <Styled.Wrapper>
             <Styled.CustomizeBox justifyContent="space-between">
               <div>
                 <p>FROM</p>
                 <Styled.CustomizeBtn
-                  onClick={() => this.pushLimit("from", "dec")}
+                  onClick={() => this.props.pushLimitHandler("from", "dec")}
                   margin="0"
                 >
                   -
                 </Styled.CustomizeBtn>
                 <Styled.CustomizeBtn
-                  onClick={() => this.pushLimit("from", "inc")}
+                  onClick={() => this.props.pushLimitHandler("from", "inc")}
                   margin="0"
                 >
                   +
@@ -107,13 +85,13 @@ class Timespan extends Component {
               <div>
                 <p>TO</p>
                 <Styled.CustomizeBtn
-                  onClick={() => this.pushLimit("to", "dec")}
+                  onClick={() => this.props.pushLimitHandler("to", "dec")}
                   margin="0"
                 >
                   -
                 </Styled.CustomizeBtn>
                 <Styled.CustomizeBtn
-                  onClick={() => this.pushLimit("to", "inc")}
+                  onClick={() => this.props.pushLimitHandler("to", "inc")}
                   margin="0"
                 >
                   +
