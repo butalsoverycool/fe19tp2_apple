@@ -3,9 +3,9 @@ import axios from "axios";
 import src from "./src";
 import Options from "./Options";
 import queryParams from "./queryParams";
-import Table from './Table';
-import ChartTemplate from './ChartTemplate';
-import * as Styled from './Styled'
+import Table from "./Table";
+import ChartTemplate from "./ChartTemplate";
+import * as Styled from "./Styled";
 
 //CHART STATE
 
@@ -165,7 +165,6 @@ class Chart extends Component {
     //console.log("DATA", data);
     return (
       <Styled.ChartWrapper className="Chart">
-
         <Table />
         <Options
           config={this.state.config}
