@@ -1,8 +1,11 @@
 import React from 'react';
 import { withAuthorization } from '../Session';
-
 const HomePage = () => {
-  return <div>Home</div>;
+  return (
+    <div>
+      <h1>Home</h1>
+    </div>
+  );
 };
 
 const condition = authUser => !!authUser;

@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+/server/node_modules
 
 # testing
 /coverage
@@ -27,3 +28,4 @@ yarn-error.log*
 # files 
 src/components/Data/structure.txt
 src/components/Data/test.js
+/public/chart-data.json
