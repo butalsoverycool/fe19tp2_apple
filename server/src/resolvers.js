@@ -1,15 +1,12 @@
-const fetch = require('node-fetch');
-
 module.exports = {
   Query: {
-    pollutions: async () => {
-      const response = await fetch('http://localhost:3000/chart-data.json');
-      const data = await response.json();
-      return data;
-    },
+    pollutions: (_, __, { dataSources }) =>
+      dataSources.chartsAPI.getPollution(),
+    pollution: (_, { id }, { dataSources }) =>
+      dataSources.chartsAPI.getPollutionById({ pollutionId: id }),
   },
 };
 
-// pollution: (_, __, { dataSources }) => {
-//   return dataSources.randomUserAPI.getPerson();
-// }
+// pollutions: (_, __, { dataSources }) => {
+//   return dataSources.chartsAPI.getPollution();
+// },
