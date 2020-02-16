@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
 import * as Recharts from 'recharts';
 const {
   LineChart,
@@ -12,23 +12,24 @@ const {
   Legend,
 } = Recharts;
 
-const ALL_POLLUTION = gql`
+const GET_POLLUTION = gql`
   {
-    pollution(id: "NOx") {
+    pollutions {
       id
+      values
       year
     }
   }
 `;
 
 function Chart() {
-  const { loading, error, data } = useQuery(ALL_POLLUTION);
+  const { loading, error, data } = useQuery(GET_POLLUTION);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
-  return data.pollution.map(({ id, year }) => (
+  return data.pollutions.map(({ id, values, year }) => (
     <div key={id}>
       <p>
-        {id}: {year}
+        {id}:{values}:{year}
       </p>
       {/* <LineChart
         width={500}

@@ -8,11 +8,11 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import client from '../src/components/client/';
 
 ReactDOM.render(
-  <ApolloProvider client={client}>
-    <FirebaseContext.Provider value={new Firebase()}>
+  <FirebaseContext.Provider value={new Firebase()}>
+    <ApolloProvider client={client}>
       <App />
-    </FirebaseContext.Provider>
-  </ApolloProvider>,
+    </ApolloProvider>
+  </FirebaseContext.Provider>,
   document.getElementById('root')
 );
 serviceWorker.unregister();

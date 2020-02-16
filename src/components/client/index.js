@@ -1,6 +1,6 @@
 import ApolloClient from 'apollo-boost';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { gql } from 'apollo-boost';
+// import gql from 'graphql-tag';
 
 const cache = new InMemoryCache();
 const client = new ApolloClient({
@@ -8,16 +8,18 @@ const client = new ApolloClient({
   cache,
 });
 
-client
-  .query({
-    query: gql`
-      {
-        pollution(id: "NOx") {
-          id
-          year
-        }
-      }
-    `,
-  })
-  .then(result => console.log(result));
+// client
+//   .query({
+//     query: gql`
+//       {
+//         pollutions {
+//           id
+//           values
+//           year
+//         }
+//       }
+//     `,
+//   })
+//   .then(result => console.log(result));
+
 export default client;
