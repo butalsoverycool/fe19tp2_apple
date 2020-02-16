@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { useQuery } from '@apollo/react-hooks';
+import { gql } from 'apollo-boost';
 import * as Recharts from 'recharts';
 const {
   LineChart,
@@ -7,84 +9,60 @@ const {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
 } = Recharts;
 
-const exampleData = [
+const ALL_POLLUTION = gql`
   {
-    airpollution: ['NOx'],
-    values: ['275578.2'],
-    sector: '0.5',
-    year: '1990'
-  },
-  {
-    airpollution: ['NOx'],
-    values: ['280933.6'],
-    sector: '0.5',
-    year: '1991'
-  },
-  {
-    airpollution: ['NOx'],
-    values: ['269098.7'],
-    sector: '0.5',
-    year: '1992'
-  },
-  {
-    airpollution: ['NOx'],
-    values: ['257762.7'],
-    sector: '0.5',
-    year: '1993'
-  },
-  {
-    airpollution: ['NOx'],
-    values: ['261857.3'],
-    sector: '0.5',
-    year: '1994'
-  },
-  {
-    airpollution: ['NOx'],
-    values: ['250666.2'],
-    sector: '0.5',
-    year: '1995'
+    pollution(id: "NOx") {
+      id
+      year
+    }
   }
-];
+`;
 
-export default class Chart extends Component {
-  render() {
-    return (
-      <div>
-        <LineChart
-          width={500}
-          height={300}
-          data={exampleData}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5
-          }}
-        >
-          <CartesianGrid strokeDasharray='3 3' />
-          <XAxis dataKey='year' />
-          <YAxis yAxisId='left' />
-          <YAxis yAxisId='right' orientation='right' />
-          <Tooltip />
-          <Legend />
-          <Line
-            yAxisId='left'
-            type='monotone'
-            dataKey='sector'
-            stroke='#8884d8'
-            activeDot={{ r: 8 }}
-          />
-          <Line
-            yAxisId='right'
-            type='monotone'
-            dataKey='values'
-            stroke='#82ca9d'
-          />
-        </LineChart>
-      </div>
-    );
-  }
+function Chart() {
+  const { loading, error, data } = useQuery(ALL_POLLUTION);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+  return data.pollution.map(({ id, year }) => (
+    <div key={id}>
+      <p>
+        {id}: {year}
+      </p>
+      {/* <LineChart
+        width={500}
+        height={300}
+        data={id}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        <CartesianGrid strokeDasharray='3 3' />
+        <XAxis dataKey='year' />
+        <YAxis yAxisId='left' />
+        <YAxis yAxisId='right' orientation='right' />
+        <Tooltip />
+        <Legend />
+        <Line
+          yAxisId='left'
+          type='monotone'
+          dataKey={year}
+          stroke='#8884d8'
+          activeDot={{ r: 8 }}
+        />
+        <Line
+          yAxisId='right'
+          type='monotone'
+          dataKey='values'
+          stroke='#82ca9d'
+        />
+      </LineChart> */}
+    </div>
+  ));
 }
+
+export default Chart;

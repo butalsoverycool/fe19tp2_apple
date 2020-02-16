@@ -12,8 +12,9 @@ client
   .query({
     query: gql`
       {
-        pollutions {
+        pollution(id: "NOx") {
           id
+          year
         }
       }
     `,
