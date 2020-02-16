@@ -1,8 +1,9 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import axios from 'axios';
 import Table from './Table';
-import ChartTemplate from './ChartTemplate';
+
 import Timespan from './Timespan';
+import Preview from './Preview';
 
 
 const proxy = "https://cors-anywhere.herokuapp.com/"
@@ -36,12 +37,13 @@ class Charts extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      postRequest: [],
+      data: null,
       dataRequest: [],
       substances: [],
       sectors: [],
       years: [],
-      limit: { from: null, to: null },
+      limit: { from: 0, to: 28 },
+      isLoading: false,
 
       substancesAdded: [],
       sectorsAdded: [],
@@ -58,15 +60,14 @@ class Charts extends Component {
     this.getEmissionData();
     /* this.postEmissionData(queryBakery); */
   }
+
+  //Bug - if you go further back then data[0] (so limit: to: becomes -1 or more the app crashes)
   pushLimitHandler(endPoint, reaseType) {
     let limit = this.state.limit;
     if (reaseType === "dec") {
       console.log('dec')
-      console.log(limit[endPoint]--)
       limit[endPoint]--;
     } else {
-      console.log(limit[endPoint]++);
-      console.log(limit[endPoint]++)
       limit[endPoint]++;
     };
 
@@ -150,14 +151,13 @@ class Charts extends Component {
   }
 
   postEmissionData(query) {
-    //const query = queryBakery;
     console.log(query);
     axios
       .post(proxy + emissionTable, query)
       .then(res => {
         console.log('POST SUCCESS')
         console.log(this.state.substancesAdded);
-        const postRequest = res.data.data.map(item => {
+        const data = res.data.data.map(item => {
           const year = item.key[2];
           const sector = item.key[1];
           const substance = item.key[0];
@@ -166,10 +166,10 @@ class Charts extends Component {
             year,
             sector,
             substance,
-            values
+            values,
           }
         });
-        this.setState({ postRequest });
+        this.setState({ data });
       })
       .catch(error => {
         console.log('POST ERROR', error)
@@ -177,9 +177,10 @@ class Charts extends Component {
   }
 
   render() {
-    const postRequest = this.state.postRequest;
+    const data = this.state.data;
     const limit = this.state.limit;
-    const totalTimespan = postRequest ? postRequest.length - 1 : null;
+    const totalTimespan = data ? data.length - 1 : null;
+    console.log(this.state.data)
 
     return (
       <div>
@@ -189,7 +190,12 @@ class Charts extends Component {
           category={this.state}
           pushLimitHandler={this.pushLimitHandler}
         />
-        <ChartTemplate postRequest={postRequest} />
+
+        {this.state.data ?
+          <Preview data={this.state.data} limit={this.state.limit}> ></Preview>
+          : null}
+
+
         <Timespan
           limit={limit}
           update={(key, val) => this.updateConfig(key, val)}
