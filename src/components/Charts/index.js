@@ -62,8 +62,11 @@ class Charts extends Component {
     let limit = this.state.limit;
     if (reaseType === "dec") {
       console.log('dec')
+      console.log(limit[endPoint]--)
       limit[endPoint]--;
     } else {
+      console.log(limit[endPoint]++);
+      console.log(limit[endPoint]++)
       limit[endPoint]++;
     };
 
@@ -106,7 +109,7 @@ class Charts extends Component {
           [array]: newArr
         };
       });
-    this.postEmissionData(queryBakery); //don't think we need another request here. 
+    /* this.postEmissionData(queryBakery); */ //don't think we need another request here. 
   };
 
   setActiveClass = (item, array) => {
