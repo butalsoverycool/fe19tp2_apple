@@ -3,46 +3,6 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { Container, Row, Col } from "react-awesome-styled-grid";
 
-// URLS to work with
-const url = {
-  proxy: "https://cors-anywhere.herokuapp.com/",
-  emissionTable:
-    "http://api.scb.se/OV0104/v1/doris/en/ssd/START/MI/MI0108/TotaltUtslapp"
-};
-
-// get query based on args
-const query = ({ substancesAdded, sectorAdded, timespanAdded }) => {
-  return {
-    query: [
-      {
-        code: "Luftfororening",
-        selection: {
-          filter: "item",
-          values: substancesAdded.code
-        }
-      },
-      {
-        code: "Sektor",
-        selection: {
-          filter: "item",
-          values: sectorAdded.code
-        }
-      },
-      {
-        code: "Tid",
-        selection: {
-          filter: "item",
-          values: timespanAdded
-        }
-      }
-    ],
-    response: {
-      format: "json"
-    }
-  };
-};
-
-
 const TableHead = styled.button`
   background-color: lightgrey;
   height: 2rem;

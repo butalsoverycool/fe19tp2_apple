@@ -1,5 +1,5 @@
 import React from "react";
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
+import { LineChart, Line, CartesianGrid, XAxis, YAxis } from "recharts";
 
 
 const ChartTemplate = props => {
@@ -21,35 +21,5 @@ const ChartTemplate = props => {
 
 export default ChartTemplate;
 
-/* const TooltipStyled = styled.div`
-  padding: 5px;
-  display: flex;
-  flex-direction: column;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 0 20px grey;
-  font-size: 0.8em;
-  font-style: italic;
-`;
-
- const CustomTooltip = ({ active, label, payload, unit }, ...props) => {
-  if (!payload) return "";
-  if (!payload[0]) return "";
-
-  const { val } = payload[0].payload;
-
-  if (active) {
-    return (
-      <TooltipStyled className="custom-tooltip" {...props}>
-        <p className="time">
-          {label}: {val} {unit || ""}
-        </p>
-      </TooltipStyled>
-    );
-  }
-
-  return null;
-};
-*/
 
 

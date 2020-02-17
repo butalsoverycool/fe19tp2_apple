@@ -42,7 +42,7 @@ class Charts extends Component {
       substances: [],
       sectors: [],
       years: [],
-      limit: { from: 0, to: 28 },
+      limit: { from: 0, to: 29 },
       isLoading: false,
 
       substancesAdded: [],
