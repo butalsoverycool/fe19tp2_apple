@@ -1,17 +1,21 @@
+
 import React from "react";
 import Charts from "../Charts";
 import VictoryChart from "../VictoryChart";
 import { ScreenBadge } from 'react-awesome-styled-grid'
 
-const Home = () => {
+import React from 'react';
+import { withAuthorization } from '../Session';
+
+const HomePage = () => {
   return (
     <div>
       <h1>Home</h1>
-
       <Charts />
       <ScreenBadge></ScreenBadge>
     </div>
   );
 };
 
-export default Home;
+const condition = authUser => !!authUser;
+export default withAuthorization(condition)(HomePage);
