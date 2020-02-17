@@ -3,9 +3,9 @@ const { gql } = require('apollo-server');
 const typeDefs = gql`
   type Pollutions {
     id: ID!
-    sector: String
-    year: String
     values: String
+    year: String
+    sector: String
   }
 
   # input FilterPollution {
