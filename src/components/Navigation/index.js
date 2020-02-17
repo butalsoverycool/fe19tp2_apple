@@ -1,8 +1,29 @@
 import React from 'react';
+import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import SignOutButton from '../SignOut';
 import * as ROUTES from '../../constants/routes';
 import { AuthUserContext } from '../Session';
+
+const Container = styled.nav`
+border-bottom: 1px solid black;
+`;
+const UL = styled.ul`
+`;
+
+const LI = styled.li`
+display: inline-block;
+padding: 1em;
+
+& > a {
+text-decoration: none;
+color: black;
+
+&:hover {
+color: grey;
+}
+}
+`;
 
 const Navigation = ({ authUser }) => (
   <div>
@@ -14,26 +35,28 @@ const Navigation = ({ authUser }) => (
 );
 
 const NavigationAuth = () => (
-  <ul>
-    <li>
-      <Link to={ROUTES.SIGN_IN}>Sign In</Link>
-    </li>
-    <li>
-      <Link to={ROUTES.LANDING}>Landing</Link>
-    </li>
-    <li>
-      <Link to={ROUTES.HOME}>Home</Link>
-    </li>
-    <li>
-      <Link to={ROUTES.ACCOUNT}>Account</Link>
-    </li>
-    <li>
-      <Link to={ROUTES.ADMIN}>Admin</Link>
-    </li>
-    <li>
-      <SignOutButton />
-    </li>
-  </ul>
+  <Container>
+    <UL>
+      <LI>
+        <Link to={ROUTES.SIGN_IN}>Sign In</Link>
+      </LI>
+      <LI>
+        <Link to={ROUTES.LANDING}>Landing</Link>
+      </LI>
+      <LI>
+        <Link to={ROUTES.HOME}>Home</Link>
+      </LI>
+      <LI>
+        <Link to={ROUTES.ACCOUNT}>Account</Link>
+      </LI>
+      <LI>
+        <Link to={ROUTES.ADMIN}>Admin</Link>
+      </LI>
+      <LI>
+        <SignOutButton />
+      </LI>
+    </UL>
+  </Container >
 );
 
 const NavigationNonAuth = () => (
