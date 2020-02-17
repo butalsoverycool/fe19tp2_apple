@@ -1,10 +1,8 @@
-
-import React from "react";
-import Charts from "../Charts";
-import VictoryChart from "../VictoryChart";
-import { ScreenBadge } from 'react-awesome-styled-grid'
-
 import React from 'react';
+import Charts from '../Charts';
+import VictoryChart from '../VictoryChart';
+import { ScreenBadge } from 'react-awesome-styled-grid';
+
 import { withAuthorization } from '../Session';
 
 const HomePage = () => {
