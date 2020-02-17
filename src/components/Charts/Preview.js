@@ -37,11 +37,15 @@ const Preview = props => {
 
   const title = `Emission of ${data[0].substance}`;
 
-  const subtitle = data[0].sector;
+  const subtitle = props.sectors.filter(
+    sector => sector.code === data[0].sector
+  )[0].name;
 
   const chartHeader = `${data[0].year} - ${data[data.length - 1].year}`;
 
   const unit = data[0].substance;
+
+  console.log("Template DATA", data[0]);
 
   return (
     <Wrapper className="preview">
@@ -51,10 +55,7 @@ const Preview = props => {
 
       <ChartHeader>{chartHeader}</ChartHeader>
 
-      {props.data ?
-        <ChartTemplate data={data} unit={unit} />
-        : null}
-
+      {props.data ? <ChartTemplate data={data} unit={unit} /> : null}
     </Wrapper>
   );
 };

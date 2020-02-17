@@ -1,14 +1,13 @@
 import React, { Component, useState } from "react";
-import axios from 'axios';
-import Table from './Table';
+import axios from "axios";
+import Table from "./Table";
 
-import Timespan from './Timespan';
-import Preview from './Preview';
+import Timespan from "./Timespan";
+import Preview from "./Preview";
 
-
-const proxy = "https://cors-anywhere.herokuapp.com/"
-const emissionTable = "http://api.scb.se/OV0104/v1/doris/sv/ssd/START/MI/MI0108/TotaltUtslapp"
-
+const proxy = "https://cors-anywhere.herokuapp.com/";
+const emissionTable =
+  "http://api.scb.se/OV0104/v1/doris/sv/ssd/START/MI/MI0108/TotaltUtslapp";
 
 const queryBakery = {
   /* const substancesAdded = this.state.substancesAdded.map(item => item.code)
@@ -19,19 +18,19 @@ const queryBakery = {
       code: "Luftfororening",
       selection: {
         filter: "item",
-        values: ['BC'] // this value should be updated depending on substancesAdded-state
+        values: ["BC"] // this value should be updated depending on substancesAdded-state
       }
     },
     {
       code: "Sektor",
       selection: {
         filter: "item",
-        values: ['0.5'] // this value should updated depending on sectorsAdded-state
+        values: ["0.5"] // this value should updated depending on sectorsAdded-state
       }
     }
   ],
   response: { format: "json" }
-}
+};
 
 class Charts extends Component {
   constructor(props) {
@@ -42,13 +41,13 @@ class Charts extends Component {
       substances: [],
       sectors: [],
       years: [],
-      limit: { from: 0, to: 29 },
+      limit: { from: 0, to: 28 },
       isLoading: false,
 
       substancesAdded: [],
       sectorsAdded: [],
       yearsAdded: []
-    }
+    };
     this.getEmissionData = this.getEmissionData.bind(this);
     this.postEmissionData = this.postEmissionData.bind(this);
     this.tableHandler = this.tableHandler.bind(this);
@@ -63,12 +62,28 @@ class Charts extends Component {
 
   //Bug - if you go further back then data[0] (so limit: to: becomes -1 or more the app crashes)
   pushLimitHandler(endPoint, reaseType) {
+    let oldLimit = this.state.limit;
+
+    if (reaseType === "dec") {
+      if (oldLimit[endPoint] <= 0) return;
+      oldLimit[endPoint]--;
+    } else {
+      if (oldLimit[endPoint] >= this.state.years.length - 1) return;
+      oldLimit[endPoint]++;
+    }
+
+    this.setState({
+      limit: oldLimit
+    });
+  }
+
+  /* lastLimitHandler(startPoint) {
     let limit = this.state.limit;
     if (reaseType === "dec") {
       console.log('dec')
-      limit[endPoint]--;
+      limit[startPoint]--;
     } else {
-      limit[endPoint]++;
+      limit[startPoint]++;
     };
 
     this.setState({
@@ -77,40 +92,40 @@ class Charts extends Component {
         to: limit.to
       }
     });
-  }
+  } */
 
   tableHandler = (item, array) => {
-    const indicator = (array === 'substancesAdded') ? 0 : 1;
+    const indicator = array === "substancesAdded" ? 0 : 1;
     const oldArray = this.state[array];
     let newArr;
     oldArray.includes(item)
       ? this.setState(prevState => {
-        newArr = prevState[array].filter(el => el !== item);
-        console.log(newArr);
-        const substancesAdded = newArr.map(item => item.code);
-        const sectorsAdded = newArr.map(item => item.code);
+          newArr = prevState[array].filter(el => el !== item);
+          console.log(newArr);
+          const substancesAdded = newArr.map(item => item.code);
+          const sectorsAdded = newArr.map(item => item.code);
 
-        queryBakery.query[indicator].selection.values =
-          indicator === 0 ? substancesAdded : sectorsAdded;
-        this.postEmissionData(queryBakery);
-        return {
-          [array]: newArr
-        };
-      })
+          queryBakery.query[indicator].selection.values =
+            indicator === 0 ? substancesAdded : sectorsAdded;
+          this.postEmissionData(queryBakery);
+          return {
+            [array]: newArr
+          };
+        })
       : this.setState(prevState => {
-        newArr = [...prevState[array], item];
-        console.log(newArr);
-        const substancesAdded = newArr.map(item => item.code);
-        /* const sectorsAdded = newArr.map(item => item.code); */
+          newArr = [...prevState[array], item];
+          console.log(newArr);
+          const substancesAdded = newArr.map(item => item.code);
+          /* const sectorsAdded = newArr.map(item => item.code); */
 
-        queryBakery.query[indicator].selection.values = substancesAdded;
+          queryBakery.query[indicator].selection.values = substancesAdded;
 
-        this.postEmissionData(queryBakery);
-        return {
-          [array]: newArr
-        };
-      });
-    /* this.postEmissionData(queryBakery); */ //don't think we need another request here. 
+          this.postEmissionData(queryBakery);
+          return {
+            [array]: newArr
+          };
+        });
+    /* this.postEmissionData(queryBakery); */ //don't think we need another request here.
   };
 
   setActiveClass = (item, array) => {
@@ -146,8 +161,8 @@ class Charts extends Component {
         });
       })
       .catch(error => {
-        console.log('GET ERROR', error)
-      })
+        console.log("GET ERROR", error);
+      });
   }
 
   postEmissionData(query) {
@@ -155,34 +170,34 @@ class Charts extends Component {
     axios
       .post(proxy + emissionTable, query)
       .then(res => {
-        console.log('POST SUCCESS')
+        console.log("POST SUCCESS");
         console.log(this.state.substancesAdded);
         const data = res.data.data.map(item => {
           const year = item.key[2];
           const sector = item.key[1];
           const substance = item.key[0];
-          const toParse = item.values[0]
+          const toParse = item.values[0];
           const values = parseInt(toParse);
 
           return {
             year,
             sector,
             substance,
-            values,
-          }
+            values
+          };
         });
+
         this.setState({ data });
       })
       .catch(error => {
-        console.log('POST ERROR', error)
-      })
+        console.log("POST ERROR", error);
+      });
   }
 
   render() {
     const data = this.state.data;
-    const limit = this.state.limit;
-    const totalTimespan = data ? data.length - 1 : null;
-    console.log(this.state.data)
+    const totalTimespan = data ? data.length - 1 : 0;
+    console.log(this.state.data);
 
     return (
       <div>
@@ -190,20 +205,26 @@ class Charts extends Component {
           setActiveClass={this.setActiveClass}
           tableHandler={this.tableHandler}
           category={this.state}
-          pushLimitHandler={this.pushLimitHandler}
         />
 
-        {this.state.data ?
-          <Preview data={this.state.data} limit={this.state.limit}> ></Preview>
-          : null}
-
+        {this.state.data ? (
+          <Preview
+            data={this.state.data}
+            sectors={this.state.sectors}
+            limit={this.state.limit}
+          >
+            {" "}
+            >
+          </Preview>
+        ) : null}
 
         <Timespan
-          limit={limit}
-          update={(key, val) => this.updateConfig(key, val)}
+          limit={this.state.limit}
+          /* update={(key, val) => this.updateConfig(key, val)} */
           totalTimespan={totalTimespan}
-          pushLimitHandler={this.pushLimitHandler} />
-      </div >
+          pushLimitHandler={this.pushLimitHandler}
+        />
+      </div>
     );
   }
 }

@@ -2,8 +2,6 @@
 import React, { Component } from "react";
 import * as Styled from "./Styled";
 
-
-
 // Table of emission
 class Timespan extends Component {
   /* constructor(props) {
@@ -25,7 +23,6 @@ class Timespan extends Component {
 
   // THESE FUNCS NEED WORK...
 
-
   /*   lastLimit(limit) {
       const newState = this.state;
   
@@ -41,11 +38,9 @@ class Timespan extends Component {
     } */
 
   render() {
-
     return (
       <>
         <div className="options">
-
           <Styled.Wrapper>
             <Styled.CustomizeBox justifyContent="space-between">
               <div>
@@ -65,17 +60,17 @@ class Timespan extends Component {
               </div>
 
               {/* <Styled.InnerTable>
-                <Styled.CustomizeBtn onClick={() => this.lastLimit(1)} w="80px">
+                <Styled.CustomizeBtn onClick={() => this.lastLimitHandler(1)} w="80px">
                   last 1
                 </Styled.CustomizeBtn>
-                <Styled.CustomizeBtn onClick={() => this.lastLimit(3)} w="80px">
+                <Styled.CustomizeBtn onClick={() => this.lastLimitHandler(3)} w="80px">
                   last 3
                 </Styled.CustomizeBtn>
-                <Styled.CustomizeBtn onClick={() => this.lastLimit(5)} w="80px">
+                <Styled.CustomizeBtn onClick={() => this.lastLimitHandler(5)} w="80px">
                   last 5
                 </Styled.CustomizeBtn>
                 <Styled.CustomizeBtn
-                  onClick={() => this.lastLimit(this.props.totalTimespan - 1)}
+                  onClick={() => this.lastLimitHandler(this.props.totalTimespan - 1)}
                   w="80px"
                 >
                   max
