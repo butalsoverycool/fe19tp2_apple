@@ -12,6 +12,7 @@ import * as Styled from './Styled'
 
 class Chart extends Component {
   constructor(props) {
+  }
 
     render() {
       const totalTimespan = this.state.data ? this.state.data.length - 1 : null;
@@ -21,12 +22,14 @@ class Chart extends Component {
         <Styled.ChartWrapper className="Chart">
 
           <Table />
+
           <Options
             config={this.state.config}
             updateConfig={this.updateConfig}
             totalTimespan={totalTimespan}
             data={this.state.data}
           />
+          
         </Styled.ChartWrapper>
       );
     }
