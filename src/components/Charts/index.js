@@ -161,7 +161,9 @@ class Charts extends Component {
           const year = item.key[2];
           const sector = item.key[1];
           const substance = item.key[0];
-          const values = item.values[0];
+          const toParse = item.values[0]
+          const values = parseInt(toParse);
+
           return {
             year,
             sector,
