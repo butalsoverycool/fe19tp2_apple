@@ -42,25 +42,24 @@ class Firebase {
   // ##########
 
   users = () => this.firestore.collection('users');
-  user = userId => this.firestore.collection('users').doc(userId);
+  user = userId => this.firestore.doc(`users/${userId}`);
 
-  organizations = () => this.firestore.collection('organization');
-  organization = orgId => this.firestore.collection('organization').doc(orgId);
+  organizations = () => this.firestore.collection('organizations');
+  organization = orgId => this.firestore.doc(`organizations/${orgId}`);
 
-  createOrganization = ({ name, userId }) =>
-    this.firestore.collection('organization').add({ name, users: [userId] });
+  // createUser = ({ userId, email, orgId, ...rest }) =>
+  //   this.user(userId).set({ email, orgId, ...rest });
 
-  // TODO: updateOrganization
+  // updateUser = ({ userId, ...rest }) =>
+  //   this.user(userId).set({ ...rest }, { merge: true });
 
-  createUser = ({ userId, email, orgId, ...rest }) =>
-    this.firestore
-      .collection('users')
-      .doc(userId)
-      .set({ email, orgId, ...rest });
+  // deleteUser = ({ userId }) => this.user(userId).delete();
 
-  // TODO: updateUser
+  // createOrganization = ({ name, userId }) =>
+  //   this.organizations().add({ name, users: [userId] });
 
-  // TODO: deleteUser
+  // updateOrganization = ({ orgId, ...rest }) =>
+  //   this.organization(orgId).set({ ...rest }, { merge: true });
 }
 
 export default Firebase;

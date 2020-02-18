@@ -31,16 +31,18 @@ class SignUpFormBase extends Component {
       .then(authUser => {
         const { uid: userId, email } = authUser.user;
 
-        // create org in 'organization' collection and add user ID
-        this.props.firebase.createOrganization({ name, userId }).then(org => {
-          // create user in 'users' collection as admin and add org ID
-          this.props.firebase.createUser({
-            userId,
-            email,
-            orgId: org.id,
-            role: 'admin'
+        // create org in 'organizations' collection and add user ID
+        this.props.firebase
+          .organizations()
+          .add({ name, users: [userId] })
+          .then(org => {
+            // create user in 'users' collection as admin and add org ID
+            this.props.firebase.user(userId).set({
+              email,
+              orgId: org.id,
+              role: 'admin'
+            });
           });
-        });
 
         this.setState({ ...INITIAL_STATE });
         this.props.history.push(ROUTES.HOME);
