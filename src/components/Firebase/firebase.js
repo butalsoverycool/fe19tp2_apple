@@ -1,5 +1,6 @@
 import app from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/storage';
 import 'firebase/firestore';
 
 const config = {
@@ -20,7 +21,12 @@ class Firebase {
   constructor() {
     app.initializeApp(config);
     this.auth = app.auth();
+
+
+    this.storage = app.storage(); // new
+
     this.firestore = app.firestore();
+
   }
 
   // ##########
