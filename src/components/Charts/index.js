@@ -1,13 +1,14 @@
-import React, { Component, useState } from "react";
-import axios from "axios";
-import Table from "./Table";
+import React, { Component } from 'react';
+import axios from 'axios';
+import Table from './Table';
+import md5 from 'md5';
 
-import Timespan from "./Timespan";
-import Preview from "./Preview";
+import Timespan from './Timespan';
+import Preview from './Preview';
 
-const proxy = "https://cors-anywhere.herokuapp.com/";
+const proxy = 'https://cors-anywhere.herokuapp.com/';
 const emissionTable =
-  "http://api.scb.se/OV0104/v1/doris/sv/ssd/START/MI/MI0108/TotaltUtslapp";
+  'http://api.scb.se/OV0104/v1/doris/sv/ssd/START/MI/MI0108/TotaltUtslapp';
 
 const queryBakery = {
   /* const substancesAdded = this.state.substancesAdded.map(item => item.code)
@@ -15,21 +16,21 @@ const queryBakery = {
 
   query: [
     {
-      code: "Luftfororening",
+      code: 'Luftfororening',
       selection: {
-        filter: "item",
-        values: ["BC"] // this value should be updated depending on substancesAdded-state
+        filter: 'item',
+        values: ['BC'] // this value should be updated depending on substancesAdded-state
       }
     },
     {
-      code: "Sektor",
+      code: 'Sektor',
       selection: {
-        filter: "item",
-        values: ["0.5"] // this value should updated depending on sectorsAdded-state
+        filter: 'item',
+        values: ['0.5'] // this value should updated depending on sectorsAdded-state
       }
     }
   ],
-  response: { format: "json" }
+  response: { format: 'json' }
 };
 
 class Charts extends Component {
@@ -64,7 +65,7 @@ class Charts extends Component {
   pushLimitHandler(endPoint, reaseType) {
     let oldLimit = this.state.limit;
 
-    if (reaseType === "dec") {
+    if (reaseType === 'dec') {
       if (oldLimit[endPoint] <= 0) return;
       oldLimit[endPoint]--;
     } else {
@@ -95,7 +96,7 @@ class Charts extends Component {
   } */
 
   tableHandler = (item, array) => {
-    const indicator = array === "substancesAdded" ? 0 : 1;
+    const indicator = array === 'substancesAdded' ? 0 : 1;
     const oldArray = this.state[array];
     let newArr;
     oldArray.includes(item)
@@ -130,15 +131,13 @@ class Charts extends Component {
 
   setActiveClass = (item, array) => {
     const ifArray = array;
-    return ifArray.includes(item) ? "active" : "";
+    return ifArray.includes(item) ? 'active' : '';
   };
 
   getEmissionData() {
     axios
       .get(proxy + emissionTable)
       .then(res => {
-        console.log("GET Succes (emissionTable)");
-
         const substances = res.data.variables[0].values.map((item, nth) => ({
           name: res.data.variables[0].valueTexts[nth],
           code: item
@@ -161,43 +160,60 @@ class Charts extends Component {
         });
       })
       .catch(error => {
-        console.log("GET ERROR", error);
+        console.log('GET ERROR', error);
       });
   }
 
   postEmissionData(query) {
-    console.log(query);
-    axios
-      .post(proxy + emissionTable, query)
-      .then(res => {
-        console.log("POST SUCCESS");
-        console.log(this.state.substancesAdded);
-        const data = res.data.data.map(item => {
-          const year = item.key[2];
-          const sector = item.key[1];
-          const substance = item.key[0];
-          const toParse = item.values[0];
-          const values = parseInt(toParse);
+    const queryHash = md5(JSON.stringify(query));
 
-          return {
-            year,
-            sector,
-            substance,
-            values
-          };
+    const cache = JSON.parse(localStorage.getItem('dataCache'));
+
+    // if cache object doesn't exists, create it
+    if (!cache) localStorage.setItem('dataCache', JSON.stringify({}));
+
+    // if cache found and not older than 1 week
+    if (
+      cache[queryHash] &&
+      cache[queryHash].timeStamp > Date.now() - 504000000
+    ) {
+      // update data in state
+      this.setState({ data: cache[queryHash].data });
+    } else {
+      // if not found in cache then fetch from API
+      axios
+        .post(proxy + emissionTable, query)
+        .then(res => {
+          const data = res.data.data.map(item => {
+            const year = item.key[2];
+            const sector = item.key[1];
+            const substance = item.key[0];
+            const toParse = item.values[0];
+            const values = parseInt(toParse);
+
+            return {
+              year,
+              sector,
+              substance,
+              values
+            };
+          });
+
+          // add data to cache
+          cache[queryHash] = { data, timeStamp: Date.now() };
+          localStorage.setItem('cache', JSON.stringify(cache));
+
+          this.setState({ data });
+        })
+        .catch(error => {
+          console.log('POST ERROR', error);
         });
-
-        this.setState({ data });
-      })
-      .catch(error => {
-        console.log("POST ERROR", error);
-      });
+    }
   }
 
   render() {
     const data = this.state.data;
     const totalTimespan = data ? data.length - 1 : 0;
-    console.log(this.state.data);
 
     return (
       <div>
@@ -213,7 +229,7 @@ class Charts extends Component {
             sectors={this.state.sectors}
             limit={this.state.limit}
           >
-            {" "}
+            {' '}
             >
           </Preview>
         ) : null}
