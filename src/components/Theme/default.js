@@ -1,4 +1,4 @@
-export const defaultLogo = 'https://www.logologo.com/logos/flower-logo.jpg';
+export const defaultLogoUrl = 'https://www.logologo.com/logos/flower-logo.jpg';
 
 export const defaultColor = {
   hsl: '{a: 1, h: 192.73743016759778, l: 0.478964, s: 0.724…}',

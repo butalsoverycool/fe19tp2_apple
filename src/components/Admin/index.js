@@ -4,20 +4,17 @@ import * as ROLES from '../../constants/roles';
 import withAuthorization from '../Session/withAuthorization';
 import styled from 'styled-components';
 
-import { SketchPicker } from 'react-color';
-
 import { withFirebase } from '../Firebase';
 
 import { withTheme } from '../Theme';
+
+import LogoUploader from './LogoUploader';
+import Colorpicker from './Colorpicker';
 
 const Wrapper = styled.div`
   margin: auto;
   width: 100vw;
   max-width: 600px;
-`;
-
-const Logo = styled.img`
-  width: 100px;
 `;
 
 class AdminPage extends Component {
@@ -44,22 +41,18 @@ class AdminPage extends Component {
     if (!this.state.authUser) return <p>{authMsg}</p>;
 
     //theme
-    const { color, logo } = this.props.theme.state;
-    const { previewLogo, previewColor, saveChanges } = this.props.theme.setters;
+    const { color } = this.props.theme.state;
+    const { saveChanges } = this.props.theme.setters;
 
     // needs condition: user role is admin
     return (
       <Wrapper themeBg={color.hex}>
         <h1>Admin</h1>
-        <div className="logoContainer">
-          <p>Upload company logo</p>
-          <Logo className="logoPreview" src={logo} alt="your_company_logo" />
-          <button onClick={previewLogo}>Upload</button>
-        </div>
-        <div className="colorContainer">
-          <p>Your company's primary color</p>
-          <SketchPicker color={color} onChangeComplete={previewColor} />
-        </div>
+
+        <LogoUploader />
+
+        <Colorpicker />
+
         <button onClick={saveChanges}>SAVE CHANGES</button>
       </Wrapper>
     );

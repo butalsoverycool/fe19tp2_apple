@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withFirebase } from '../Firebase';
 import ThemeContext, { withTheme } from './context';
 import GlobalStyle from './GlobalStyle';
-import { defaultLogo, defaultColor } from './default';
+import { defaultLogoUrl, defaultColor } from './default';
 
 class Theme extends Component {
   constructor(props) {
@@ -10,7 +10,8 @@ class Theme extends Component {
 
     this.state = {
       authUser: null,
-      logo: defaultLogo,
+      logo: null,
+      dataUrl: defaultLogoUrl,
       color: defaultColor
     };
 
@@ -30,8 +31,22 @@ class Theme extends Component {
   }
 
   // WIP - upload/preview logo
-  previewLogo = newUrl => {
-    console.log('WIP SETTING LOGO...');
+  previewLogo = e => {
+    const logo = e.target.files[0];
+
+    if (!logo) return;
+
+    // preview logo to upload
+    const reader = new FileReader();
+
+    reader.onload = e => {
+      this.setState({
+        logo,
+        dataUrl: e.target.result
+      });
+    };
+
+    reader.readAsDataURL(logo);
   };
 
   previewColor = newColor => {
@@ -42,7 +57,10 @@ class Theme extends Component {
 
   // WIP - save changes to firestore
   saveChanges = () => {
-    console.log('WIP SAVING CHANGES...');
+    if (!this.state.logo) return;
+
+    // save logo and color...
+    // https://firebase.google.com/docs/storage/web/start
   };
 
   render() {
