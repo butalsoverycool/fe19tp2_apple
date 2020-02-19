@@ -1,28 +1,57 @@
 // all substances
-import React, { Component } from "react";
-import * as Styled from "./Styled";
+import React, { Component } from 'react';
+import { IoMdArrowDropleft, IoMdArrowDropright } from 'react-icons/io';
+import * as Styled from './Styled';
+import styled from 'styled-components';
+
+const Wrapper = styled.div`
+  width: 500px;
+  margin: auto;
+  background: ${props => props.bg || 'none'};
+  color: ${props => props.color || 'black'};
+  text-align: center;
+  padding-bottom: 2rem;
+`;
+
+const ButtonContainer = styled.div`
+display: inline-block;
+padding: 0.5rem;
+text-align: center;
+`;
+
+const Button = styled.button`
+text-decoration: none;
+height: 56px;
+width: 56px;
+font-size: 1.5rem;
+color: dimgrey;
+border: none;
+text-align: center;
+outline: none;
+border-radius: 50px;
+box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+transition: all 0.1s cubic-bezier(.25, .8, .25, 1);
+
+&:hover {
+box-shadow: 0 12px 26px rgba(0,0,0,0.25), 0 8px 8px rgba(0,0,0,0.22);
+}
+
+&:active {
+box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+background-color: lightgrey;
+& > svg {
+  color: purple;
+}
+}
+
+& > svg {
+  display: block; 
+  margin: auto;
+}
+`;
 
 // Table of emission
 class Timespan extends Component {
-  /* constructor(props) {
-    super(props);
-
-    this.pushLimit = this.pushLimit.bind(this);
-    this.lastLimit = this.lastLimit.bind(this);
-  } */
-
-  /* componentDidMount() {
-    if (!this.state.config) {
-      const config = this.props.config;
-      const data = this.props.data;
-      this.setState({ config, data }, () =>
-        console.log("STATE in options", this.state)
-      );
-    }
-  } */
-
-  // THESE FUNCS NEED WORK...
-
   /*   lastLimit(limit) {
       const newState = this.state;
   
@@ -40,26 +69,24 @@ class Timespan extends Component {
   render() {
     return (
       <>
-        <div className="options">
-          <Styled.Wrapper>
-            <Styled.CustomizeBox justifyContent="space-between">
-              <div>
-                <p>FROM</p>
-                <Styled.CustomizeBtn
-                  onClick={() => this.props.pushLimitHandler("from", "dec")}
-                  margin="0"
-                >
-                  -
-                </Styled.CustomizeBtn>
-                <Styled.CustomizeBtn
-                  onClick={() => this.props.pushLimitHandler("from", "inc")}
-                  margin="0"
-                >
-                  +
-                </Styled.CustomizeBtn>
-              </div>
+        <Wrapper>
+          <ButtonContainer justifyContent='space-between'>
+            <Button
+              onClick={() => this.props.pushLimitHandler('from', 'dec')}
+              margin='0'
+            >
+              <IoMdArrowDropleft />
+            </Button>
+            from
+              <Button
+              onClick={() => this.props.pushLimitHandler('from', 'inc')}
+              margin='0'
+            >
+              <IoMdArrowDropright />
+            </Button>
+          </ButtonContainer>
 
-              {/* <Styled.InnerTable>
+          {/* <Styled.InnerTable>
                 <Styled.CustomizeBtn onClick={() => this.lastLimitHandler(1)} w="80px">
                   last 1
                 </Styled.CustomizeBtn>
@@ -77,25 +104,22 @@ class Timespan extends Component {
                 </Styled.CustomizeBtn>
               </Styled.InnerTable> */}
 
-              <div>
-                <p>TO</p>
-                <Styled.CustomizeBtn
-                  onClick={() => this.props.pushLimitHandler("to", "dec")}
-                  margin="0"
-                >
-                  -
-                </Styled.CustomizeBtn>
-                <Styled.CustomizeBtn
-                  onClick={() => this.props.pushLimitHandler("to", "inc")}
-                  margin="0"
-                >
-                  +
-                </Styled.CustomizeBtn>
-              </div>
-            </Styled.CustomizeBox>
-          </Styled.Wrapper>
-          <button onClick={this.update}>UPDATE</button>
-        </div>
+          <ButtonContainer>
+            <Button
+              onClick={() => this.props.pushLimitHandler('to', 'dec')}
+              margin='0'
+            >
+              <IoMdArrowDropleft />
+            </Button>
+            to
+              <Button
+              onClick={() => this.props.pushLimitHandler('to', 'inc')}
+              margin='0'
+            >
+              <IoMdArrowDropright />
+            </Button>
+          </ButtonContainer>
+        </Wrapper>
       </>
     );
   }

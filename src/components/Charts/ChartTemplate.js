@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   LineChart,
   Line,
@@ -8,7 +8,7 @@ import {
   AreaChart,
   Area,
   Tooltip
-} from "recharts";
+} from 'recharts';
 
 const ChartTemplate = props => {
   return (
@@ -16,14 +16,22 @@ const ChartTemplate = props => {
       width={600}
       height={400}
       data={props.data}
-      margin={{ top: 5, right: 20, bottom: 5, left: 5 }}
+      margin={{ top: 0, right: 0, bottom: 0, left: 20 }}
     >
-      <Area type="monotone" dataKey="values" stroke="#8884d8" fill="hotpink" />
-      <CartesianGrid stroke="#ccc" />
-      <XAxis dataKey="year" />
-      <YAxis tickMargin={10} domain={["auto", "auto"]} />
+      <CartesianGrid />
+      <Area
+        type='monotone'
+        dataKey='values'
+        stroke='#8884d8'
+        fill='hotpink'
+        strokeWidth={5}
+      />
+      <XAxis dataKey='year' strokeWidth={2} />
+      <YAxis tickMargin={10} strokeWidth={2} domain={['auto', 'auto']} />
+
       {/* <Tooltip content={<CustomTooltip unit={props.unit} />} /> */}
       <Tooltip />
+
     </AreaChart>
   );
 };

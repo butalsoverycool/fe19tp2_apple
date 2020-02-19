@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import styled from "styled-components";
-import * as V from "victory";
+import React, { Component } from 'react';
+import styled from 'styled-components';
+import * as V from 'victory';
 
 const TooltipStyled = styled.div`
   padding: 5px;
@@ -22,12 +22,12 @@ class CustomLabel extends React.Component {
           {...this.props}
           x={200}
           y={250}
-          orientation="top"
+          orientation='top'
           pointerLength={0}
           cornerRadius={50}
           flyoutWidth={100}
           flyoutHeight={100}
-          flyoutStyle={{ fill: "black" }}
+          flyoutStyle={{ fill: 'black' }}
           labels={d => d.y}
         />
       </g>
@@ -39,14 +39,14 @@ CustomLabel.defaultEvents = V.VictoryTooltip.defaultEvents;
 
 const ChartType = props => {
   switch (props.type) {
-    case "Scatter":
+    case 'Scatter':
       return (
-        <V.VictoryScatter style={props.style || { data: { fill: "black" } }} />
+        <V.VictoryScatter style={props.style || { data: { fill: 'black' } }} />
       );
-    case "pie":
+    case 'pie':
       return (
         <V.VictoryPie
-          style={props.style || { labels: { fill: "white" } }}
+          style={props.style || { labels: { fill: 'white' } }}
           innerRadius={props.innerRadius || 100}
           labelRadius={props.labelRadius || 120}
           labels={props.labels ? props.labels : ({ datum }) => `# ${datum.y}`}
@@ -65,17 +65,17 @@ const Template = props => {
     return { name: year, val: val };
   });
 
-  console.log("props data", props.data);
+  console.log('props data', props.data);
   const data1 = props.data.map(item => {
     return { x: Object.keys(item)[0], y: Number(Object.values(item)[0]) };
   });
-  console.log("data1", data1);
+  console.log('data1', data1);
 
   const data2 = data1.map(item => {
     return { x: item.x, y: Number(item.y) + 100000 };
   });
 
-  console.log("data2", data2);
+  console.log('data2', data2);
 
   const data3 = data2.map(item => {
     return { x: item.x, y: Number(item.y) + 100000 };
@@ -91,34 +91,34 @@ const Template = props => {
   return (
     <>
       <ChartType
-        type="pie"
+        type='pie'
         data={strippedData}
-        style={{ labels: { fill: "white" } }}
+        style={{ labels: { fill: 'white' } }}
         labels={({ datum }) => datum.y}
       />
       <V.VictoryChart
-        scale={{ x: "time" }}
+        scale={{ x: 'time' }}
         width={400}
         height={400}
-        animate={{ duration: 1000, easing: "expOut" }}
+        animate={{ duration: 1000, easing: 'expOut' }}
       >
         <V.VictoryStack
-          colorScale="warm"
+          colorScale='warm'
           animate={{
             onEnter: {
               duration: 1000,
               before: () => ({
                 _y: 0,
-                fill: "yellow",
-                label: "HELLO"
+                fill: 'yellow',
+                label: 'HELLO'
               })
             },
             onExit: {
               duration: 1000,
               before: () => ({
                 _y: 0,
-                fill: "orange",
-                label: "BYE"
+                fill: 'orange',
+                label: 'BYE'
               })
             }
           }}
@@ -126,19 +126,19 @@ const Template = props => {
           <V.VictoryGroup data={data1}>
             <V.VictoryArea />
             <V.VictoryPortal>
-              <V.VictoryScatter style={{ data: { fill: "black" } }} />
+              <V.VictoryScatter style={{ data: { fill: 'black' } }} />
             </V.VictoryPortal>
           </V.VictoryGroup>
           <V.VictoryGroup data={data2}>
             <V.VictoryArea />
             <V.VictoryPortal>
-              <V.VictoryScatter style={{ data: { fill: "black" } }} />
+              <V.VictoryScatter style={{ data: { fill: 'black' } }} />
             </V.VictoryPortal>
           </V.VictoryGroup>
           <V.VictoryGroup data={data3}>
             <V.VictoryArea />
             <V.VictoryPortal>
-              <V.VictoryScatter style={{ data: { fill: "black" } }} />
+              <V.VictoryScatter style={{ data: { fill: 'black' } }} />
             </V.VictoryPortal>
           </V.VictoryGroup>
         </V.VictoryStack>

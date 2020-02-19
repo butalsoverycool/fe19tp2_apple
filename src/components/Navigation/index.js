@@ -6,23 +6,26 @@ import * as ROUTES from '../../constants/routes';
 import { AuthUserContext } from '../Session';
 
 const Container = styled.nav`
-border-bottom: 1px solid black;
+  /* border-bottom: 1px solid black; */
+  box-shadow: 0 4px 4px -4px gray;
+  z-index: 1;
 `;
 const UL = styled.ul`
+  margin: 0;
 `;
 
 const LI = styled.li`
-display: inline-block;
-padding: 1em;
+  display: inline-block;
+  padding: 1em;
 
-& > a {
-text-decoration: none;
-color: black;
+  & > a {
+    text-decoration: none;
+    color: black;
 
-&:hover {
-color: grey;
-}
-}
+    &:hover {
+      color: grey;
+    }
+  }
 `;
 
 const Navigation = ({ authUser }) => (
@@ -56,7 +59,7 @@ const NavigationAuth = () => (
         <SignOutButton />
       </LI>
     </UL>
-  </Container >
+  </Container>
 );
 
 const NavigationNonAuth = () => (

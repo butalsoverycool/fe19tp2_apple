@@ -9,7 +9,7 @@ import HomePage from '../Home';
 import AccountPage from '../Account';
 import AdminPage from '../Admin';
 
-import { ScreenBadge } from 'react-awesome-styled-grid'
+import { ScreenBadge } from 'react-awesome-styled-grid';
 import { createGlobalStyle } from 'styled-components';
 
 import * as ROUTES from '../../constants/routes';
@@ -25,9 +25,14 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  html {
+    margin: 0; 
+    padding. 0; 
+  }
+  
 }
 `;
-
 
 class App extends Component {
   constructor(props) {
@@ -40,7 +45,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <GlobalStyle bg padding margin />
+        <GlobalStyle bg />
         <div>
           <Navigation authUser={this.state.authUser} />
           <Route exact path={ROUTES.LANDING} component={LandingPage} />

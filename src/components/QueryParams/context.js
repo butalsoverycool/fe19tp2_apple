@@ -1,5 +1,5 @@
-import React, { createContext } from "react";
-import QueryParams from "../Charts/queryParams";
+import React, { createContext } from 'react';
+import QueryParams from '../Charts/queryParams';
 
 const QueryParamsContext = createContext(null);
 

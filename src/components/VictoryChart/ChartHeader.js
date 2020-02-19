@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 const Title = styled.h2`
   margin-bottom: 0;
@@ -15,7 +15,7 @@ const ChartTitle = styled.h3`
 
 const ChartHeader = props => {
   return (
-    <div className="ChartTitle">
+    <div className='ChartTitle'>
       <Title>{props.apiData.title}</Title>
 
       <Subtitle>{props.apiData.subtitle}</Subtitle>
