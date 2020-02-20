@@ -52,7 +52,8 @@ class Charts extends Component {
     this.getEmissionData = this.getEmissionData.bind(this);
     this.postEmissionData = this.postEmissionData.bind(this);
     this.tableHandler = this.tableHandler.bind(this);
-    this.pushLimitHandler = this.pushLimitHandler.bind(this);
+    this.pushRangeLimit = this.pushRangeLimit.bind(this);
+    this.setRangeLimit = this.setRangeLimit.bind(this);
     this.setActiveClass = this.setActiveClass.bind(this);
   }
 
@@ -62,38 +63,58 @@ class Charts extends Component {
   }
 
   //Bug - if you go further back then data[0] (so limit: to: becomes -1 or more the app crashes)
-  pushLimitHandler(endPoint, reaseType) {
-    let oldLimit = this.state.limit;
+  pushRangeLimit(endPoint, reaseType) {
+    let limit = this.state.limit;
+    const from = endPoint === 'from' ? true : false;
+    const dec = reaseType === 'dec' ? true : false;
+    const otherPoint = from ? 'to' : 'from';
 
-    if (reaseType === 'dec') {
-      if (oldLimit[endPoint] <= 0) return;
-      oldLimit[endPoint]--;
+    if (dec) {
+      // - from
+      if (from) {
+        // fromPoint can't go below first year
+        if (limit.from <= 0) return;
+      }
+      // - to
+      else {
+        // toPoint must be more than fromPoint
+        if (limit.to <= limit.from) return;
+      }
+
+      limit[endPoint]--;
     } else {
-      if (oldLimit[endPoint] >= this.state.years.length - 1) return;
-      oldLimit[endPoint]++;
+      // + from
+      if (from) {
+        // fromPoint must be less than toPoint
+        if (limit.from >= limit.to) return;
+      }
+      // + to
+      else {
+        // toPoint can't go over last year
+        if (limit.to >= this.state.years.length - 1) return;
+      }
+
+      limit[endPoint]++;
     }
 
     this.setState({
-      limit: oldLimit
+      limit
     });
   }
 
-  /* lastLimitHandler(startPoint) {
+  setRangeLimit(range = 'max') {
     let limit = this.state.limit;
-    if (reaseType === "dec") {
-      console.log('dec')
-      limit[startPoint]--;
-    } else {
-      limit[startPoint]++;
-    };
+
+    const maxRange = range === 'max' ? true : false;
+
+    // if max: max range, else: count backwards from toPoint (minimum 0)
+    limit.from = maxRange ? 0 : Math.max(0, limit.to - range + 1);
+    limit.to = maxRange ? this.state.years.length - 1 : limit.to;
 
     this.setState({
-      limit: {
-        from: limit.from,
-        to: limit.to
-      }
+      limit
     });
-  } */
+  }
 
   tableHandler = (item, array) => {
     const indicator = array === 'substancesAdded' ? 0 : 1;
@@ -184,10 +205,17 @@ class Charts extends Component {
       axios
         .post(proxy + emissionTable, query)
         .then(res => {
+          console.log('POST RES', res);
           const data = res.data.data.map(item => {
             const year = item.key[2];
             const sector = item.key[1];
-            const substance = item.key[0];
+            //const substance = item.key[0];
+            const substance = {
+              name: this.state.substances.filter(
+                subs => subs.code === item.key[0]
+              )[0].name,
+              code: item.key[0]
+            };
             const toParse = item.values[0];
             const values = parseInt(toParse);
 
@@ -235,10 +263,12 @@ class Charts extends Component {
         ) : null}
 
         <Timespan
+          data={this.state.data}
           limit={this.state.limit}
           /* update={(key, val) => this.updateConfig(key, val)} */
           totalTimespan={totalTimespan}
-          pushLimitHandler={this.pushLimitHandler}
+          pushRangeLimit={this.pushRangeLimit}
+          setRangeLimit={this.setRangeLimit}
         />
       </div>
     );
