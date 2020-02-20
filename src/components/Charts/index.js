@@ -7,84 +7,84 @@ import styled from 'styled-components';
 
 const proxy = 'https://cors-anywhere.herokuapp.com/';
 const emissionTable =
-  'http://api.scb.se/OV0104/v1/doris/en/ssd/START/MI/MI0108/TotaltUtslapp';
+	'http://api.scb.se/OV0104/v1/doris/en/ssd/START/MI/MI0108/TotaltUtslapp';
 
-const ChartContainer = styled.div`
-  max-width: 50rem;
-  margin: auto;
-  border-radius: 20px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-}
+const GridContainer = styled.div`
+	grid-column-start: 2;
+	grid-column-end: span 6;
+	background-color: pink;
+	border-radius: 15px;
 `;
+
 const queryBakery = {
-  /* const substancesAdded = this.state.substancesAdded.map(item => item.code)
+	/* const substancesAdded = this.state.substancesAdded.map(item => item.code)
   const sectorsAdded = this.state.sectorsAdded.map(item => item.code) */
 
-  query: [
-    {
-      code: 'Luftfororening',
-      selection: {
-        filter: 'item',
-        values: ['BC'] // this value should be updated depending on substancesAdded-state
-      }
-    },
-    {
-      code: 'Sektor',
-      selection: {
-        filter: 'item',
-        values: ['0.5'] // this value should updated depending on sectorsAdded-state
-      }
-    }
-  ],
-  response: { format: 'json' }
+	query: [
+		{
+			code: 'Luftfororening',
+			selection: {
+				filter: 'item',
+				values: [ 'BC' ] // this value should be updated depending on substancesAdded-state
+			}
+		},
+		{
+			code: 'Sektor',
+			selection: {
+				filter: 'item',
+				values: [ '0.5' ] // this value should updated depending on sectorsAdded-state
+			}
+		}
+	],
+	response: { format: 'json' }
 };
 
 class Charts extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: null,
-      dataRequest: [],
-      substances: [],
-      sectors: [],
-      years: [],
-      limit: { from: 0, to: 28 },
-      isLoading: false,
+	constructor(props) {
+		super(props);
+		this.state = {
+			data: null,
+			dataRequest: [],
+			substances: [],
+			sectors: [],
+			years: [],
+			limit: { from: 0, to: 28 },
+			isLoading: false,
 
-      substancesAdded: [],
-      sectorsAdded: [],
-      yearsAdded: []
-    };
-    this.getEmissionData = this.getEmissionData.bind(this);
-    this.postEmissionData = this.postEmissionData.bind(this);
-    this.tableHandler = this.tableHandler.bind(this);
-    this.pushLimitHandler = this.pushLimitHandler.bind(this);
-    this.setActiveClass = this.setActiveClass.bind(this);
-  }
+			substancesAdded: [],
+			sectorsAdded: [],
+			yearsAdded: []
+		};
+		this.getEmissionData = this.getEmissionData.bind(this);
+		this.postEmissionData = this.postEmissionData.bind(this);
+		this.tableHandler = this.tableHandler.bind(this);
+		this.pushLimitHandler = this.pushLimitHandler.bind(this);
+		this.setActiveClass = this.setActiveClass.bind(this);
+	}
 
-  componentDidMount() {
-    this.getEmissionData();
-    /* this.postEmissionData(queryBakery); */
-  }
+	componentDidMount() {
+		this.getEmissionData();
+		/* this.postEmissionData(queryBakery); */
+	}
 
-  //Bug - if you go further back then data[0] (so limit: to: becomes -1 or more the app crashes)
-  pushLimitHandler(endPoint, reaseType) {
-    let oldLimit = this.state.limit;
+	//Bug - if you go further back then data[0] (so limit: to: becomes -1 or more the app crashes)
+	pushLimitHandler(endPoint, reaseType) {
+		let oldLimit = this.state.limit;
 
-    if (reaseType === 'dec') {
-      if (oldLimit[endPoint] <= 0) return;
-      oldLimit[endPoint]--;
-    } else {
-      if (oldLimit[endPoint] >= this.state.years.length - 1) return;
-      oldLimit[endPoint]++;
-    }
+		if (reaseType === 'dec') {
+			if (oldLimit[endPoint] <= 0) return;
+			oldLimit[endPoint]--;
+		} else {
+			if (oldLimit[endPoint] >= this.state.years.length - 1) return;
+			oldLimit[endPoint]++;
+		}
 
-    this.setState({
-      limit: oldLimit
-    });
-  }
+		this.setState({
+			limit: oldLimit
+		});
+	}
 
-  /* lastLimitHandler(startPoint) {
+	/* lastLimitHandler(startPoint) {
     let limit = this.state.limit;
     if (reaseType === "dec") {
       console.log('dec')
@@ -101,142 +101,145 @@ class Charts extends Component {
     });
   } */
 
-  tableHandler = (itemToParse, array) => {
+	tableHandler = (itemToParse, array) => {
+		const item = JSON.parse(itemToParse);
+		const indicator = array === 'substancesAdded' ? 0 : 1;
+		const oldArray = this.state[array];
+		let newArr;
+		oldArray.includes(item)
+			? this.setState((prevState) => {
+					newArr = prevState[array].filter((el) => el !== item);
+					console.log(newArr);
+					const substancesAdded = newArr.map((item) => item.code);
+					const sectorsAdded = newArr.map((item) => item.code);
 
-    const item = JSON.parse(itemToParse)
-    const indicator = array === 'substancesAdded' ? 0 : 1;
-    const oldArray = this.state[array];
-    let newArr;
-    oldArray.includes(item)
-      ? this.setState(prevState => {
-        newArr = prevState[array].filter(el => el !== item);
-        console.log(newArr);
-        const substancesAdded = newArr.map(item => item.code);
-        const sectorsAdded = newArr.map(item => item.code);
+					queryBakery.query[indicator].selection.values =
+						indicator === 0 ? substancesAdded : sectorsAdded;
+					this.postEmissionData(queryBakery);
+					return {
+						[array]: newArr
+					};
+				})
+			: this.setState((prevState) => {
+					newArr = [ ...prevState[array], item ];
+					console.log(newArr);
+					const substancesAdded = newArr.map((item) => item.code);
+					/* const sectorsAdded = newArr.map(item => item.code); */
 
-        queryBakery.query[indicator].selection.values =
-          indicator === 0 ? substancesAdded : sectorsAdded;
-        this.postEmissionData(queryBakery);
-        return {
-          [array]: newArr
-        };
-      })
-      : this.setState(prevState => {
-        newArr = [...prevState[array], item];
-        console.log(newArr);
-        const substancesAdded = newArr.map(item => item.code);
-        /* const sectorsAdded = newArr.map(item => item.code); */
+					queryBakery.query[
+						indicator
+					].selection.values = substancesAdded;
 
-        queryBakery.query[indicator].selection.values = substancesAdded;
+					this.postEmissionData(queryBakery);
+					return {
+						[array]: newArr
+					};
+				});
+		/* this.postEmissionData(queryBakery); */ //don't think we need another request here.
+	};
 
-        this.postEmissionData(queryBakery);
-        return {
-          [array]: newArr
-        };
-      });
-    /* this.postEmissionData(queryBakery); */ //don't think we need another request here.
-  };
+	setActiveClass = (item, array) => {
+		const ifArray = array;
+		return ifArray.includes(item) ? 'active' : '';
+	};
 
-  setActiveClass = (item, array) => {
-    const ifArray = array;
-    return ifArray.includes(item) ? 'active' : '';
-  };
+	getEmissionData() {
+		axios
+			.get(proxy + emissionTable)
+			.then((res) => {
+				console.log('GET Succes (emissionTable)');
 
-  getEmissionData() {
-    axios
-      .get(proxy + emissionTable)
-      .then(res => {
-        console.log('GET Succes (emissionTable)');
+				const substances = res.data.variables[0].values.map(
+					(item, nth) => ({
+						name: res.data.variables[0].valueTexts[nth],
+						code: item
+					})
+				);
 
-        const substances = res.data.variables[0].values.map((item, nth) => ({
-          name: res.data.variables[0].valueTexts[nth],
-          code: item
-        }));
+				const sectors = res.data.variables[1].values.map(
+					(item, nth) => ({
+						name: res.data.variables[1].valueTexts[nth],
+						code: item
+					})
+				);
 
-        const sectors = res.data.variables[1].values.map((item, nth) => ({
-          name: res.data.variables[1].valueTexts[nth],
-          code: item
-        }));
+				const years = res.data.variables[3].values;
 
-        const years = res.data.variables[3].values;
+				const dataRequest = res;
 
-        const dataRequest = res;
+				this.setState({
+					substances,
+					sectors,
+					years,
+					dataRequest
+				});
+			})
+			.catch((error) => {
+				console.log('GET ERROR', error);
+			});
+	}
 
-        this.setState({
-          substances,
-          sectors,
-          years,
-          dataRequest
-        });
-      })
-      .catch(error => {
-        console.log('GET ERROR', error);
-      });
-  }
+	postEmissionData(query) {
+		console.log(query);
+		axios
+			.post(proxy + emissionTable, query)
+			.then((res) => {
+				console.log('POST SUCCESS');
+				console.log(this.state.substancesAdded);
+				const data = res.data.data.map((item) => {
+					const year = item.key[2];
+					const sector = item.key[1];
+					const substance = item.key[0];
+					const toParse = item.values[0];
+					const values = parseInt(toParse);
 
-  postEmissionData(query) {
-    console.log(query);
-    axios
-      .post(proxy + emissionTable, query)
-      .then(res => {
-        console.log('POST SUCCESS');
-        console.log(this.state.substancesAdded);
-        const data = res.data.data.map(item => {
-          const year = item.key[2];
-          const sector = item.key[1];
-          const substance = item.key[0];
-          const toParse = item.values[0];
-          const values = parseInt(toParse);
+					return {
+						year,
+						sector,
+						substance,
+						values
+					};
+				});
 
-          return {
-            year,
-            sector,
-            substance,
-            values
-          };
-        });
+				this.setState({ data });
+			})
+			.catch((error) => {
+				console.log('POST ERROR', error);
+			});
+	}
 
-        this.setState({ data });
-      })
-      .catch(error => {
-        console.log('POST ERROR', error);
-      });
-  }
+	render() {
+		const data = this.state.data;
+		const totalTimespan = data ? data.length - 1 : 0;
+		console.log(this.state.data);
 
-  render() {
-    const data = this.state.data;
-    const totalTimespan = data ? data.length - 1 : 0;
-    console.log(this.state.data);
+		return (
+			<GridContainer>
+				<Table
+					setActiveClass={this.setActiveClass}
+					tableHandler={this.tableHandler}
+					category={this.state}
+				/>
+				{this.state.data ? (
+					<Preview
+						data={this.state.data}
+						sectors={this.state.sectors}
+						limit={this.state.limit}
+					>
+						{' '}
+						>
+					</Preview>
+				) : null}
 
-    return (
-      <ChartContainer>
-        <Table
-          setActiveClass={this.setActiveClass}
-          tableHandler={this.tableHandler}
-          category={this.state}
-        />
-        {this.state.data ? (
-          <Preview
-            data={this.state.data}
-            sectors={this.state.sectors}
-            limit={this.state.limit}
-          >
-            {' '}
-            >
-          </Preview>
-
-        ) : null}
-
-
-        <Timespan
-          limit={this.state.limit}
-          /* update={(key, val) => this.updateConfig(key, val)} */
-          totalTimespan={totalTimespan}
-          pushLimitHandler={this.pushLimitHandler}
-        />
-      </ChartContainer>
-    );
-  }
+				<Timespan
+					limit={this.state.limit}
+					/* update={(key, val) => this.updateConfig(key, val)} */
+					totalTimespan={totalTimespan}
+					pushLimitHandler={this.pushLimitHandler}
+				/>
+			</GridContainer>
+		);
+	}
 }
 
 export default Charts;

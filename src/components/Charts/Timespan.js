@@ -5,12 +5,11 @@ import * as Styled from './Styled';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  width: 500px;
+  width: 100%;
   margin: auto;
   background: ${props => props.bg || 'none'};
   color: ${props => props.color || 'black'};
   text-align: center;
-  padding-bottom: 2rem;
 `;
 
 const ButtonContainer = styled.div`

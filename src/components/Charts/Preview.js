@@ -3,65 +3,64 @@ import ChartTemplate from './ChartTemplate';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  margin: auto;
-  width: 90vw;
-  max-width: 600px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin: 30px auto;
-  background: ${props => props.bg || 'none'};
-  color: ${props => props.color || 'black'};
+	margin: auto;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 `;
 
 const Title = styled.h3`
-  margin: 0;
-  color: dimgray;
+	margin: 0;
+	color: dimgray;
 `;
 
 const Subtitle = styled.p`
-  margin: 0;
-  color: dimgray;
+	margin: 0;
+	color: dimgray;
 `;
 
 const ChartHeader = styled.p`
-  text-align: center;
-  margin: 8px 0px 0px 0px;
-  color: dimgray;
+	text-align: center;
+	margin: 8px 0px 0px 0px;
+	color: dimgray;
 `;
 
-const Preview = props => {
-  if (!props.data) return '';
+const Preview = (props) => {
+	if (!props.data) return '';
 
-  // slice data-arr based on limit in chart state
-  const data = props.data.slice(
-    props.limit.from,
-    props.limit.to + 1 || props.data.length - 1
-  );
+	// slice data-arr based on limit in chart state
+	const data = props.data.slice(
+		props.limit.from,
+		props.limit.to + 1 || props.data.length - 1
+	);
 
-  const title = `Emission of ${data[0].substance}`;
+	const title = `Emission of ${data[0].substance}`;
 
-  const subtitle = props.sectors.filter(
-    sector => sector.code === data[0].sector
-  )[0].name;
+	const subtitle = props.sectors.filter(
+		(sector) => sector.code === data[0].sector
+	)[0].name;
 
-  const chartHeader = `${data[0].year} - ${data[data.length - 1].year}`;
+	const chartHeader = `${data[0].year} - ${data[data.length - 1].year}`;
 
-  const unit = data[0].substance;
+	const unit = data[0].substance;
 
-  console.log('Template DATA', data[0]);
+	console.log('Template DATA', data[0]);
 
-  return (
-    <Wrapper className='preview'>
-      <Title>{title}</Title>
+	return (
+		<Wrapper className="preview">
+			<Title>{title}</Title>
 
-      <Subtitle>{subtitle}</Subtitle>
+			<Subtitle>{subtitle}</Subtitle>
 
-      <ChartHeader>{chartHeader}</ChartHeader>
+			<ChartHeader>{chartHeader}</ChartHeader>
 
-      {props.data ? <ChartTemplate data={data} unit={unit} /> : null}
-    </Wrapper>
-  );
+			{/* put table here */}
+
+			{props.data ? <ChartTemplate data={data} unit={unit} /> : null}
+		</Wrapper>
+	);
 };
 
 export default Preview;
