@@ -1,6 +1,8 @@
 import React from 'react';
-import ChartTemplate from './ChartTemplate';
 import styled from 'styled-components';
+
+import ChartTemplate from './ChartTemplate';
+import BarTemplate from './BarTemplate';
 
 const Wrapper = styled.div`
   margin: auto;
@@ -60,6 +62,8 @@ const Preview = props => {
       <Subtitle>{sector.name}</Subtitle>
 
       <ChartHeader>{yearRange}</ChartHeader>
+
+      {props.data ? <BarTemplate data={data} unit={unit} /> : null}
 
       {props.data ? <ChartTemplate data={data} unit={unit} /> : null}
     </Wrapper>
