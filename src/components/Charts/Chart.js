@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import styled from 'styled-components';
 import axios from "axios";
 import src from "./src";
 import Options from "./Options";
@@ -10,29 +11,31 @@ import * as Styled from './Styled'
 
 
 
-class Chart extends Component {
-  constructor(props) {
-  }
+const Chart = ({data, children}) => {
+      const AddChart = () => {
+        return(
+          <button className>ADD CHART</button>
+        );
+      }
 
-    render() {
+      const AddChartStyled = styled(AddChart)`
+        width: 100px;
+        height: 50px;
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 0 10px #eee;
+        font-size: 1em;
+      `;
+
       const totalTimespan = this.state.data ? this.state.data.length - 1 : null;
       //const data = this.state.data ? this.state.data : [];
       //console.log("DATA", data);
       return (
-        <Styled.ChartWrapper className="Chart">
-
-          <Table />
-
-          <Options
-            config={this.state.config}
-            updateConfig={this.updateConfig}
-            totalTimespan={totalTimespan}
-            data={this.state.data}
-          />
-          
-        </Styled.ChartWrapper>
+        <div className="Chart">
+          <AddChartStyled/>
+          {data ? children : null}
+        </div>
       );
-    }
   }
 }
 
