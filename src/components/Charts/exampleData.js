@@ -662,11 +662,59 @@ export const exampleChartData = [
     values: 3
   },
   {
+    year: 'time',
+    sector: '*unknown substance*',
+    substance: { name: '*unknown substance*', code: '*unit*' },
+    values: 5
+  },
+  {
+    year: 'time',
+    sector: '*unknown substance*',
+    substance: { name: '*unknown substance*', code: '*unit*' },
+    values: 2
+  },
+  {
+    year: 'time',
+    sector: '*unknown substance*',
+    substance: { name: '*unknown substance*', code: '*unit*' },
+    values: 3
+  },
+  {
     year: 'time end',
     sector: '*unknown substance*',
     substance: { name: '*unknown substance*', code: '*unit*' },
     values: 2
   }
 ];
+
+export const exampleUser = {
+  email: 'test@test.test',
+  charts: [
+    {
+      type: 'area',
+      sectors: ['0.5'],
+      substances: [
+        {
+          name: 'Kväveoxider (NOx) (t)',
+          code: 'NOx'
+        }
+      ],
+      limit: { from: 0, to: 28 },
+      data: exampleChartData
+    },
+    {
+      type: 'bar',
+      sectors: ['0.5'],
+      substances: [
+        {
+          name: 'Kväveoxider (NOx) (t)',
+          code: 'NOx'
+        }
+      ],
+      limit: { from: 0, to: 28 },
+      data: exampleChartData
+    }
+  ]
+};
 
 export default exampleData;

@@ -5,7 +5,7 @@ import src from "./src";
 import Options from "./Options";
 import queryParams from "./queryParams";
 import Table from './Table';
-import ChartTemplate from './ChartTemplate';
+import ChartTemplate from './AreaTemplate';
 import * as Styled from './Styled'
 
 

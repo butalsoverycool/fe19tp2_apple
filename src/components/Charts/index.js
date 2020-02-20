@@ -7,7 +7,11 @@ import md5 from 'md5';
 import Timespan from './Timespan';
 import Preview from './Preview';
 
-import exampleData, { availableData, exampleChartData } from './exampleData';
+import exampleData, {
+  availableData,
+  exampleChartData,
+  exampleUser
+} from './exampleData';
 
 const proxy = 'https://cors-anywhere.herokuapp.com/';
 const emissionTable =
@@ -41,26 +45,45 @@ class Charts extends Component {
     super(props);
     this.state = {
       data: null,
-      dataRequest: availableData.dataRequest, // [], // temp to skip reqs
-      substances: availableData.substances, //[],
-      sectors: availableData.sectors, //[],
-      years: availableData.years, //[],
-      limit: { from: 0, to: 28 },
+      dataRequest: [],
+      substances: [],
+      sectors: [],
+      years: [],
+      /* limit: { from: 0, to: 28 },
       isLoading: false,
 
       substancesAdded: [],
       sectorsAdded: [],
-      yearsAdded: []
+      yearsAdded: [] */
+      charts: [],
+      library: {
+        chartTypes: ['area', 'bar']
+      }
     };
+
     this.getEmissionData = this.getEmissionData.bind(this);
     this.postEmissionData = this.postEmissionData.bind(this);
     this.tableHandler = this.tableHandler.bind(this);
+    this.setChartType = this.setChartType.bind(this);
     this.pushRangeLimit = this.pushRangeLimit.bind(this);
     this.setRangeLimit = this.setRangeLimit.bind(this);
     this.setActiveClass = this.setActiveClass.bind(this);
   }
 
   componentDidMount() {
+    // TEMP skip GET request for available data
+    this.setState({
+      dataRequest: availableData.dataRequest,
+      substances: availableData.substances,
+      sectors: availableData.sectors,
+      years: availableData.years
+    });
+
+    // TEMP load user charts
+    this.setState({
+      charts: exampleUser.charts
+    });
+
     //this.getEmissionData();
   }
 
@@ -118,6 +141,16 @@ class Charts extends Component {
     });
   }
 
+  setChartType = (chartIndex, type) => {
+    const charts = this.state.charts;
+    let updatedChart = { ...this.state.charts[chartIndex] };
+    updatedChart.type = type;
+
+    charts[chartIndex] = updatedChart;
+
+    this.setState({ charts });
+  };
+
   tableHandler = (item, array) => {
     const indicator = array === 'substancesAdded' ? 0 : 1;
     const oldArray = this.state[array];
@@ -152,9 +185,8 @@ class Charts extends Component {
     /* this.postEmissionData(queryBakery); */ //don't think we need another request here.
   };
 
-  setActiveClass = (item, array) => {
-    const ifArray = array;
-    return ifArray.includes(item) ? 'active' : '';
+  setActiveClass = (item, arr = []) => {
+    return arr.includes(item) ? 'active' : '';
   };
 
   getEmissionData() {
@@ -260,31 +292,34 @@ class Charts extends Component {
   }
 
   render() {
-    const data = this.state.data;
+    const { charts, data, sectors } = this.state;
     const totalTimespan = data ? data.length - 1 : 0;
 
     return (
       <div>
-        <Table
-          setActiveClass={this.setActiveClass}
-          tableHandler={this.tableHandler}
-          category={this.state}
-        />
+        {charts.length > 0
+          ? charts.map((chart, nth) => (
+              <div key={nth} className="chartContainer">
+                <Table
+                  setActiveClass={this.setActiveClass}
+                  tableHandler={this.tableHandler}
+                  setChartType={this.setChartType}
+                  category={this.state}
+                  chartIndex={nth}
+                />
 
-        <Preview
-          data={this.state.data || exampleChartData}
-          sectors={this.state.sectors}
-          limit={this.state.limit}
-        ></Preview>
+                <Preview chart={chart} chartType={chart.type} />
 
-        <Timespan
-          data={this.state.data}
-          limit={this.state.limit}
-          /* update={(key, val) => this.updateConfig(key, val)} */
-          totalTimespan={totalTimespan}
-          pushRangeLimit={this.pushRangeLimit}
-          setRangeLimit={this.setRangeLimit}
-        />
+                <Timespan
+                  data={chart.data}
+                  limit={chart.limit}
+                  totalTimespan={totalTimespan}
+                  pushRangeLimit={this.pushRangeLimit}
+                  setRangeLimit={this.setRangeLimit}
+                />
+              </div>
+            ))
+          : null}
       </div>
     );
   }

@@ -1,7 +1,7 @@
 // all substances
-import React, { Component } from "react";
-import styled from "styled-components";
-import { Container, Row, Col } from "react-awesome-styled-grid";
+import React, { Component } from 'react';
+import styled from 'styled-components';
+import { Container, Row, Col } from 'react-awesome-styled-grid';
 
 const TableHead = styled.button`
   background-color: lightgrey;
@@ -51,9 +51,8 @@ const DropdownContainer = styled.div`
 `;
 
 class Table extends Component {
-
   render() {
-    const { tableHandler, category, setActiveClass } = this.props;
+    const { setChartType, tableHandler, category, setActiveClass } = this.props;
     return (
       //Dropdown menus, one for substance and one for sector (year will generated )
       <Container>
@@ -62,10 +61,12 @@ class Table extends Component {
             <DropdownContainer className="dropdown-container">
               <TableHead className="dropdown-button">Substance</TableHead>
               <List className="dropdown-content">
-                {category.substances.map((item) => (
+                {category.substances.map(item => (
                   <TD
                     key={item.code}
-                    onClick={() => tableHandler(item, 'substancesAdded')}
+                    onClick={() =>
+                      this.props.tableHandler(item, 'substancesAdded')
+                    }
                     className={setActiveClass(item, category.substancesAdded)}
                   >
                     {item.name}
@@ -79,10 +80,12 @@ class Table extends Component {
             <DropdownContainer>
               <TableHead className="dropdown-button">Sector</TableHead>
               <List className="dropdown-content">
-                {category.sectors.map((item) => (
+                {category.sectors.map(item => (
                   <TD
                     key={item.code}
-                    onClick={() => this.props.tableHandler(item, "sectorsAdded")}
+                    onClick={() =>
+                      this.props.tableHandler(item, 'sectorsAdded')
+                    }
                     className={setActiveClass(item, category.sectorsAdded)}
                   >
                     {item.name}
@@ -92,14 +95,15 @@ class Table extends Component {
             </DropdownContainer>
           </Col>
 
+          {/* WIP */}
           <Col xs={2} sm={2} md={1} lg={4} xl={4}>
             <DropdownContainer>
-              <TableHead className="dropdown-button">Timespan</TableHead>
+              <TableHead className="dropdown-button">Chart Type</TableHead>
               <List className="dropdown-content">
-                {category.years.map((item) => (
+                {category.library.chartTypes.map(item => (
                   <TD
                     key={item}
-                    onClick={() => this.props.tableHandler(item, "yearsAdded")}
+                    onClick={() => setChartType(this.props.chartIndex, item)}
                     className={setActiveClass(item, category.yearsAdded)}
                   >
                     {item}
@@ -107,11 +111,10 @@ class Table extends Component {
                 ))}
               </List>
             </DropdownContainer>
-          </Col >
-        </Row >
-      </Container >
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
 export default Table;
-

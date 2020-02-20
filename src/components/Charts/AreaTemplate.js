@@ -12,7 +12,7 @@ import {
 
 import CustomTooltip from './CustomTooltip';
 
-const ChartTemplate = props => {
+const AreaTemplate = props => {
   return (
     <AreaChart
       width={600}
@@ -29,4 +29,4 @@ const ChartTemplate = props => {
   );
 };
 
-export default ChartTemplate;
+export default AreaTemplate;

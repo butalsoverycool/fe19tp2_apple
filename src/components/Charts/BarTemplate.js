@@ -18,9 +18,14 @@ const BarTemplate = props => {
   /*   const barProps = props.data.substances.length <= 1 
     ? props.data.substance
  */
+
+  const data = props.data.map(item => {
+    item[props.unit] = item.values;
+    return item;
+  });
   return (
     <BarChart
-      width={500}
+      width={600}
       height={400}
       data={props.data}
       margin={{
@@ -36,7 +41,8 @@ const BarTemplate = props => {
       <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
       <Tooltip content={<CustomTooltip unit={props.unit} />} />
       <Legend />
-      <Bar yAxisId="left" dataKey="values" fill="#8884d8" />
+      {/* ADD ABILITY TO ADD MULTIPLE BARS BASED ON PROPS SETTINGS */}
+      <Bar yAxisId="left" dataKey={props.unit} label fill="#8884d8" />
     </BarChart>
   );
 };
