@@ -11,54 +11,34 @@ const Wrapper = styled.div`
 	align-items: center;
 `;
 
-const Title = styled.h3`
-	margin: 0;
-	color: dimgray;
-`;
 
-const Subtitle = styled.p`
-	margin: 0;
-	color: dimgray;
-`;
-
-const ChartHeader = styled.p`
-	text-align: center;
-	margin: 8px 0px 0px 0px;
-	color: dimgray;
-`;
 
 const Preview = (props) => {
 	if (!props.data) return '';
 
 	// slice data-arr based on limit in chart state
-	const data = props.data.slice(
+	/* const data = props.data.slice(
 		props.limit.from,
 		props.limit.to + 1 || props.data.length - 1
-	);
+	); */ //move to index component
 
-	const title = `Emission of ${data[0].substance}`;
+
+	//move below to chartheader component
+	/* const title = `Emission of ${data[0].substance}`;
 
 	const subtitle = props.sectors.filter(
 		(sector) => sector.code === data[0].sector
 	)[0].name;
 
-	const chartHeader = `${data[0].year} - ${data[data.length - 1].year}`;
+	const chartHeader = `${data[0].year} - ${data[data.length - 1].year}`; */
 
-	const unit = data[0].substance;
+	const unit = props.data[0].substance; //move to index component
 
-	console.log('Template DATA', data[0]);
+	console.log('Template DATA', props.data[0]);
 
 	return (
 		<Wrapper className="preview">
-			<Title>{title}</Title>
-
-			<Subtitle>{subtitle}</Subtitle>
-
-			<ChartHeader>{chartHeader}</ChartHeader>
-
-			{/* put table here */}
-
-			{props.data ? <ChartTemplate data={data} unit={unit} /> : null}
+			{props.data ? <ChartTemplate data={props.data} unit={unit} /> : null}
 		</Wrapper>
 	);
 };

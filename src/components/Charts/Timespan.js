@@ -1,7 +1,6 @@
 // all substances
 import React, { Component } from 'react';
 import { IoMdArrowDropleft, IoMdArrowDropright } from 'react-icons/io';
-import * as Styled from './Styled';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`

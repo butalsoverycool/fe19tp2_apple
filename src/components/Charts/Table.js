@@ -1,7 +1,6 @@
 // all substances
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Container, Row, Col } from 'react-awesome-styled-grid';
 
 
 const Options = styled.option`
