@@ -50,7 +50,7 @@ const chartDataBakery = () => {
       sector: '*Unknown area ' + i + '*',
       substance: {
         name: '*Unknown substance*',
-        code: '*unit ' + i + '*'
+        code: '*unit*'
       },
       value: Math.floor(Math.random() * Math.floor(5)) + 1
     };
@@ -76,6 +76,21 @@ const chartBakery = () => {
   };
 
   return chart;
+};
+
+const groupData = function(arr, key1, key2) {
+  const obj = arr.reduce(function(res, item) {
+    (res[item[key1][key2]] = res[item[key1][key2]] || []).push(item);
+
+    return res;
+  }, {});
+
+  const res = [];
+  for (let prop in obj) {
+    res.push(obj[prop]);
+  }
+
+  return res;
 };
 
 class Charts extends Component {
@@ -126,7 +141,9 @@ class Charts extends Component {
   newChart = () => {
     const charts = this.state.charts;
 
-    charts.unshift(chartBakery());
+    const chart = chartBakery();
+    chart.data = [[...chart.data]];
+    charts.unshift(chart);
 
     this.setState({
       charts
@@ -233,7 +250,7 @@ class Charts extends Component {
 
         console.log('post query', query);
 
-        this.postEmissionData(query, chartIndex);
+        this.postEmissionData(query, chartIndex, newSubstances.length);
       }
     );
   };
@@ -306,7 +323,7 @@ class Charts extends Component {
       });
   }
 
-  postEmissionData(query, chartIndex) {
+  postEmissionData(query, chartIndex, substancesLength) {
     /*  const queryHash = md5(JSON.stringify(query));
 
     const cache = JSON.parse(localStorage.getItem('dataCache')) || null;
@@ -349,6 +366,20 @@ class Charts extends Component {
           };
         });
 
+        //data = groupBy(data, 'substance')
+        console.log('data', data);
+
+        const groupedData = groupData(data, 'substance', 'code');
+
+        console.log('data splitted', groupedData);
+
+        /* const group1 = groupedData[0];
+        const restGroups = groupedData.slice(1, groupedData.length - 1);
+
+        console.log('group1', group1, 'rest', restGroups); */
+
+        // => {3: ["one", "two"], 5: ["three"]}
+
         /* // add data to cache
           cache[queryHash] = {
             data,
@@ -356,7 +387,7 @@ class Charts extends Component {
           };
           localStorage.setItem('cache', JSON.stringify(cache)); */
         const charts = this.state.charts;
-        charts[chartIndex].data = data;
+        charts[chartIndex].data = groupedData;
 
         this.setState({ charts });
       })

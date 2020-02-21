@@ -42,15 +42,16 @@ const ChartTemplate = ({ type, data, unit }) => {
 const Preview = props => {
   if (!props.chart || !props.chart.data) return '';
 
-  let { data, limit } = props.chart;
-
-  console.log('preview chart', props.chart);
+  let { data, substances, sectors, limit } = props.chart;
 
   // display data within limited year range
   const dataWithinRange = data.slice(
     limit.from,
     limit.to + 1 || data.length - 1
   );
+
+  console.log('datawithin range', dataWithinRange);
+  return;
 
   //console.log('preview data', data);
 
@@ -73,7 +74,7 @@ const Preview = props => {
   const yearRange = firstYear + (range1 ? '' : ' - ' + lastYear);
 
   // unit is substance.code
-  const unit = substance.code;
+  const unit = substance.name;
 
   console.log('yay going to templ');
 
