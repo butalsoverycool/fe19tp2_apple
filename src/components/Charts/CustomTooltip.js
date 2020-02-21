@@ -11,9 +11,7 @@ const CustomTooltip = ({ active, payload, label, unit }) => {
   if (active) {
     return (
       <div className="tooltip">
-        <p className="label">
-          <Datamarkers />
-        </p>
+        <Datamarkers />
       </div>
     );
   }

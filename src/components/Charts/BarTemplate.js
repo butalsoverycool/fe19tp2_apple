@@ -20,14 +20,22 @@ const BarTemplate = props => {
  */
 
   const data = props.data.map(item => {
-    item[props.unit] = item.values;
+    //item[props.unit] = item.values;
+    item = {
+      [props.unit]: item.value,
+      sector: item.sector,
+      substance: item.substance,
+      year: item.year,
+      value: item.value
+    };
     return item;
   });
+
   return (
     <BarChart
       width={600}
       height={400}
-      data={props.data}
+      data={data}
       margin={{
         top: 20,
         right: 30,
@@ -37,12 +45,18 @@ const BarTemplate = props => {
     >
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="year" />
-      <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+      <YAxis
+        yAxisId="left"
+        orientation="left"
+        stroke="#8884d8"
+        dataKey="value"
+      />
       <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
       <Tooltip content={<CustomTooltip unit={props.unit} />} />
       <Legend />
       {/* ADD ABILITY TO ADD MULTIPLE BARS BASED ON PROPS SETTINGS */}
       <Bar yAxisId="left" dataKey={props.unit} label fill="#8884d8" />
+      {/* <Bar yAxisId="right" dataKey={props.unit} label fill="#333" /> */}
     </BarChart>
   );
 };

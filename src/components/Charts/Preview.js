@@ -35,7 +35,7 @@ const ChartTemplate = ({ type, data, unit }) => {
     case 'bar':
       return <BarTemplate data={data} unit={unit} />;
     default:
-      return <BarTemplate data={data} unit={unit} />;
+      return '';
   }
 };
 
@@ -43,6 +43,8 @@ const Preview = props => {
   if (!props.chart || !props.chart.data) return '';
 
   let { data, limit } = props.chart;
+
+  console.log('preview chart', props.chart);
 
   // display data within limited year range
   const dataWithinRange = data.slice(

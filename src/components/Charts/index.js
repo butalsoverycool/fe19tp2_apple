@@ -40,24 +40,56 @@ const queryBakery = {
   response: { format: 'json' }
 };
 
+const chartDataBakery = () => {
+  const values = Math.floor(Math.random() * Math.floor(5)) + 3; // rand 3-7
+  const arr = [];
+
+  for (let i = 0; i < values; i++) {
+    const value = {
+      year: '*time ' + i + '*',
+      sector: '*Unknown area ' + i + '*',
+      substance: {
+        name: '*Unknown substance*',
+        code: '*unit ' + i + '*'
+      },
+      value: Math.floor(Math.random() * Math.floor(5)) + 1
+    };
+
+    arr.push(value);
+  }
+
+  return arr;
+};
+
+const chartBakery = () => {
+  const chart = {
+    type: 'area',
+    sectors: ['*Unknown area*'],
+    substances: [
+      {
+        name: '*substance*',
+        code: '*unit*'
+      }
+    ],
+    limit: { from: 0, to: 100 },
+    data: chartDataBakery()
+  };
+
+  return chart;
+};
+
 class Charts extends Component {
   constructor(props) {
     super(props);
     this.state = {
       data: null,
-      dataRequest: [],
-      substances: [],
-      sectors: [],
-      years: [],
-      /* limit: { from: 0, to: 28 },
-      isLoading: false,
-
-      substancesAdded: [],
-      sectorsAdded: [],
-      yearsAdded: [] */
+      apiResponse: null,
       charts: [],
       library: {
-        chartTypes: ['area', 'bar']
+        chartTypes: ['area', 'bar'],
+        substances: [],
+        sectors: [],
+        years: []
       }
     };
 
@@ -68,24 +100,38 @@ class Charts extends Component {
     this.pushRangeLimit = this.pushRangeLimit.bind(this);
     this.setRangeLimit = this.setRangeLimit.bind(this);
     this.setActiveClass = this.setActiveClass.bind(this);
+    this.newChart = this.newChart.bind(this);
+    this.setSubstances = this.setSubstances.bind(this);
   }
 
   componentDidMount() {
     // TEMP skip GET request for available data
+    const library = this.state.library;
+    library.substances = availableData.substances;
+    library.sectors = availableData.sectors;
+    library.years = availableData.years;
     this.setState({
-      dataRequest: availableData.dataRequest,
-      substances: availableData.substances,
-      sectors: availableData.sectors,
-      years: availableData.years
+      apiResponse: availableData.apiResponse,
+      library
     });
 
     // TEMP load user charts
-    this.setState({
+    /* this.setState({
       charts: exampleUser.charts
-    });
+    }); */
 
     //this.getEmissionData();
   }
+
+  newChart = () => {
+    const charts = this.state.charts;
+
+    charts.unshift(chartBakery());
+
+    this.setState({
+      charts
+    });
+  };
 
   //Bug - if you go further back then data[0] (so limit: to: becomes -1 or more the app crashes)
   pushRangeLimit(endPoint, reaseType) {
@@ -151,6 +197,47 @@ class Charts extends Component {
     this.setState({ charts });
   };
 
+  setSubstances = (chartIndex, item) => {
+    const charts = this.state.charts;
+    const substances = charts[chartIndex].substances;
+
+    let newSubstances = substances.includes(item)
+      ? substances.filter(sub => sub !== item && sub.name)
+      : [...substances, item];
+
+    // display example-substance only if no other chosen
+    let exampleSubstance = false;
+
+    if (newSubstances.length < 1) {
+      newSubstances.push({ name: '*substance*', code: '*unit*' });
+      charts[chartIndex].data = chartDataBakery();
+      exampleSubstance = true;
+    } else if (newSubstances.length > 1) {
+      exampleSubstance = false;
+      newSubstances = newSubstances.filter(sub => sub.name !== '*substance*');
+    }
+
+    console.log('index', chartIndex, 'subs', substances);
+
+    charts[chartIndex].substances = newSubstances;
+
+    this.setState(
+      {
+        charts
+      },
+      () => {
+        if (exampleSubstance) return;
+
+        const query = queryBakery;
+        query.query[0].selection.values = newSubstances.map(sub => sub.code);
+
+        console.log('post query', query);
+
+        this.postEmissionData(query, chartIndex);
+      }
+    );
+  };
+
   tableHandler = (item, array) => {
     const indicator = array === 'substancesAdded' ? 0 : 1;
     const oldArray = this.state[array];
@@ -205,13 +292,13 @@ class Charts extends Component {
 
         const years = res.data.variables[3].values;
 
-        const dataRequest = res;
+        const apiResponse = res;
 
         this.setState({
           substances,
           sectors,
           years,
-          dataRequest
+          apiResponse
         });
       })
       .catch(error => {
@@ -219,25 +306,10 @@ class Charts extends Component {
       });
   }
 
-  postEmissionData(query) {
-    /* // temp to skip reqs
+  postEmissionData(query, chartIndex) {
+    /*  const queryHash = md5(JSON.stringify(query));
 
-    const data = exampleData.map(item => ({
-      year: item.year,
-      sector: item.sector,
-      substance: item.substance,
-      values: item.values
-    }));
-
-    this.setState({
-      data
-    });
-
-    return; */
-
-    const queryHash = md5(JSON.stringify(query));
-
-    const cache = JSON.parse(localStorage.getItem('dataCache'));
+    const cache = JSON.parse(localStorage.getItem('dataCache')) || null;
 
     // if cache object doesn't exists, create it
     if (!cache) localStorage.setItem('dataCache', JSON.stringify({}));
@@ -250,61 +322,67 @@ class Charts extends Component {
       // update data in state
       this.setState({ data: cache[queryHash].data });
     } else {
-      // if not found in cache then fetch from API
-      axios
-        .post(proxy + emissionTable, query)
-        .then(res => {
-          console.log('POST RES', res);
-          const data = res.data.data.map(item => {
-            const year = item.key[2];
-            const sector = item.key[1];
-            //const substance = item.key[0];
-            const substance = {
-              name: this.state.substances.filter(
-                subs => subs.code === item.key[0]
-              )[0].name,
-              code: item.key[0]
-            };
-            const toParse = item.values[0];
-            const values = parseInt(toParse);
+      // if not found in cache then fetch from API */
+    axios
+      .post(proxy + emissionTable, query)
+      .then(res => {
+        console.log('POST RES', res);
 
-            return {
-              year,
-              sector,
-              substance,
-              values
-            };
-          });
+        const data = res.data.data.map(item => {
+          const year = item.key[2];
+          const sector = item.key[1];
+          //const substance = item.key[0];
+          const substance = {
+            name: this.state.library.substances.filter(
+              subs => subs.code === item.key[0]
+            )[0].name,
+            code: item.key[0]
+          };
+          const toParse = item.values[0];
+          const value = parseInt(toParse);
 
-          // add data to cache
+          return {
+            year,
+            sector,
+            substance,
+            value
+          };
+        });
+
+        /* // add data to cache
           cache[queryHash] = {
             data,
             timeStamp: Date.now()
           };
-          localStorage.setItem('cache', JSON.stringify(cache));
+          localStorage.setItem('cache', JSON.stringify(cache)); */
+        const charts = this.state.charts;
+        charts[chartIndex].data = data;
 
-          this.setState({ data });
-        })
-        .catch(error => {
-          console.log('POST ERROR', error);
-        });
-    }
+        this.setState({ charts });
+      })
+      .catch(error => {
+        console.log('POST ERROR', error);
+      });
+    //}
   }
 
   render() {
-    const { charts, data, sectors } = this.state;
+    const { charts, data } = this.state;
     const totalTimespan = data ? data.length - 1 : 0;
 
     return (
       <div>
+        <button onClick={this.newChart}>NEW CHART</button>
+
         {charts.length > 0
           ? charts.map((chart, nth) => (
               <div key={nth} className="chartContainer">
                 <Table
                   setActiveClass={this.setActiveClass}
-                  tableHandler={this.tableHandler}
+                  setSubstances={this.setSubstances}
                   setChartType={this.setChartType}
-                  category={this.state}
+                  library={this.state.library}
+                  chart={charts[nth]}
                   chartIndex={nth}
                 />
 
