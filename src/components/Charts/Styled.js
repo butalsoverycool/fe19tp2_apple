@@ -20,8 +20,6 @@ export const InnerTable = styled.div`
   flex-wrap: wrap;
 `;
 
-
-
 export const ChartWrapper = styled.div`
   border: 2px solid black;
   border-radius: 5px;

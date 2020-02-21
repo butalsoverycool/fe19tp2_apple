@@ -7,15 +7,26 @@ const Options = styled.option`
 `;
 
 const List = styled.select`
-  height: 25px;
-  width: 200px;
-  margin: 2rem 1rem 0rem 1rem;
+  height: 1.8rem;
+  width: 10rem;
+  margin: 1rem 0rem .6rem 0rem;
   outline: none;
+
+  &.dropdown-content-substance {
+    margin-left: 5rem; 
+  }
+
+  &.dropdown-content-sector {
+    margin-left: 2rem;
+  }
 `;
 
 const DropdownContainer = styled.div`
-  display: inline-block;
-  margin-left: 3rem;
+  margin: auto;
+  width: 85%;
+  display: flex;
+  justify-content: left;
+  vertical-align: center;
 `;
 
 class Table extends Component {
@@ -26,7 +37,7 @@ class Table extends Component {
       <>
         <DropdownContainer className='dropdown-container'>
           {/* <TableHead className='dropdown-button'>Substance</TableHead> */}
-          <List className='dropdown-content'
+          <List className='dropdown-content-substance'
             onChange={(e) => this.props.tableHandler(e.target.value, 'substancesAdded')}>
             <Options hidden disabled selected value> -  select a substance  - </Options>
             {category.substances.map(item => (
@@ -39,10 +50,8 @@ class Table extends Component {
             ))}
           </List>
 
-
-
           {/* <TableHead className='dropdown-button'>Sector</TableHead> */}
-          <List className='dropdown-content'
+          <List className='dropdown-content-sector'
             onChange={(e) => this.props.tableHandler(e.target.value, 'sectorsAdded')}>
             <Options hidden disabled selected value> -  select a sector  - </Options>
             {category.sectors.map(item => (

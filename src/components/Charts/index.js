@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import axios from 'axios';
 import Table from './Table';
 import Timespan from './Timespan';
-import Preview from './Preview';
+/* import Preview from './Preview'; */
 import ChartHeader from './ChartHeader';
 import ChartTemplate from './ChartTemplate';
 import styled from 'styled-components';

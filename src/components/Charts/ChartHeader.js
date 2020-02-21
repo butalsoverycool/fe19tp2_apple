@@ -1,20 +1,23 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
+import { Theme } from '../GlobalStyles'
 
-const Title = styled.h3`
-	margin: 0;
-	color: dimgray;
+const Wrapper = styled.div`
+  width: 84%;
+  margin: auto;
 `;
-
-const Subtitle = styled.p`
-	margin: 0;
-	color: dimgray;
+const Title = styled.h2`
+  margin: 1.5rem 0rem .6rem 0rem;
+  color: ${props => props.theme.fontColorPrimary};
 `;
-
-const ChartHead = styled.p`
+const Subtitle = styled.h3`
+	margin: 0rem 0rem 1rem 0rem;
+	color: ${props => props.theme.fontColorPrimary};
+`;
+const Year = styled.h2`
 	text-align: center;
 	margin: 8px 0px 0px 0px;
-	color: dimgray;
+	color: ${props => props.theme.fontColorPrimary};
 `;
 
 
@@ -30,13 +33,15 @@ const ChartHeader = (props) => {
 
 
   return (
-    <div>
-      <Title>{title}</Title>
+    <ThemeProvider theme={Theme}>
+      <Wrapper>
+        <Title>{title}</Title>
 
-      <Subtitle>{subtitle}</Subtitle>
+        <Subtitle>{subtitle}</Subtitle>
 
-      <ChartHead>{chartHeader}</ChartHead>
-    </div>
+        <Year>{chartHeader}</Year>
+      </Wrapper>
+    </ThemeProvider>
   )
 }
 

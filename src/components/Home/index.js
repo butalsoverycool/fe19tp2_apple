@@ -2,9 +2,10 @@ import React from 'react';
 import Charts from '../Charts';
 import VictoryChart from '../VictoryChart';
 import { ScreenBadge } from 'react-awesome-styled-grid';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 
 import { withAuthorization } from '../Session';
+import { Theme } from '../GlobalStyles';
 
 const Layout = styled.div`
 	display: grid;
@@ -16,13 +17,13 @@ const Layout = styled.div`
 
 const HomePage = () => {
 	return (
-		<div>
-			<h1>Home</h1>
+		<ThemeProvider theme={Theme}>
 			<Layout>
+				<Charts />
 				<Charts />
 				{/* 	<ScreenBadge /> */}
 			</Layout>
-		</div>
+		</ThemeProvider>
 	);
 };
 
