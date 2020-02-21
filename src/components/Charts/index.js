@@ -13,7 +13,7 @@ const emissionTable =
 
 const GridContainer = styled.div`
 	grid-column-start: 2;
-	grid-column-end: span 6;
+	grid-column-end: span 8;
   border-radius: 15px;
   background-color: gainsboro;
 `;

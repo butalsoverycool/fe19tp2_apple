@@ -5,8 +5,8 @@ export const UserTheme = {
 };
 
 export const Theme = {
-  mainbg: 'lightgrey',
-  secondbg: 'whitesmoke',
+  bgPrimary: 'whitesmoke',
+  bgSecondary: 'offwhite',
   chartbuttonbg: 'offwhite',
   navbuttonbg: 'lightgrey',
   fontHeader: "'Krona One', sans-serif;",

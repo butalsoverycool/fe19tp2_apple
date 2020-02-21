@@ -22,9 +22,9 @@ const LI = styled.div`
   & > a {
     text-decoration: none;
     color: black;
-    &:hover {
+    /* &:hover {
       color: grey;
-    }
+    } */
 
   &:before {
     content: "";
