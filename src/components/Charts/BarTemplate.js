@@ -31,6 +31,9 @@ const BarTemplate = props => {
     return item;
   });
 
+  // display value on bars if data-length is less than 7
+  const label = data.length < 7 ? true : false;
+
   return (
     <BarChart
       width={600}
@@ -55,7 +58,7 @@ const BarTemplate = props => {
       <Tooltip content={<CustomTooltip unit={props.unit} />} />
       <Legend />
       {/* ADD ABILITY TO ADD MULTIPLE BARS BASED ON PROPS SETTINGS */}
-      <Bar yAxisId="left" dataKey={props.unit} label fill="#8884d8" />
+      <Bar yAxisId="left" dataKey={props.unit} label={label} fill="#8884d8" />
       {/* <Bar yAxisId="right" dataKey={props.unit} label fill="#333" /> */}
     </BarChart>
   );
