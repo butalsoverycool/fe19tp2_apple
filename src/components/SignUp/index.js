@@ -41,7 +41,7 @@ class SignUpFormBase extends Component {
                 email,
                 orgId: org.id,
                 role: 'Admin',
-                settings: {}
+                settings: { color: '', logo: '' }
               },
               { merge: true }
             );
