@@ -1,8 +1,10 @@
 import React from 'react';
+
 import styled from 'styled-components';
 
 import ChartTemplate from './ChartTemplate';
 import BarTemplate from './BarTemplate';
+
 
 const Wrapper = styled.div`
   margin: auto;
@@ -52,8 +54,10 @@ const Preview = props => {
   const yearRange =
     firstYear + (range1 ? '' : ' - ' + data[data.length - 1].year);
 
+
   // unit is substance.code
   const unit = substance.code;
+
 
   return (
     <Wrapper className="preview">

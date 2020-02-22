@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import SignOutButton from '../SignOut';
 import * as ROUTES from '../../constants/routes';
 import { AuthUserContext } from '../Session';
+import * as ROLES from '../../constants/roles';
 
 const Container = styled.nav`
   border-bottom: 1px solid black;
@@ -24,16 +25,14 @@ const LI = styled.li`
   }
 `;
 
-const Navigation = ({ authUser }) => (
-  <div>
-    {' '}
-    <AuthUserContext.Consumer>
-      {authUser => (authUser ? <NavigationAuth /> : <NavigationNonAuth />)}
-    </AuthUserContext.Consumer>
-  </div>
+const Navigation = () => (
+  <AuthUserContext.Consumer>
+    {authUser =>
+      authUser ? <NavigationAuth authUser={authUser} /> : <NavigationNonAuth />
+    }
+  </AuthUserContext.Consumer>
 );
-
-const NavigationAuth = () => (
+const NavigationAuth = ({ authUser }) => (
   <Container>
     <UL>
       <LI>
@@ -47,10 +46,12 @@ const NavigationAuth = () => (
       </LI>
       <LI>
         <Link to={ROUTES.ACCOUNT}>Account</Link>
-      </LI>
+      </LI>{' '}
+      {/* {!!authUser.role[ROLES.ADMIN] && ( */}
       <LI>
         <Link to={ROUTES.ADMIN}>Admin</Link> {/* display only if admin user */}
       </LI>
+      {/* )} */}
       <LI>
         <SignOutButton />
       </LI>
