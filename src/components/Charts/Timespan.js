@@ -41,20 +41,20 @@ class Timespan extends Component {
     if (!this.props.data) return '';
     return (
       <>
-        <div className="options">
+        <div className='options'>
           <Styled.Wrapper>
-            <Styled.CustomizeBox justifyContent="space-between">
+            <Styled.CustomizeBox justifyContent='space-between'>
               <div>
                 <p>FROM</p>
                 <Styled.CustomizeBtn
                   onClick={() => this.props.pushRangeLimit('from', 'dec')}
-                  margin="0"
+                  margin='0'
                 >
                   -
                 </Styled.CustomizeBtn>
                 <Styled.CustomizeBtn
                   onClick={() => this.props.pushRangeLimit('from', 'inc')}
-                  margin="0"
+                  margin='0'
                 >
                   +
                 </Styled.CustomizeBtn>
@@ -63,25 +63,25 @@ class Timespan extends Component {
               <Styled.InnerTable>
                 <Styled.CustomizeBtn
                   onClick={() => this.props.setRangeLimit(1)}
-                  w="80px"
+                  w='80px'
                 >
                   1 year
                 </Styled.CustomizeBtn>
                 <Styled.CustomizeBtn
                   onClick={() => this.props.setRangeLimit(5)}
-                  w="80px"
+                  w='80px'
                 >
                   5 years
                 </Styled.CustomizeBtn>
                 <Styled.CustomizeBtn
                   onClick={() => this.props.setRangeLimit(10)}
-                  w="80px"
+                  w='80px'
                 >
                   10 years
                 </Styled.CustomizeBtn>
                 <Styled.CustomizeBtn
                   onClick={() => this.props.setRangeLimit()}
-                  w="80px"
+                  w='80px'
                 >
                   max
                 </Styled.CustomizeBtn>
@@ -91,13 +91,13 @@ class Timespan extends Component {
                 <p>TO</p>
                 <Styled.CustomizeBtn
                   onClick={() => this.props.pushRangeLimit('to', 'dec')}
-                  margin="0"
+                  margin='0'
                 >
                   -
                 </Styled.CustomizeBtn>
                 <Styled.CustomizeBtn
                   onClick={() => this.props.pushRangeLimit('to', 'inc')}
-                  margin="0"
+                  margin='0'
                 >
                   +
                 </Styled.CustomizeBtn>

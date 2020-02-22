@@ -27,9 +27,10 @@ class Theme extends Component {
           .get()
           .then(snapshot => {
             const dbUser = snapshot.data();
-            // const dbColor = dbUser.settings;
-
-            // this.setState({ color: dbColor });
+            if (dbUser.settings.color != null) {
+              const dbColor = dbUser.settings.color;
+              this.setState({ color: dbColor });
+            }
           });
       }
     });

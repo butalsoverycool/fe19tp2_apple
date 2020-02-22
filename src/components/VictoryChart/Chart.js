@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import axios from "axios";
-import styled from "styled-components";
-import Template from "./Template";
-import ChartHeader from "./ChartHeader";
-import CustomizeChart from "./CustomizeChart";
+import React, { Component } from 'react';
+import axios from 'axios';
+import styled from 'styled-components';
+import Template from './Template';
+import ChartHeader from './ChartHeader';
+import CustomizeChart from './CustomizeChart';
 
 const Wrapper = styled.div`
   margin: auto;
@@ -13,8 +13,8 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   margin: 30px auto;
-  background: ${props => props.bg || "none"};
-  color: ${props => props.color || "black"};
+  background: ${props => props.bg || 'none'};
+  color: ${props => props.color || 'black'};
 `;
 
 class Chart extends Component {
@@ -31,19 +31,19 @@ class Chart extends Component {
   apiData = (() => this.props.apiData)();
 
   getMatches() {
-    const proxy = "https://cors-anywhere.herokuapp.com/";
+    const proxy = 'https://cors-anywhere.herokuapp.com/';
     const url = proxy + this.props.apiData.url;
 
     axios
       .post(url, this.props.apiData.query, {
-        headers: { Authorization: "Access-Control-Allow-Origin" }
+        headers: { Authorization: 'Access-Control-Allow-Origin' }
       })
       .then(res => {
-        console.log("POST Success", res);
+        console.log('POST Success', res);
 
         const data = this.props.apiData.callback(res);
 
-        console.log("DATA processed", data);
+        console.log('DATA processed', data);
 
         this.setState({
           data,
@@ -54,7 +54,7 @@ class Chart extends Component {
         });
       })
       .catch(error => {
-        console.log("POST Fail", error);
+        console.log('POST Fail', error);
 
         if (this.state.error === null) {
           this.setState({
@@ -71,14 +71,14 @@ class Chart extends Component {
   pushLimit(endPoint, reaseType) {
     let newLimit;
 
-    if (reaseType === "dec") {
+    if (reaseType === 'dec') {
       newLimit = this.state.limit[endPoint] - 1;
     } else {
       newLimit = this.state.limit[endPoint] + 1;
     }
 
     if (newLimit < 0 || newLimit > this.state.data.length - 1) {
-      console.log("Range limit reached");
+      console.log('Range limit reached');
       return;
     }
 
@@ -105,7 +105,7 @@ class Chart extends Component {
   render() {
     const { data, limit, error } = this.state || null;
 
-    if (!data) return "";
+    if (!data) return '';
 
     const formatLimit = this.state.limit || data.length - 1 || null;
 
@@ -127,7 +127,7 @@ class Chart extends Component {
             state={this.state}
           />
 
-          <p className="error">{error}</p>
+          <p className='error'>{error}</p>
         </Wrapper>
       </div>
     );

@@ -1,7 +1,7 @@
 // all substances
-import React, { Component } from "react";
-import styled from "styled-components";
-import { Container, Row, Col } from "react-awesome-styled-grid";
+import React, { Component } from 'react';
+import styled from 'styled-components';
+import { Container, Row, Col } from 'react-awesome-styled-grid';
 
 const TableHead = styled.button`
   background-color: lightgrey;
@@ -51,7 +51,6 @@ const DropdownContainer = styled.div`
 `;
 
 class Table extends Component {
-
   render() {
     const { tableHandler, category, setActiveClass } = this.props;
     return (
@@ -59,10 +58,10 @@ class Table extends Component {
       <Container>
         <Row>
           <Col xs={2} sm={2} md={1} lg={4} xl={4}>
-            <DropdownContainer className="dropdown-container">
-              <TableHead className="dropdown-button">Substance</TableHead>
-              <List className="dropdown-content">
-                {category.substances.map((item) => (
+            <DropdownContainer className='dropdown-container'>
+              <TableHead className='dropdown-button'>Substance</TableHead>
+              <List className='dropdown-content'>
+                {category.substances.map(item => (
                   <TD
                     key={item.code}
                     onClick={() => tableHandler(item, 'substancesAdded')}
@@ -77,12 +76,14 @@ class Table extends Component {
 
           <Col xs={2} sm={2} md={1} lg={4} xl={4}>
             <DropdownContainer>
-              <TableHead className="dropdown-button">Sector</TableHead>
-              <List className="dropdown-content">
-                {category.sectors.map((item) => (
+              <TableHead className='dropdown-button'>Sector</TableHead>
+              <List className='dropdown-content'>
+                {category.sectors.map(item => (
                   <TD
                     key={item.code}
-                    onClick={() => this.props.tableHandler(item, "sectorsAdded")}
+                    onClick={() =>
+                      this.props.tableHandler(item, 'sectorsAdded')
+                    }
                     className={setActiveClass(item, category.sectorsAdded)}
                   >
                     {item.name}
@@ -94,12 +95,12 @@ class Table extends Component {
 
           <Col xs={2} sm={2} md={1} lg={4} xl={4}>
             <DropdownContainer>
-              <TableHead className="dropdown-button">Timespan</TableHead>
-              <List className="dropdown-content">
-                {category.years.map((item) => (
+              <TableHead className='dropdown-button'>Timespan</TableHead>
+              <List className='dropdown-content'>
+                {category.years.map(item => (
                   <TD
                     key={item}
-                    onClick={() => this.props.tableHandler(item, "yearsAdded")}
+                    onClick={() => this.props.tableHandler(item, 'yearsAdded')}
                     className={setActiveClass(item, category.yearsAdded)}
                   >
                     {item}
@@ -107,11 +108,10 @@ class Table extends Component {
                 ))}
               </List>
             </DropdownContainer>
-          </Col >
-        </Row >
-      </Container >
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
 export default Table;
-
