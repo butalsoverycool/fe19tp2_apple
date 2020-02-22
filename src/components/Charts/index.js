@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import styled from 'styled-components';
 import axios from 'axios';
 import Table from './Table';
 import Timespan from './Timespan';
 import Preview from './Preview';
-var md5 = require('md5');
+import md5 from 'md5';
+
+import exampleData, { availableData, exampleChartData } from './exampleData';
 
 const proxy = 'https://cors-anywhere.herokuapp.com/';
 const emissionTable =
@@ -36,10 +39,10 @@ class Charts extends Component {
     super(props);
     this.state = {
       data: null,
-      dataRequest: [],
-      substances: [],
-      sectors: [],
-      years: [],
+      dataRequest: availableData.dataRequest, // [], // temp to skip reqs
+      substances: availableData.substances, //[],
+      sectors: availableData.sectors, //[],
+      years: availableData.years, //[],
       limit: { from: 0, to: 28 },
       isLoading: false,
 
@@ -50,48 +53,68 @@ class Charts extends Component {
     this.getEmissionData = this.getEmissionData.bind(this);
     this.postEmissionData = this.postEmissionData.bind(this);
     this.tableHandler = this.tableHandler.bind(this);
-    this.pushLimitHandler = this.pushLimitHandler.bind(this);
+    this.pushRangeLimit = this.pushRangeLimit.bind(this);
+    this.setRangeLimit = this.setRangeLimit.bind(this);
     this.setActiveClass = this.setActiveClass.bind(this);
   }
 
   componentDidMount() {
-    this.getEmissionData();
-    /* this.postEmissionData(queryBakery); */
+    //this.getEmissionData();
   }
 
   //Bug - if you go further back then data[0] (so limit: to: becomes -1 or more the app crashes)
-  pushLimitHandler(endPoint, reaseType) {
-    let oldLimit = this.state.limit;
+  pushRangeLimit(endPoint, reaseType) {
+    let limit = this.state.limit;
+    const from = endPoint === 'from' ? true : false;
+    const dec = reaseType === 'dec' ? true : false;
+    const otherPoint = from ? 'to' : 'from';
 
-    if (reaseType === 'dec') {
-      if (oldLimit[endPoint] <= 0) return;
-      oldLimit[endPoint]--;
+    if (dec) {
+      // - from
+      if (from) {
+        // fromPoint can't go below first year
+        if (limit.from <= 0) return;
+      }
+      // - to
+      else {
+        // toPoint must be more than fromPoint
+        if (limit.to <= limit.from) return;
+      }
+
+      limit[endPoint]--;
     } else {
-      if (oldLimit[endPoint] >= this.state.years.length - 1) return;
-      oldLimit[endPoint]++;
+      // + from
+      if (from) {
+        // fromPoint must be less than toPoint
+        if (limit.from >= limit.to) return;
+      }
+      // + to
+      else {
+        // toPoint can't go over last year
+        if (limit.to >= this.state.years.length - 1) return;
+      }
+
+      limit[endPoint]++;
     }
 
     this.setState({
-      limit: oldLimit
+      limit
     });
   }
 
-  /* lastLimitHandler(startPoint) {
+  setRangeLimit(range = 'max') {
     let limit = this.state.limit;
-    if (reaseType === "dec") {
-      console.log('dec')
-      limit[startPoint]--;
-    } else {
-      limit[startPoint]++;
-    };
+
+    const maxRange = range === 'max' ? true : false;
+
+    // if max: max range, else: count backwards from toPoint (minimum 0)
+    limit.from = maxRange ? 0 : Math.max(0, limit.to - range + 1);
+    limit.to = maxRange ? this.state.years.length - 1 : limit.to;
 
     this.setState({
-      limit: {
-        from: limit.from,
-        to: limit.to
-      }
+      limit
     });
-  } */
+  }
 
   tableHandler = (item, array) => {
     const indicator = array === 'substancesAdded' ? 0 : 1;
@@ -100,6 +123,7 @@ class Charts extends Component {
     oldArray.includes(item)
       ? this.setState(prevState => {
           newArr = prevState[array].filter(el => el !== item);
+
           const substancesAdded = newArr.map(item => item.code);
           const sectorsAdded = newArr.map(item => item.code);
 
@@ -112,7 +136,7 @@ class Charts extends Component {
         })
       : this.setState(prevState => {
           newArr = [...prevState[array], item];
-          // console.log(newArr);
+
           const substancesAdded = newArr.map(item => item.code);
           /* const sectorsAdded = newArr.map(item => item.code); */
 
@@ -161,6 +185,21 @@ class Charts extends Component {
   }
 
   postEmissionData(query) {
+    /* // temp to skip reqs
+
+    const data = exampleData.map(item => ({
+      year: item.year,
+      sector: item.sector,
+      substance: item.substance,
+      values: item.values
+    }));
+
+    this.setState({
+      data
+    });
+
+    return; */
+
     const queryHash = md5(JSON.stringify(query));
 
     const cache = JSON.parse(localStorage.getItem('dataCache'));
@@ -180,10 +219,17 @@ class Charts extends Component {
       axios
         .post(proxy + emissionTable, query)
         .then(res => {
+          console.log('POST RES', res);
           const data = res.data.data.map(item => {
             const year = item.key[2];
             const sector = item.key[1];
-            const substance = item.key[0];
+            //const substance = item.key[0];
+            const substance = {
+              name: this.state.substances.filter(
+                subs => subs.code === item.key[0]
+              )[0].name,
+              code: item.key[0]
+            };
             const toParse = item.values[0];
             const values = parseInt(toParse);
 
@@ -196,7 +242,10 @@ class Charts extends Component {
           });
 
           // add data to cache
-          cache[queryHash] = { data, timeStamp: Date.now() };
+          cache[queryHash] = {
+            data,
+            timeStamp: Date.now()
+          };
           localStorage.setItem('cache', JSON.stringify(cache));
 
           this.setState({ data });
@@ -219,22 +268,19 @@ class Charts extends Component {
           category={this.state}
         />
 
-        {this.state.data ? (
-          <Preview
-            data={this.state.data}
-            sectors={this.state.sectors}
-            limit={this.state.limit}
-          >
-            {' '}
-            >
-          </Preview>
-        ) : null}
+        <Preview
+          data={this.state.data || exampleChartData}
+          sectors={this.state.sectors}
+          limit={this.state.limit}
+        ></Preview>
 
         <Timespan
+          data={this.state.data}
           limit={this.state.limit}
           /* update={(key, val) => this.updateConfig(key, val)} */
           totalTimespan={totalTimespan}
-          pushLimitHandler={this.pushLimitHandler}
+          pushRangeLimit={this.pushRangeLimit}
+          setRangeLimit={this.setRangeLimit}
         />
       </div>
     );

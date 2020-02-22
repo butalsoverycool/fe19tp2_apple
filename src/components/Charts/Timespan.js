@@ -1,6 +1,6 @@
 // all substances
-import React, { Component } from "react";
-import * as Styled from "./Styled";
+import React, { Component } from 'react';
+import * as Styled from './Styled';
 
 // Table of emission
 class Timespan extends Component {
@@ -38,6 +38,7 @@ class Timespan extends Component {
     } */
 
   render() {
+    if (!this.props.data) return '';
     return (
       <>
         <div className="options">
@@ -46,47 +47,56 @@ class Timespan extends Component {
               <div>
                 <p>FROM</p>
                 <Styled.CustomizeBtn
-                  onClick={() => this.props.pushLimitHandler("from", "dec")}
+                  onClick={() => this.props.pushRangeLimit('from', 'dec')}
                   margin="0"
                 >
                   -
                 </Styled.CustomizeBtn>
                 <Styled.CustomizeBtn
-                  onClick={() => this.props.pushLimitHandler("from", "inc")}
+                  onClick={() => this.props.pushRangeLimit('from', 'inc')}
                   margin="0"
                 >
                   +
                 </Styled.CustomizeBtn>
               </div>
 
-              {/* <Styled.InnerTable>
-                <Styled.CustomizeBtn onClick={() => this.lastLimitHandler(1)} w="80px">
-                  last 1
-                </Styled.CustomizeBtn>
-                <Styled.CustomizeBtn onClick={() => this.lastLimitHandler(3)} w="80px">
-                  last 3
-                </Styled.CustomizeBtn>
-                <Styled.CustomizeBtn onClick={() => this.lastLimitHandler(5)} w="80px">
-                  last 5
+              <Styled.InnerTable>
+                <Styled.CustomizeBtn
+                  onClick={() => this.props.setRangeLimit(1)}
+                  w="80px"
+                >
+                  1 year
                 </Styled.CustomizeBtn>
                 <Styled.CustomizeBtn
-                  onClick={() => this.lastLimitHandler(this.props.totalTimespan - 1)}
+                  onClick={() => this.props.setRangeLimit(5)}
+                  w="80px"
+                >
+                  5 years
+                </Styled.CustomizeBtn>
+                <Styled.CustomizeBtn
+                  onClick={() => this.props.setRangeLimit(10)}
+                  w="80px"
+                >
+                  10 years
+                </Styled.CustomizeBtn>
+                <Styled.CustomizeBtn
+                  onClick={() => this.props.setRangeLimit()}
                   w="80px"
                 >
                   max
                 </Styled.CustomizeBtn>
-              </Styled.InnerTable> */}
+              </Styled.InnerTable>
 
               <div>
                 <p>TO</p>
                 <Styled.CustomizeBtn
-                  onClick={() => this.props.pushLimitHandler("to", "dec")}
+                  onClick={() => this.props.pushRangeLimit('to', 'dec')}
                   margin="0"
                 >
                   -
                 </Styled.CustomizeBtn>
                 <Styled.CustomizeBtn
-                  onClick={() => this.props.pushLimitHandler("to", "inc")}
+                  onClick={() => this.props.pushRangeLimit('to', 'inc')}
                   margin="0"
                 >
                   +

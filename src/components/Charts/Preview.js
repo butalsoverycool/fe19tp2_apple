@@ -1,6 +1,10 @@
 import React from 'react';
-import ChartTemplate from './ChartTemplate';
+
 import styled from 'styled-components';
+
+import ChartTemplate from './ChartTemplate';
+import BarTemplate from './BarTemplate';
+
 
 const Wrapper = styled.div`
   margin: auto;
@@ -29,31 +33,41 @@ const ChartHeader = styled.h3`
 const Preview = props => {
   if (!props.data) return '';
 
-  // slice data-arr based on limit in chart state
+  // display data within limited year range
   const data = props.data.slice(
     props.limit.from,
     props.limit.to + 1 || props.data.length - 1
   );
 
-  const title = `Emission of ${data[0].substance}`;
+  const range1 = data.length === 1 ? true : false;
 
-  const subtitle = props.sectors.filter(
-    sector => sector.code === data[0].sector
-  )[0].name;
+  // if range is only 1 year, get 2 value points
+  if (range1) {
+    data.push(data[0]);
+  }
 
-  const chartHeader = `${data[0].year} - ${data[data.length - 1].year}`;
+  const { substance, sector } = props.data[0];
 
-  const unit = data[0].substance;
+  const { year: firstYear } = data[0];
 
-  console.log('Template DATA', data[0]);
+  // year range or single year
+  const yearRange =
+    firstYear + (range1 ? '' : ' - ' + data[data.length - 1].year);
+
+
+  // unit is substance.code
+  const unit = substance.code;
+
 
   return (
     <Wrapper className="preview">
-      <Title>{title}</Title>
+      <Title>{`Emission of ${substance.name}`}</Title>
 
-      <Subtitle>{subtitle}</Subtitle>
+      <Subtitle>{sector.name}</Subtitle>
 
-      <ChartHeader>{chartHeader}</ChartHeader>
+      <ChartHeader>{yearRange}</ChartHeader>
+
+      {props.data ? <BarTemplate data={data} unit={unit} /> : null}
 
       {props.data ? <ChartTemplate data={data} unit={unit} /> : null}
     </Wrapper>
