@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Table from './Table';
-import md5 from 'md5';
-
 import Timespan from './Timespan';
 import Preview from './Preview';
+var md5 = require('md5');
 
 const proxy = 'https://cors-anywhere.herokuapp.com/';
 const emissionTable =
@@ -32,7 +31,6 @@ const queryBakery = {
   ],
   response: { format: 'json' }
 };
-
 class Charts extends Component {
   constructor(props) {
     super(props);
@@ -102,7 +100,6 @@ class Charts extends Component {
     oldArray.includes(item)
       ? this.setState(prevState => {
           newArr = prevState[array].filter(el => el !== item);
-          console.log(newArr);
           const substancesAdded = newArr.map(item => item.code);
           const sectorsAdded = newArr.map(item => item.code);
 
@@ -115,7 +112,7 @@ class Charts extends Component {
         })
       : this.setState(prevState => {
           newArr = [...prevState[array], item];
-          console.log(newArr);
+          // console.log(newArr);
           const substancesAdded = newArr.map(item => item.code);
           /* const sectorsAdded = newArr.map(item => item.code); */
 
@@ -149,7 +146,6 @@ class Charts extends Component {
         }));
 
         const years = res.data.variables[3].values;
-
         const dataRequest = res;
 
         this.setState({

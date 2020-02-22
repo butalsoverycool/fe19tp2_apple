@@ -9,7 +9,6 @@ class Theme extends Component {
     super(props);
 
     this.state = {
-      authUser: null,
       logo: null,
       dataUrl: defaultLogoUrl,
       color: defaultColor
@@ -21,15 +20,23 @@ class Theme extends Component {
   }
 
   componentDidMount() {
-    // load colors from admin user in firestore...
-    // get auth user
-    this.props.firebase.auth.onAuthStateChanged(authUser => {
-      authUser
-        ? this.setState({ authUser })
-        : this.setState({ authUser: null });
+    this.unsubscribe = this.props.firebase.auth.onAuthStateChanged(authUser => {
+      if (authUser) {
+        this.props.firebase
+          .user(authUser.uid)
+          .get()
+          .then(snapshot => {
+            const dbUser = snapshot.data();
+            const dbColor = dbUser.settings.color;
+            this.setState({ color: dbColor });
+          });
+      }
     });
   }
 
+  componentWillUnmount() {
+    this.unsubscribe && this.unsubscribe();
+  }
   // WIP - upload/preview logo
   previewLogo = e => {
     const logo = e.target.files[0];
@@ -56,11 +63,21 @@ class Theme extends Component {
   };
 
   // WIP - save changes to firestore
-  saveChanges = () => {
-    if (!this.state.logo) return;
 
-    // save logo and color...
-    // https://firebase.google.com/docs/storage/web/start
+  saveChanges = () => {
+    // if (!this.state.logo) return;
+
+    alert('Saved');
+    this.props.firebase.auth.onAuthStateChanged(authUser => {
+      if (authUser) {
+        this.props.firebase.user(authUser.uid).update({
+          settings: {
+            color: this.state.color,
+            logo: defaultLogoUrl
+          }
+        });
+      }
+    });
   };
 
   render() {
