@@ -5,51 +5,9 @@ import SignOutButton from '../SignOut';
 import * as ROUTES from '../../constants/routes';
 import { AuthUserContext } from '../Session';
 import * as ROLES from '../../constants/roles';
-
+import * as Styled from './styled';
 import { Theme } from '../GlobalStyles';
 
-const Container = styled.nav`
-  /* border-bottom: 1px solid black; */
-  box-shadow: 0 4px 4px -4px black;
-  z-index: 1;
-  margin-bottom: 3rem;
-`;
-const UL = styled.ul``;
-
-const LI = styled.div`
-  display: inline-block;
-  padding: 1em;
-  position: relative;
-
-  & > a {
-    text-decoration: none;
-    color: black;
-    /* &:hover {
-      color: grey;
-    } */
-
-    &:before {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 5px;
-      bottom: 3px;
-      left: 0;
-      background-color: ${props => props.theme.fontColorPrimary};
-      visibility: hidden;
-      -webkit-transform: scaleX(0);
-      transform: scaleX(0);
-      -webkit-transition: all 0.3s ease-in-out 0s;
-      transition: all 0.3s ease-in-out 0s;
-    }
-
-    &:hover:before {
-      visibility: visible;
-      -webkit-transform: scaleX(1);
-      transform: scaleX(1);
-    }
-  }
-`;
 
 const Navigation = () => (
   <AuthUserContext.Consumer>
@@ -60,30 +18,32 @@ const Navigation = () => (
 );
 
 const NavigationAuth = () => (
-  <ThemeProvider theme={Theme}>
-    <Container>
-      <LI>
+  <Styled.Grid>
+
+    <Styled.Container>
+      <Styled.LI>
         <Link to={ROUTES.SIGN_IN}>Sign In</Link>
-      </LI>
-      <LI>
+      </Styled.LI>
+      <Styled.LI>
         <Link to={ROUTES.LANDING}>Landing</Link>
-      </LI>
-      <LI>
+      </Styled.LI>
+      <Styled.LI>
         <Link to={ROUTES.HOME}>Home</Link>
-      </LI>
-      <LI>
+      </Styled.LI>
+      <Styled.LI>
         <Link to={ROUTES.ACCOUNT}>Account</Link>
-      </LI>{' '}
+      </Styled.LI>{' '}
       {/* {!!authUser.role[ROLES.ADMIN] && ( */}
-      <LI>
+      <Styled.LI>
         <Link to={ROUTES.ADMIN}>Admin</Link> {/* display only if admin user */}
-      </LI>
+      </Styled.LI>
       {/* )} */}
-      <LI>
+      <Styled.LI>
         <SignOutButton />
-      </LI>
-    </Container>
-  </ThemeProvider>
+      </Styled.LI>
+    </Styled.Container>
+
+  </Styled.Grid>
 );
 
 const NavigationNonAuth = () => (

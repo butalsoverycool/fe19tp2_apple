@@ -12,6 +12,7 @@ import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { Theme } from '../GlobalStyles';
 import * as ROUTES from '../../constants/routes';
 import { withAuthentication } from '../Session';
+import * as Styled from './styled';
 
 const GlobalStyle = createGlobalStyle`
 body {
@@ -38,10 +39,11 @@ class App extends Component {
   }
   render() {
     return (
+
       <ThemeProvider theme={Theme}>
         <Router>
           <GlobalStyle bg />
-          <div>
+          <Styled.GridLayout>
             <Navigation authUser={this.state.authUser} />
             <Route exact path={ROUTES.LANDING} component={LandingPage} />
             <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
@@ -53,9 +55,10 @@ class App extends Component {
             <Route path={ROUTES.HOME} component={HomePage} />
             <Route path={ROUTES.ACCOUNT} component={AccountPage} />
             <Route path={ROUTES.ADMIN} component={AdminPage} />
-          </div>
+          </Styled.GridLayout>
         </Router>
       </ThemeProvider>
+
     );
   }
 }
