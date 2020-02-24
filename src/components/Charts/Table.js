@@ -52,7 +52,12 @@ const DropdownContainer = styled.div`
 
 class Table extends Component {
   render() {
-    const { setChartType, tableHandler, library, setActiveClass } = this.props;
+    const {
+      setChartType,
+      tableHandler,
+      dataTitles,
+      setActiveClass
+    } = this.props;
     return (
       //Dropdown menus, one for substance and one for sector (year will generated )
       <Container>
@@ -62,7 +67,7 @@ class Table extends Component {
             <DropdownContainer>
               <TableHead className="dropdown-button">Chart Type</TableHead>
               <List className="dropdown-content">
-                {library.chartTypes.map(item => (
+                {dataTitles.chartTypes.map(item => (
                   <TD
                     key={item}
                     onClick={() => setChartType(this.props.chartIndex, item)}
@@ -79,11 +84,15 @@ class Table extends Component {
             <DropdownContainer className="dropdown-container">
               <TableHead className="dropdown-button">Substances</TableHead>
               <List className="dropdown-content">
-                {library.substances.map(item => (
+                {dataTitles.substances.map(item => (
                   <TD
                     key={item.code}
                     onClick={() =>
-                      this.props.setSubstances(this.props.chartIndex, item)
+                      this.props.tableConfig(
+                        this.props.chartIndex,
+                        item,
+                        'substances'
+                      )
                     }
                     className={setActiveClass(
                       item,
@@ -97,24 +106,28 @@ class Table extends Component {
             </DropdownContainer>
           </Col>
 
-          {/* <Col xs={2} sm={2} md={1} lg={4} xl={4}>
+          <Col xs={2} sm={2} md={1} lg={4} xl={4}>
             <DropdownContainer>
               <TableHead className="dropdown-button">Sector</TableHead>
               <List className="dropdown-content">
-                {category.sectors.map(item => (
+                {dataTitles.sectors.map(item => (
                   <TD
                     key={item.code}
                     onClick={() =>
-                      this.props.tableHandler(item, 'sectorsAdded')
+                      this.props.tableConfig(
+                        this.props.chartIndex,
+                        item,
+                        'sectors'
+                      )
                     }
-                    className={setActiveClass(item, category.sectorsAdded)}
+                    className={setActiveClass(item, this.props.chart.sectors)}
                   >
                     {item.name}
                   </TD>
                 ))}
               </List>
             </DropdownContainer>
-          </Col> */}
+          </Col>
         </Row>
       </Container>
     );

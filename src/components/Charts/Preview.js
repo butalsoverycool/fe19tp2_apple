@@ -28,12 +28,27 @@ const ChartHeader = styled.h3`
   text-align: center;
 `;
 
-const ChartTemplate = ({ type, data, unit }) => {
+const ChartTemplate = ({ type, data, unit, addedSubstances, addedSectors }) => {
+  console.log('chart templ added subst', addedSubstances);
   switch (type) {
     case 'area':
-      return <AreaTemplate data={data} unit={unit} />;
+      return (
+        <AreaTemplate
+          data={data}
+          unit={unit}
+          addedSubstances={addedSubstances}
+          addedSectors={addedSectors}
+        />
+      );
     case 'bar':
-      return <BarTemplate data={data} unit={unit} />;
+      return (
+        <BarTemplate
+          data={data}
+          unit={unit}
+          addedSubstances={addedSubstances}
+          addedSectors={addedSectors}
+        />
+      );
     default:
       return '';
   }
@@ -42,36 +57,46 @@ const ChartTemplate = ({ type, data, unit }) => {
 const Preview = props => {
   if (!props.chart || !props.chart.data) return '';
 
-  let { data, substances, sectors, limit } = props.chart;
+  let { data, substances, sectors, limit, type } = props.chart;
+
+  console.log('preview added subst', substances);
+
+  /* console.log('preview data:', data);
+  return ''; */
 
   // display data within limited year range
-  const dataWithinRange = data.slice(
-    limit.from,
-    limit.to + 1 || data.length - 1
-  );
+  const dataInRange = data.slice(limit.from, limit.to + 1 || data.length - 1);
 
-  console.log('datawithin range', dataWithinRange);
-  return;
+  console.log('DATA IN RANGE', dataInRange);
 
-  //console.log('preview data', data);
+  var flattenedData = [];
 
-  const range1 = dataWithinRange.length === 1 ? true : false;
-
-  // if range is only 1 year, get 2 value points
-  if (range1) {
-    dataWithinRange.push(dataWithinRange[0]);
+  for (var i = 0; i < dataInRange.length; i++) {
+    flattenedData = flattenedData.concat(dataInRange[i]);
   }
 
-  const { substance, sector } = data[0];
+  console.log('FLATTENED', flattenedData);
+
+  const single = flattenedData.length === 1 ? true : false;
+
+  // if range is only 1 year, get 2 value points
+  if (single) {
+    flattenedData.push(flattenedData[0]);
+  }
+
+  //console.log('data to display!', flattenedData);
+  const { substance, sector } = flattenedData[0];
+
+  //console.log('substance', substance, sector);
 
   // get first last years when available
-  const firstYear = dataWithinRange[0] ? dataWithinRange[0].year : '***';
-  const lastYear = dataWithinRange[dataWithinRange.length - 1]
-    ? dataWithinRange[dataWithinRange.length - 1].year
+  const firstYear = flattenedData[0] ? flattenedData[0].year : '***';
+  const lastYear = flattenedData[flattenedData.length - 1]
+    ? flattenedData[flattenedData.length - 1].year
     : '***';
 
   // year range or single year
-  const yearRange = firstYear + (range1 ? '' : ' - ' + lastYear);
+  const yearRange = firstYear + (single ? '' : ' - ' + lastYear);
 
   // unit is substance.code
   const unit = substance.name;
@@ -86,10 +111,12 @@ const Preview = props => {
 
       <ChartHeader>{yearRange}</ChartHeader>
 
-      {dataWithinRange ? (
+      {flattenedData ? (
         <ChartTemplate
           type={props.chartType}
-          data={dataWithinRange}
+          data={flattenedData}
+          addedSubstances={substances}
+          addedSectors={sectors}
           unit={unit}
         />
       ) : null}

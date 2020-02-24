@@ -17,6 +17,13 @@ const proxy = 'https://cors-anywhere.herokuapp.com/';
 const emissionTable =
   'http://api.scb.se/OV0104/v1/doris/sv/ssd/START/MI/MI0108/TotaltUtslapp';
 
+const allEmissionQuery = {
+  query: [],
+  response: {
+    format: 'json'
+  }
+};
+
 const queryBakery = {
   /* const substancesAdded = this.state.substancesAdded.map(item => item.code)
   const sectorsAdded = this.state.sectorsAdded.map(item => item.code) */
@@ -40,44 +47,6 @@ const queryBakery = {
   response: { format: 'json' }
 };
 
-const chartDataBakery = () => {
-  const values = Math.floor(Math.random() * Math.floor(5)) + 3; // rand 3-7
-  const arr = [];
-
-  for (let i = 0; i < values; i++) {
-    const value = {
-      year: '*time ' + i + '*',
-      sector: '*Unknown area ' + i + '*',
-      substance: {
-        name: '*Unknown substance*',
-        code: '*unit*'
-      },
-      value: Math.floor(Math.random() * Math.floor(5)) + 1
-    };
-
-    arr.push(value);
-  }
-
-  return arr;
-};
-
-const chartBakery = () => {
-  const chart = {
-    type: 'area',
-    sectors: ['*Unknown area*'],
-    substances: [
-      {
-        name: '*substance*',
-        code: '*unit*'
-      }
-    ],
-    limit: { from: 0, to: 100 },
-    data: chartDataBakery()
-  };
-
-  return chart;
-};
-
 const groupData = function(arr, key1, key2) {
   const obj = arr.reduce(function(res, item) {
     (res[item[key1][key2]] = res[item[key1][key2]] || []).push(item);
@@ -85,63 +54,86 @@ const groupData = function(arr, key1, key2) {
     return res;
   }, {});
 
-  const res = [];
+  /* const res = [];
   for (let prop in obj) {
     res.push(obj[prop]);
-  }
+  } */
 
-  return res;
+  return obj;
 };
 
 class Charts extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: null,
       apiResponse: null,
-      charts: [],
-      library: {
+      dataTitles: {
         chartTypes: ['area', 'bar'],
         substances: [],
         sectors: [],
         years: []
-      }
+      },
+      data: null,
+      charts: []
     };
 
-    this.getEmissionData = this.getEmissionData.bind(this);
-    this.postEmissionData = this.postEmissionData.bind(this);
+    this.fetchDataTitles = this.fetchDataTitles.bind(this);
+    this.fetchData = this.fetchData.bind(this);
     this.tableHandler = this.tableHandler.bind(this);
     this.setChartType = this.setChartType.bind(this);
     this.pushRangeLimit = this.pushRangeLimit.bind(this);
     this.setRangeLimit = this.setRangeLimit.bind(this);
     this.setActiveClass = this.setActiveClass.bind(this);
     this.newChart = this.newChart.bind(this);
-    this.setSubstances = this.setSubstances.bind(this);
+
+    this.tableConfig = this.tableConfig.bind(this);
+
+    this.setSectors = this.setSectors.bind(this);
+
+    this.chartBakery = this.chartBakery.bind(this);
+    this.chartDataBakery = this.chartDataBakery.bind(this);
   }
 
   componentDidMount() {
     // TEMP skip GET request for available data
-    const library = this.state.library;
+    /* const library = this.state.library;
     library.substances = availableData.substances;
     library.sectors = availableData.sectors;
     library.years = availableData.years;
     this.setState({
       apiResponse: availableData.apiResponse,
       library
-    });
+    }); */
+
+    const { dataTitles, data } = this.state;
+
+    // get data titles
+    this.fetchDataTitles();
+
+    this.fetchData();
+
+    /* this.fetchData(
+      {
+        query: [],
+        response: {
+          format: 'json'
+        }
+      },
+      0
+    ); */
 
     // TEMP load user charts
     /* this.setState({
       charts: exampleUser.charts
     }); */
 
-    //this.getEmissionData();
+    //this.fetchDataTitles();
   }
 
   newChart = () => {
     const charts = this.state.charts;
 
-    const chart = chartBakery();
+    const chart = this.chartBakery();
     chart.data = [[...chart.data]];
     charts.unshift(chart);
 
@@ -149,6 +141,290 @@ class Charts extends Component {
       charts
     });
   };
+
+  chartBakery = () => {
+    const chart = {
+      type: 'area',
+      sectors: [
+        {
+          name: '*sector*',
+          code: '0.5'
+        }
+      ],
+      substances: [
+        {
+          name: '*substance*',
+          code: 'NOx'
+        }
+      ],
+      limit: { from: 0, to: 100 },
+      data: this.chartDataBakery()
+    };
+
+    return chart;
+  };
+
+  chartDataBakery = () => {
+    const values = Math.floor(Math.random() * Math.floor(5)) + 3; // rand 3-7
+    const arr = [];
+
+    for (let i = 0; i < values; i++) {
+      const value = {
+        year: '*time ' + i + '*',
+        sector: {
+          name: '*Sector*',
+          code: '*Sector code*'
+        },
+        substance: {
+          name: '*Substance*',
+          code: '*Substance code*'
+        },
+        value: Math.floor(Math.random() * Math.floor(5)) + 1
+      };
+
+      arr.push(value);
+    }
+
+    return arr;
+  };
+
+  fetchDataTitles = () => {
+    const updateState = titles => {
+      // update state
+      this.setState({
+        dataTitles: titles
+      });
+    };
+
+    const stored = JSON.parse(sessionStorage.getItem('dataTitles'));
+    if (stored) {
+      console.log('got dataTitles from sessionStorage.');
+      updateState(stored);
+      return;
+    }
+
+    axios
+      .get(proxy + emissionTable)
+      .then(res => {
+        const substances = res.data.variables[0].values.map((item, nth) => ({
+          name: res.data.variables[0].valueTexts[nth],
+          code: item
+        }));
+
+        const sectors = res.data.variables[1].values.map((item, nth) => ({
+          name: res.data.variables[1].valueTexts[nth],
+          code: item
+        }));
+
+        const years = res.data.variables[3].values;
+
+        this.setState({
+          apiResponse: res
+        });
+
+        const chartTypes = this.state.dataTitles.chartTypes;
+
+        const dataTitles = {
+          chartTypes,
+          substances,
+          sectors,
+          years
+        };
+
+        updateState(dataTitles);
+
+        // save in session
+        sessionStorage.setItem('dataTitles', JSON.stringify(dataTitles));
+      })
+      .catch(error => {
+        console.log('GET ERROR', error);
+      });
+  };
+
+  fetchData(query, chartIndex, substancesLength) {
+    const updateState = item => {
+      this.setState({
+        data: item
+      });
+    };
+
+    // try load from sessionStorage
+    const stored = JSON.parse(sessionStorage.getItem('data'));
+    if (stored) {
+      updateState(stored);
+      console.log('got data from sessionStorage.');
+      return;
+    }
+
+    axios
+      .post(proxy + emissionTable, allEmissionQuery)
+      .then(res => {
+        // if fail, bail. *temp
+        if (res.status !== 200) {
+          console.log('failed to fetch data');
+
+          this.setState({
+            apiResponse: res
+          });
+
+          return;
+        }
+
+        const data = res.data.data.map(item => {
+          const year = parseInt(item.key[2]);
+          const sector = {
+            name: this.state.dataTitles.sectors.filter(
+              sect => sect.code === item.key[1]
+            )[0].name,
+            code: item.key[1]
+          };
+          const substance = {
+            name: this.state.dataTitles.substances.filter(
+              subs => subs.code === item.key[0]
+            )[0].name,
+            code: item.key[0]
+          };
+          const value = parseInt(item.values[0]);
+
+          return {
+            year,
+            sector,
+            substance,
+            value
+          };
+        });
+
+        // group all data by year
+        const sortedByYear = this.state.dataTitles.years.map(year => []);
+        const firstYear = this.state.dataTitles.years[0];
+
+        data.forEach(item => {
+          const yearIndex = item.year - firstYear;
+          sortedByYear[yearIndex].push(item);
+        });
+
+        // update state
+        this.setState({
+          data: sortedByYear
+        });
+
+        // update sessionStorage
+        sessionStorage.setItem('data', JSON.stringify(sortedByYear));
+      })
+      .catch(error => {
+        console.log('POST ERROR', error);
+      });
+    //}
+  }
+
+  postEmissionData(query, chartIndex, substancesLength) {
+    /*  const queryHash = md5(JSON.stringify(query));
+
+    const cache = JSON.parse(localStorage.getItem('dataCache')) || null;
+
+    // if cache object doesn't exists, create it
+    if (!cache) localStorage.setItem('dataCache', JSON.stringify({}));
+
+    // if cache found and not older than 1 week
+    if (
+      cache[queryHash] &&
+      cache[queryHash].timeStamp > Date.now() - 504000000
+    ) {
+      // update data in state
+      this.setState({ data: cache[queryHash].data });
+    } else {
+      // if not found in cache then fetch from API */
+    axios
+      .post(proxy + emissionTable, allEmissionQuery)
+      .then(res => {
+        console.log('POST RES', res);
+
+        // if fail, bail *temp
+        if (res.status !== 200) {
+          console.log('failed to fetch data');
+
+          this.setState({
+            apiResponse: res
+          });
+
+          return;
+        }
+
+        window.allData = res.data.data;
+
+        const data = res.data.data.map(item => {
+          const year = parseInt(item.key[2]);
+          //const sectorCode = item.key[1];
+          const sector = {
+            name: this.state.dataTitles.sectors.filter(
+              sect => sect.code === item.key[1]
+            )[0].name,
+            code: item.key[1]
+          };
+          //const substance = item.key[0];
+          const substance = {
+            name: this.state.dataTitles.substances.filter(
+              subs => subs.code === item.key[0]
+            )[0].name,
+            code: item.key[0]
+          };
+          const value = parseInt(item.values[0]);
+
+          return {
+            year,
+            sector,
+            substance,
+            value
+          };
+        });
+
+        //data = groupBy(data, 'substance')
+        console.log('data', data);
+
+        const sortedByYear = this.state.dataTitles.years.map(year => []);
+        console.log('sorted pre', sortedByYear);
+
+        const firstYear = this.state.dataTitles.years[0];
+
+        data.forEach(item => {
+          const yearIndex = item.year - firstYear;
+
+          sortedByYear[yearIndex].push(item);
+        });
+
+        console.log('sorted', sortedByYear);
+
+        /* const dataBySubstance = groupData(data, 'substance', 'code');
+        const dataBySector = groupData(data, 'sector', 'code');
+
+        console.log('data by substance', dataBySubstance);
+        console.log('data by sector', dataBySector); */
+
+        /* const group1 = groupedData[0];
+        const restGroups = groupedData.slice(1, groupedData.length - 1);
+
+        console.log('group1', group1, 'rest', restGroups); */
+
+        // => {3: ["one", "two"], 5: ["three"]}
+
+        /* // add data to cache
+          cache[queryHash] = {
+            data,
+            timeStamp: Date.now()
+          };
+          localStorage.setItem('cache', JSON.stringify(cache)); */
+
+        /* const charts = this.state.charts;
+
+        charts[chartIndex].data = groupedData;
+
+        this.setState({ charts }); */
+      })
+      .catch(error => {
+        console.log('POST ERROR', error);
+      });
+    //}
+  }
 
   //Bug - if you go further back then data[0] (so limit: to: becomes -1 or more the app crashes)
   pushRangeLimit(endPoint, reaseType) {
@@ -214,45 +490,94 @@ class Charts extends Component {
     this.setState({ charts });
   };
 
-  setSubstances = (chartIndex, item) => {
+  tableConfig = (chartIndex, clicked, listName) => {
     const charts = this.state.charts;
-    const substances = charts[chartIndex].substances;
+    const chart = charts[chartIndex];
+    const list = chart[listName];
 
-    let newSubstances = substances.includes(item)
-      ? substances.filter(sub => sub !== item && sub.name)
-      : [...substances, item];
+    console.log('LIST', list);
+
+    /* let newSubstances = substances.includes(clicked)
+      ? substances.filter(item => item !== clicked && item.name)
+      : [...substances, clicked]; */
+
+    let newList = list.includes(clicked)
+      ? list.filter(item => item !== clicked && item.name)
+      : [...list, clicked];
 
     // display example-substance only if no other chosen
-    let exampleSubstance = false;
+    let exampleList = false;
+    const exampleObject =
+      listName === 'substances'
+        ? {
+            name: '*Substance*',
+            code: 'NOx'
+          }
+        : {
+            name: '*Sector*',
+            code: '0.5'
+          };
 
-    if (newSubstances.length < 1) {
-      newSubstances.push({ name: '*substance*', code: '*unit*' });
-      charts[chartIndex].data = chartDataBakery();
-      exampleSubstance = true;
-    } else if (newSubstances.length > 1) {
-      exampleSubstance = false;
-      newSubstances = newSubstances.filter(sub => sub.name !== '*substance*');
+    if (newList.length < 1) {
+      newList.push(exampleObject); // exampleData
+
+      charts[chartIndex].data = this.chartDataBakery();
+      exampleList = true;
+    } else if (newList.length > 1) {
+      exampleList = false;
+      newList = newList.filter(
+        item => item.name !== '*substance*' && item.name !== '*sector*'
+      ); // exampleData
     }
 
-    console.log('index', chartIndex, 'subs', substances);
+    console.log('index', chartIndex, 'list', list);
 
-    charts[chartIndex].substances = newSubstances;
+    charts[chartIndex][listName] = newList;
 
-    this.setState(
-      {
-        charts
-      },
-      () => {
-        if (exampleSubstance) return;
+    //if (exampleList) return;
+
+    console.log('NEWLIST', newList);
+
+    // update data
+
+    // choices
+    const addedSubstances = chart.substances;
+    const addedSectors = chart.sectors;
+
+    console.log('added', addedSubstances);
+
+    // filter data
+    const allData = this.state.data;
+
+    const filtered = allData.map(year =>
+      year.filter(
+        item =>
+          addedSubstances.some(added => added.code === item.substance.code) &&
+          addedSectors.some(added => added.code === item.sector.code)
+      )
+    );
+
+    charts[chartIndex].data = filtered;
+
+    this.setState({
+      charts
+    });
+
+    console.log('SUB FILTERED', filtered);
+
+    /* const queryIndex = listName === 'substances' ? 0 : 1;
 
         const query = queryBakery;
-        query.query[0].selection.values = newSubstances.map(sub => sub.code);
+
+        query.query[queryIndex].selection.values = newList.map(item => item.code);
 
         console.log('post query', query);
 
-        this.postEmissionData(query, chartIndex, newSubstances.length);
-      }
-    );
+        this.fetchData(query, chartIndex, newList.length); */
+  };
+
+  setSectors = () => {
+    //...
   };
 
   tableHandler = (item, array) => {
@@ -268,7 +593,7 @@ class Charts extends Component {
 
           queryBakery.query[indicator].selection.values =
             indicator === 0 ? substancesAdded : sectorsAdded;
-          this.postEmissionData(queryBakery);
+          this.fetchData(queryBakery);
           return {
             [array]: newArr
           };
@@ -281,125 +606,21 @@ class Charts extends Component {
 
           queryBakery.query[indicator].selection.values = substancesAdded;
 
-          this.postEmissionData(queryBakery);
+          this.fetchData(queryBakery);
           return {
             [array]: newArr
           };
         });
-    /* this.postEmissionData(queryBakery); */ //don't think we need another request here.
+    /* this.fetchData(queryBakery); */ //don't think we need another request here.
   };
 
   setActiveClass = (item, arr = []) => {
     return arr.includes(item) ? 'active' : '';
   };
 
-  getEmissionData() {
-    axios
-      .get(proxy + emissionTable)
-      .then(res => {
-        const substances = res.data.variables[0].values.map((item, nth) => ({
-          name: res.data.variables[0].valueTexts[nth],
-          code: item
-        }));
-
-        const sectors = res.data.variables[1].values.map((item, nth) => ({
-          name: res.data.variables[1].valueTexts[nth],
-          code: item
-        }));
-
-        const years = res.data.variables[3].values;
-
-        const apiResponse = res;
-
-        this.setState({
-          substances,
-          sectors,
-          years,
-          apiResponse
-        });
-      })
-      .catch(error => {
-        console.log('GET ERROR', error);
-      });
-  }
-
-  postEmissionData(query, chartIndex, substancesLength) {
-    /*  const queryHash = md5(JSON.stringify(query));
-
-    const cache = JSON.parse(localStorage.getItem('dataCache')) || null;
-
-    // if cache object doesn't exists, create it
-    if (!cache) localStorage.setItem('dataCache', JSON.stringify({}));
-
-    // if cache found and not older than 1 week
-    if (
-      cache[queryHash] &&
-      cache[queryHash].timeStamp > Date.now() - 504000000
-    ) {
-      // update data in state
-      this.setState({ data: cache[queryHash].data });
-    } else {
-      // if not found in cache then fetch from API */
-    axios
-      .post(proxy + emissionTable, query)
-      .then(res => {
-        console.log('POST RES', res);
-
-        const data = res.data.data.map(item => {
-          const year = item.key[2];
-          const sector = item.key[1];
-          //const substance = item.key[0];
-          const substance = {
-            name: this.state.library.substances.filter(
-              subs => subs.code === item.key[0]
-            )[0].name,
-            code: item.key[0]
-          };
-          const toParse = item.values[0];
-          const value = parseInt(toParse);
-
-          return {
-            year,
-            sector,
-            substance,
-            value
-          };
-        });
-
-        //data = groupBy(data, 'substance')
-        console.log('data', data);
-
-        const groupedData = groupData(data, 'substance', 'code');
-
-        console.log('data splitted', groupedData);
-
-        /* const group1 = groupedData[0];
-        const restGroups = groupedData.slice(1, groupedData.length - 1);
-
-        console.log('group1', group1, 'rest', restGroups); */
-
-        // => {3: ["one", "two"], 5: ["three"]}
-
-        /* // add data to cache
-          cache[queryHash] = {
-            data,
-            timeStamp: Date.now()
-          };
-          localStorage.setItem('cache', JSON.stringify(cache)); */
-        const charts = this.state.charts;
-        charts[chartIndex].data = groupedData;
-
-        this.setState({ charts });
-      })
-      .catch(error => {
-        console.log('POST ERROR', error);
-      });
-    //}
-  }
-
   render() {
-    const { charts, data } = this.state;
-    const totalTimespan = data ? data.length - 1 : 0;
+    const { charts, dataTitles } = this.state;
+    const totalTimespan = dataTitles.years.length - 1 || 0;
 
     return (
       <div>
@@ -410,10 +631,10 @@ class Charts extends Component {
               <div key={nth} className="chartContainer">
                 <Table
                   setActiveClass={this.setActiveClass}
-                  setSubstances={this.setSubstances}
+                  tableConfig={this.tableConfig}
                   setChartType={this.setChartType}
-                  library={this.state.library}
-                  chart={charts[nth]}
+                  dataTitles={dataTitles}
+                  chart={chart}
                   chartIndex={nth}
                 />
 
