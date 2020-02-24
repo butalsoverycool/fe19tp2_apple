@@ -48,6 +48,7 @@ class Firebase {
 
   organizations = () => this.firestore.collection('organizations');
   organization = orgId => this.firestore.doc(`organizations/${orgId}`);
+  storage = () => this.storage.ref();
 
   // createUser = ({ userId, email, orgId, ...rest }) =>
   //   this.user(userId).set({ email, orgId, ...rest });

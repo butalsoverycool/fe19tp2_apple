@@ -27,6 +27,11 @@ class Theme extends Component {
           .get()
           .then(snapshot => {
             const dbUser = snapshot.data();
+
+            if (dbUser.photoURL != null) {
+              const dbLogo = dbUser.photoURL;
+              this.setState({ dataUrl: dbLogo });
+            }
             if (dbUser.settings.color != null) {
               const dbColor = dbUser.settings.color;
               this.setState({ color: dbColor });
@@ -63,19 +68,32 @@ class Theme extends Component {
       color: newColor
     });
   };
+  get file() {
+    return this.state.logo && this.state.logo.files[0];
+  }
 
   // WIP - save changes to firestore
 
   saveChanges = () => {
-    // if (!this.state.logo) return;
-
     alert('Saved');
+
     this.props.firebase.auth.onAuthStateChanged(authUser => {
       if (authUser) {
+        if (this.state.logo) {
+          this.props.firebase.storage
+            .ref()
+            .child('user-profiles')
+            .child(authUser.uid)
+            .child(this.state.logo.name)
+            .put(this.state.logo)
+            .then(response => response.ref.getDownloadURL())
+            .then(photoURL =>
+              this.props.firebase.user(authUser.uid).update({ photoURL })
+            );
+        }
         this.props.firebase.user(authUser.uid).update({
           settings: {
-            color: this.state.color,
-            logo: defaultLogoUrl
+            color: this.state.color
           }
         });
       }
@@ -88,7 +106,6 @@ class Theme extends Component {
       previewColor: this.previewColor,
       saveChanges: this.saveChanges
     };
-
     return (
       <ThemeContext.Provider
         value={{
