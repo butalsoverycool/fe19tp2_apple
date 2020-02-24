@@ -1,5 +1,5 @@
 import React from 'react';
-import Birds from './birds'
+/* import Birds from './birds' */
 import styled, { ThemeProvider } from 'styled-components';
 import { Theme } from '../GlobalStyles';
 
@@ -7,7 +7,7 @@ const Landing = () => {
   return (
     <ThemeProvider theme={Theme}>
       <div>
-        <Birds />
+        {/* <Birds /> */}
       </div>
     </ThemeProvider>
   )

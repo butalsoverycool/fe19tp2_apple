@@ -11,8 +11,8 @@ import {
 } from 'recharts';
 
 const Wrapper = styled.div`
-	width: 85%;
-	height: 470px;
+	width: 90%;
+	height: 20rem;
 	margin: auto;
 	display: flex;
 	flex-direction: column;
