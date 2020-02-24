@@ -14,9 +14,7 @@ const proxy = 'https://cors-anywhere.herokuapp.com/';
 const emissionTable =
   'http://api.scb.se/OV0104/v1/doris/en/ssd/START/MI/MI0108/TotaltUtslapp';
 
-const GridContainer = styled.div`
-  grid-column-start: 2;
-  grid-column-end: span 8;
+const Wrapper = styled.div`
   border-radius: 15px;
   background-color: gainsboro;
 `;
@@ -50,9 +48,9 @@ class Charts extends Component {
     this.state = {
       data: null,
       dataRequest: null, // availableData.dataRequest, // [], // temp to skip reqs
-      substances: /* availableData.substances, // */ [],
-      sectors: /* availableData.sectors, // */ [],
-      years: /* availableData.years, // */ [],
+      substances: /* availableData.substances, // */[],
+      sectors: /* availableData.sectors, // */[],
+      years: /* availableData.years, // */[],
       limit: { from: 0, to: 28 },
       isLoading: false,
 
@@ -153,34 +151,34 @@ class Charts extends Component {
           newArr = [...prevState[array], item];
 
           const substancesAdded = newArr.map(item => item.code); */
+      /* const sectorsAdded = newArr.map(item => item.code); */
+
+      this.setState(prevState => {
+        newArr = prevState[array].filter(el => el !== item);
+        console.log(newArr);
+        const substancesAdded = newArr.map(item => item.code);
+        const sectorsAdded = newArr.map(item => item.code);
+
+        queryBakery.query[indicator].selection.values =
+          indicator === 0 ? substancesAdded : sectorsAdded;
+        this.postEmissionData(queryBakery);
+        return {
+          [array]: newArr
+        };
+      })
+      : this.setState(prevState => {
+        newArr = [...prevState[array], item];
+        console.log(newArr);
+        const substancesAdded = newArr.map(item => item.code);
         /* const sectorsAdded = newArr.map(item => item.code); */
 
-        this.setState(prevState => {
-          newArr = prevState[array].filter(el => el !== item);
-          console.log(newArr);
-          const substancesAdded = newArr.map(item => item.code);
-          const sectorsAdded = newArr.map(item => item.code);
+        queryBakery.query[indicator].selection.values = substancesAdded;
 
-          queryBakery.query[indicator].selection.values =
-            indicator === 0 ? substancesAdded : sectorsAdded;
-          this.postEmissionData(queryBakery);
-          return {
-            [array]: newArr
-          };
-        })
-      : this.setState(prevState => {
-          newArr = [...prevState[array], item];
-          console.log(newArr);
-          const substancesAdded = newArr.map(item => item.code);
-          /* const sectorsAdded = newArr.map(item => item.code); */
-
-          queryBakery.query[indicator].selection.values = substancesAdded;
-
-          this.postEmissionData(queryBakery);
-          return {
-            [array]: newArr
-          };
-        });
+        this.postEmissionData(queryBakery);
+        return {
+          [array]: newArr
+        };
+      });
     /* this.postEmissionData(queryBakery); */ //don't think we need another request here.
   };
 
@@ -319,14 +317,14 @@ class Charts extends Component {
     const totalTimespan = data ? data.length - 1 : 0;
 
     return (
-      <GridContainer>
+      <Wrapper>
         <ChartHeader
           data={
             data
               ? sliceData()
               : console.log(
-                  'ChartHeader = need to select substance/sector to show header'
-                )
+                'ChartHeader = need to select substance/sector to show header'
+              )
           }
           sectors={this.state.sectors}
         />
@@ -349,8 +347,8 @@ class Charts extends Component {
               data
                 ? sliceData()
                 : console.log(
-                    'Preview = need to select substance, sector for preview to show'
-                  )
+                  'Preview = need to select substance, sector for preview to show'
+                )
             }
             sectors={this.state.sectors}
             limit={this.state.limit}
@@ -368,7 +366,7 @@ class Charts extends Component {
           pushRangeLimit={this.pushRangeLimit}
           setRangeLimit={this.setRangeLimit}
         />
-      </GridContainer>
+      </Wrapper>
     );
   }
 }

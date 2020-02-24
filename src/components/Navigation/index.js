@@ -19,8 +19,8 @@ const Navigation = props => (
       authUser ? (
         <NavigationAuth authUser={authUser} theme={props.theme} />
       ) : (
-        <NavigationNonAuth theme={props.theme} />
-      )
+          <NavigationNonAuth theme={props.theme} />
+        )
     }
   </AuthUserContext.Consumer>
 );
@@ -43,18 +43,20 @@ const NavigationAuth = props => (
 );
 
 const NavigationNonAuth = props => (
-  <header>
-    <Link to={ROUTES.LANDING}>
-      <Logo src={props.theme.state.dataUrl} alt="BEV logo" />
-    </Link>
+  <Styled.Grid>
+    <Styled.Container>
+      <Link to={ROUTES.LANDING}>
+        <Logo src={props.theme.state.dataUrl} alt="BEV logo" />
+      </Link>
 
-    <Styled.LI>
-      <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
-    </Styled.LI>
-    <Styled.LI>
-      <Link to={ROUTES.SIGN_IN}>Sign In</Link>
-    </Styled.LI>
-  </header>
+      <Styled.LI>
+        <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
+      </Styled.LI>
+      <Styled.LI>
+        <Link to={ROUTES.SIGN_IN}>Sign In</Link>
+      </Styled.LI>
+    </Styled.Container>
+  </Styled.Grid>
 );
 
 export default withTheme(Navigation);

@@ -7,28 +7,34 @@ import { withAuthorization } from '../Session';
 import { Theme } from '../GlobalStyles';
 import { withTheme } from '../Theme';
 import * as Styled from './styled';
+import device from '../device';
 
-const Layout = styled.div`
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  grid-auto-rows: 1fr;
-  /* 	//grid-template-columns: repeat(auto-fill, minmax(28em, 2fr)); */
-  grid-gap: 10px;
-  background-color: ${props => props.themeBg || 'none'};
+
+const Grid = styled.div`
+@media ${device.mobileS} {}
+@media ${device.mobileM} {}
+@media ${device.mobileL} {}
+@media ${device.tablet} {}
+@media ${device.laptop} {}
+@media ${device.laptopL} {}
+@media ${device.desktop} {}
+
+grid-column-start: 2;
+grid-column-end: span 8;
 `;
 
 const DashboardPage = props => {
   const { color } = props.theme.state;
 
   return (
-    <Styled.Grid>
-      <ThemeProvider theme={Theme}>
-        <Layout themeBg={color.hex}>
-          <Charts />
-          <Charts />
-        </Layout>
-      </ThemeProvider>
-    </Styled.Grid>
+
+    <ThemeProvider theme={Theme}>
+      <Grid themeBg={color.hex}>
+        <Charts />
+        <Charts />
+      </Grid>
+    </ThemeProvider>
+
   );
 };
 

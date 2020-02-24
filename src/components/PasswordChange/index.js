@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as Styled from './styled';
 import { withFirebase } from '../Firebase';
 
+
 const INITIAL_STATE = {
   passwordOne: '',
   passwordTwo: '',
