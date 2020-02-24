@@ -3,6 +3,7 @@ import Charts from '../Charts';
 import styled, { ThemeProvider } from 'styled-components';
 import { withAuthorization } from '../Session';
 import { Theme } from '../GlobalStyles';
+
 import * as Styled from './styled';
 
 const HomePage = () => {
@@ -16,5 +17,5 @@ const HomePage = () => {
 	);
 };
 
-const condition = (authUser) => !!authUser;
+const condition = authUser => !!authUser;
 export default withAuthorization(condition)(HomePage);
