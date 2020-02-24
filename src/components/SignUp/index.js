@@ -3,11 +3,15 @@ import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
+import * as Styled from './styled';
+
 const SignUpPage = () => (
-  <div>
-    <h1>Sign up</h1>
-    <SignUpForm />
-  </div>
+  <Styled.Grid>
+    <Styled.Wrapper>
+      <h1>Sign up</h1>
+      <SignUpForm />
+    </Styled.Wrapper>
+  </Styled.Grid>
 );
 const INITIAL_STATE = {
   name: '',
