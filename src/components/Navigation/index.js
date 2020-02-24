@@ -29,7 +29,10 @@ const NavigationAuth = props => (
   <Styled.Grid>
     <Styled.Container>
       <Link to={ROUTES.DASHBOARD}>
-        <Logo src={props.theme.state.dataUrl} alt="BEV logo" />
+        <Logo
+          src={props.theme.state.logoUrl || props.theme.state.defaultLogoUrl}
+          alt="BEV logo"
+        />
       </Link>
       <Styled.LI>
         <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
@@ -43,11 +46,16 @@ const NavigationAuth = props => (
 );
 
 const NavigationNonAuth = props => (
+
   <Styled.Grid>
-    <Styled.Container>
-      <Link to={ROUTES.LANDING}>
-        <Logo src={props.theme.state.dataUrl} alt="BEV logo" />
-      </Link>
+  <Styled.Container>
+    <Link to={ROUTES.LANDING}>
+      <Logo
+        src={props.theme.state.logoUrl || props.theme.state.defaultLogoUrl}
+        alt="BEV logo"
+      />
+    </Link>
+
 
       <Styled.LI>
         <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
