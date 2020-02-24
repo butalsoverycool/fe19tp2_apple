@@ -7,9 +7,6 @@ import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
 import * as Styled from './styled';
 
-
-
-
 const SignInPage = () => {
   return (
     <Styled.Grid>
@@ -20,7 +17,6 @@ const SignInPage = () => {
         <SignUpLink />
       </Styled.Wrapper>
     </Styled.Grid>
-
   );
 };
 
@@ -41,7 +37,7 @@ class SignInFormBase extends Component {
       .doSignInWithEmailAndPassword(email, password)
       .then(() => {
         this.setState({ ...INITIAL_STATE });
-        this.props.history.push(ROUTES.HOME);
+        this.props.history.push(ROUTES.DASHBOARD);
       })
       .catch(error => {
         this.setState({ error });
@@ -56,30 +52,26 @@ class SignInFormBase extends Component {
     const isInvalid = password === '' || email === '';
 
     return (
-
-
-      < form onSubmit={this.onSubmit} >
+      <form onSubmit={this.onSubmit}>
         <input
-          name='email'
+          name="email"
           value={email}
           onChange={this.onChange}
-          type='text'
-          placeholder='Email Address'
+          type="text"
+          placeholder="Email Address"
         />
         <input
-          name='password'
+          name="password"
           value={password}
           onChange={this.onChange}
-          type='password'
-          placeholder='Password'
+          type="password"
+          placeholder="Password"
         />
-        <button disabled={isInvalid} type='submit'>
+        <button disabled={isInvalid} type="submit">
           Sign In
         </button>
         {error && <p> {error.message}</p>}
-      </form >
-
-
+      </form>
     );
   }
 }

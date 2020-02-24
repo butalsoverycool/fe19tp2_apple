@@ -68,10 +68,15 @@ class Theme extends Component {
       color: newColor
     });
   };
-  get file() {
+  /* get file() {
     return this.state.logo && this.state.logo.files[0];
-  }
+  } */
 
+  /* }
+
+  } */
+
+  //
   // WIP - save changes to firestore
 
   saveChanges = () => {

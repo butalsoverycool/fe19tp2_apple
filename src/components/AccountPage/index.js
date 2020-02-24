@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { compose } from 'recompose';
 import { AuthUserContext, withAuthorization } from '../Session';
+import { PasswordForgetForm } from '../PasswordForget';
+import PasswordChangeForm from '../PasswordChange';
 import styled from 'styled-components';
 import { withFirebase } from '../Firebase';
 import { withTheme } from '../Theme';
@@ -11,9 +13,10 @@ const Wrapper = styled.div`
   margin: auto;
   width: 100vw;
   max-width: 600px;
+  background-color: ${props => props.themeBg || 'none'};
 `;
 
-class AdminPage extends Component {
+class AccountPage extends Component {
   render() {
     //theme
     const { color } = this.props.theme.state;
@@ -24,6 +27,7 @@ class AdminPage extends Component {
           {authUser => (
             <div>
               <h1>Admin: {authUser.email}</h1>
+              <PasswordChangeForm />
             </div>
           )}
         </AuthUserContext.Consumer>
@@ -31,17 +35,17 @@ class AdminPage extends Component {
         <LogoUploader />
 
         <Colorpicker />
-        <button type='button' onClick={saveChanges}>
+        <button type="button" onClick={saveChanges}>
           Save Changes
         </button>
       </Wrapper>
     );
   }
 }
-const condition = authUser => authUser;
+const condition = authUser => !!authUser;
 
 export default compose(
   withFirebase,
   withTheme,
   withAuthorization(condition)
-)(AdminPage);
+)(AccountPage);

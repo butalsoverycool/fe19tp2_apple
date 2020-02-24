@@ -1,4 +1,5 @@
-export const defaultLogoUrl = 'https://www.logologo.com/logos/flower-logo.jpg';
+export const defaultLogoUrl =
+  'https://firebasestorage.googleapis.com/v0/b/bev-fe19.appspot.com/o/bev.png?alt=media&token=9e273eac-040e-45d3-a96e-9ba3d22cf7a6';
 
 export const defaultColor = {
   hsl: '{h: 192.8813559322034, s: 0, l: 1, a: 1}',

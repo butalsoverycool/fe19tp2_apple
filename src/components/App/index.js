@@ -5,9 +5,8 @@ import LandingPage from '../Landing';
 import SignUpPage from '../SignUp';
 import SignInPage from '../SignIn';
 import PasswordForgetPage from '../PasswordForget';
-import HomePage from '../Home';
-import AccountPage from '../Account';
-import AdminPage from '../Admin';
+import DashboardPage from '../DashboardPage';
+import AccountPage from '../AccountPage';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { Theme } from '../GlobalStyles';
 import * as ROUTES from '../../constants/routes';
@@ -25,9 +24,7 @@ body {
     margin: 0; 
     padding: 0; 
   }
-  
-}
-`;
+}`;
 
 class App extends Component {
   constructor(props) {
@@ -39,7 +36,6 @@ class App extends Component {
   }
   render() {
     return (
-
       <ThemeProvider theme={Theme}>
         <Router>
           <GlobalStyle bg />
@@ -52,13 +48,11 @@ class App extends Component {
               path={ROUTES.PASSWORD_FORGET}
               component={PasswordForgetPage}
             />
-            <Route path={ROUTES.HOME} component={HomePage} />
+            <Route path={ROUTES.DASHBOARD} component={DashboardPage} />
             <Route path={ROUTES.ACCOUNT} component={AccountPage} />
-            <Route path={ROUTES.ADMIN} component={AdminPage} />
           </Styled.GridLayout>
         </Router>
       </ThemeProvider>
-
     );
   }
 }

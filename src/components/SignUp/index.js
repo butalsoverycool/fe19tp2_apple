@@ -52,7 +52,7 @@ class SignUpFormBase extends Component {
           });
 
         this.setState({ ...INITIAL_STATE });
-        this.props.history.push(ROUTES.HOME);
+        this.props.history.push(ROUTES.DASHBOARD);
       })
       .catch(error => {
         this.setState({ error });
@@ -74,33 +74,33 @@ class SignUpFormBase extends Component {
     return (
       <form onSubmit={this.onSubmit}>
         <input
-          name='name'
+          name="name"
           onChange={this.onChange}
-          type='text'
-          placeholder='Organization name'
+          type="text"
+          placeholder="Organization name"
         />
         <input
-          name='email'
+          name="email"
           value={email}
           onChange={this.onChange}
-          type='text'
-          placeholder='Email Adress'
+          type="text"
+          placeholder="Email Adress"
         />
         <input
-          name='passwordOne'
+          name="passwordOne"
           value={passwordOne}
           onChange={this.onChange}
-          type='password'
-          placeholder='Password'
+          type="password"
+          placeholder="Password"
         />{' '}
         <input
-          name='passwordTwo'
+          name="passwordTwo"
           value={passwordTwo}
           onChange={this.onChange}
-          type='password'
-          placeholder='Confirm Password'
+          type="password"
+          placeholder="Confirm Password"
         />
-        <button disabled={isInvalid} type='submit'>
+        <button disabled={isInvalid} type="submit">
           Sign Up
         </button>
         {error && <p>{error.message}</p>}
