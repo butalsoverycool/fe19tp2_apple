@@ -8,7 +8,9 @@ export const Grid = styled.div`
 @media ${device.tablet} {}
 @media ${device.laptop} {}
 @media ${device.laptopL} {}
-@media ${device.desktop} {}
+@media ${device.desktop} {
+  
+}
 
 grid-column-start: 4;
 grid-column-end: 8;

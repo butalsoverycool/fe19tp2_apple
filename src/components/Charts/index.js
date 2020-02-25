@@ -15,7 +15,7 @@ const emissionTable =
   'http://api.scb.se/OV0104/v1/doris/en/ssd/START/MI/MI0108/TotaltUtslapp';
 
 const Wrapper = styled.div`
-  border-radius: 15px;
+  border-radius: 8px;
   background-color: gainsboro;
 `;
 

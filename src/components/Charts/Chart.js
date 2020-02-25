@@ -8,17 +8,14 @@ import Table from './Table';
 import ChartTemplate from './ChartTemplate';
 import * as Styled from './Styled'
 
+const Chart = ({ data, children }) => {
+  const AddChart = () => {
+    return (
+      <button className>ADD CHART</button>
+    );
+  }
 
-
-
-const Chart = ({data, children}) => {
-      const AddChart = () => {
-        return(
-          <button className>ADD CHART</button>
-        );
-      }
-
-      const AddChartStyled = styled(AddChart)`
+  const AddChartStyled = styled(AddChart)`
         width: 100px;
         height: 50px;
         border-radius: 10px;
@@ -27,16 +24,16 @@ const Chart = ({data, children}) => {
         font-size: 1em;
       `;
 
-      const totalTimespan = this.state.data ? this.state.data.length - 1 : null;
-      //const data = this.state.data ? this.state.data : [];
-      //console.log("DATA", data);
-      return (
-        <div className="Chart">
-          <AddChartStyled/>
-          {data ? children : null}
-        </div>
-      );
-  }
+  const totalTimespan = this.state.data ? this.state.data.length - 1 : null;
+  //const data = this.state.data ? this.state.data : [];
+  //console.log("DATA", data);
+  return (
+    <div className="Chart">
+      <AddChartStyled />
+      {data ? children : null}
+    </div>
+  );
+}
 }
 
 export default Chart;

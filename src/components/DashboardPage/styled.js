@@ -10,7 +10,7 @@ export const Grid = styled.div`
 @media ${device.laptopL} {}
 @media ${device.desktop} {}
 
-grid-column-start: 2;
-grid-column-end: 10;
+grid-column-start: 1;
+grid-column-end: span 10;
 `;
 
