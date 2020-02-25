@@ -1,71 +1,67 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { Link } from 'react-router-dom';
 import SignOutButton from '../SignOut';
 import * as ROUTES from '../../constants/routes';
+import * as ROLES from '../../constants/roles';
+import * as Styled from './styled';
 import { AuthUserContext } from '../Session';
+import { Theme } from '../GlobalStyles';
+import { withTheme } from '../Theme';
 
-const Container = styled.nav`
-  border-bottom: 1px solid black;
+const Logo = styled.img`
+  max-width: 100px;
+  max-width: 60px;
 `;
-const UL = styled.ul``;
 
-const LI = styled.li`
-  display: inline-block;
-  padding: 1em;
-
-  & > a {
-    text-decoration: none;
-    color: black;
-
-    &:hover {
-      color: grey;
+const Navigation = props => (
+  <AuthUserContext.Consumer>
+    {authUser =>
+      authUser ? (
+        <NavigationAuth authUser={authUser} theme={props.theme} />
+      ) : (
+        <NavigationNonAuth theme={props.theme} />
+      )
     }
-  }
-`;
-
-const Navigation = ({ authUser }) => (
-  <div>
-    {' '}
-    <AuthUserContext.Consumer>
-      {authUser => (authUser ? <NavigationAuth /> : <NavigationNonAuth />)}
-    </AuthUserContext.Consumer>
-  </div>
+  </AuthUserContext.Consumer>
 );
 
-const NavigationAuth = () => (
-  <Container>
-    <UL>
-      <LI>
-        <Link to={ROUTES.SIGN_IN}>Sign In</Link>
-      </LI>
-      <LI>
-        <Link to={ROUTES.LANDING}>Landing</Link>
-      </LI>
-      <LI>
-        <Link to={ROUTES.HOME}>Home</Link>
-      </LI>
-      <LI>
+const NavigationAuth = props => (
+  <Styled.Grid>
+    <Styled.Container>
+      <Link to={ROUTES.DASHBOARD}>
+        <Logo
+          src={props.theme.state.logoUrl || props.theme.state.defaultLogoUrl}
+          alt="BEV logo"
+        />
+      </Link>
+      <Styled.LI>
+        <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
+      </Styled.LI>
+      <Styled.LI>
         <Link to={ROUTES.ACCOUNT}>Account</Link>
-      </LI>
-      <LI>
-        <Link to={ROUTES.ADMIN}>Admin</Link> {/* display only if admin user */}
-      </LI>
-      <LI>
-        <SignOutButton />
-      </LI>
-    </UL>
-  </Container>
+      </Styled.LI>
+      <SignOutButton />
+    </Styled.Container>
+  </Styled.Grid>
 );
 
-const NavigationNonAuth = () => (
-  <ul>
-    <li>
-      <Link to={ROUTES.LANDING}>Landing</Link>
-    </li>
-    <li>
+const NavigationNonAuth = props => (
+  <header>
+    <Link to={ROUTES.LANDING}>
+      <Logo
+        src={props.theme.state.logoUrl || props.theme.state.defaultLogoUrl}
+        alt="BEV logo"
+      />
+    </Link>
+
+    <Styled.LI>
+      <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
+    </Styled.LI>
+    <Styled.LI>
       <Link to={ROUTES.SIGN_IN}>Sign In</Link>
-    </li>
-  </ul>
+    </Styled.LI>
+  </header>
 );
-export default Navigation;
+
+export default withTheme(Navigation);

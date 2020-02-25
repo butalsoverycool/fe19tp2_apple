@@ -5,7 +5,7 @@ import { Container, Row, Col } from 'react-awesome-styled-grid';
 
 const Options = styled.option``;
 
-const List = styled.select`
+const Select = styled.select`
   height: 1.8rem;
   width: 10rem;
   margin: 1rem 0rem 0.6rem 0rem;
@@ -29,13 +29,22 @@ const DropdownContainer = styled.div`
 `;
 
 class Table extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     const {
+      tab,
       setChartType,
-      tableHandler,
+      chartFactory,
       dataTitles,
       setActiveClass
     } = this.props;
+
+    const catName = tab.catName;
+    const catNameSingular = catName === 'substances' ? 'substance' : 'sector';
+
     return (
       <>
         {/*//Dropdown menus, one for substance and one for sector (year will
@@ -46,7 +55,7 @@ class Table extends Component {
           <Col xs={2} sm={2} md={1} lg={4} xl={4}>
             <DropdownContainer>
               <TableHead className="dropdown-button">Chart Type</TableHead>
-              <List className="dropdown-content">
+              <Select className="dropdown-content">
                 {dataTitles.chartTypes.map(item => (
                   <TD
                     key={item}
@@ -56,14 +65,14 @@ class Table extends Component {
                     {item}
                   </TD>
                 ))}
-              </List>
+              </Select>
             </DropdownContainer>
           </Col>
 
           <Col xs={2} sm={2} md={1} lg={4} xl={4}>
             <DropdownContainer className="dropdown-container">
               <TableHead className="dropdown-button">Substances</TableHead>
-              <List className="dropdown-content">
+              <Select className="dropdown-content">
                 {dataTitles.substances.map(item => (
                   <TD
                     key={item.code}
@@ -82,14 +91,14 @@ class Table extends Component {
                     {item.name}
                   </TD>
                 ))}
-              </List>
+              </Select>
             </DropdownContainer>
           </Col>
 
           <Col xs={2} sm={2} md={1} lg={4} xl={4}>
             <DropdownContainer>
               <TableHead className="dropdown-button">Sector</TableHead>
-              <List className="dropdown-content">
+              <Select className="dropdown-content">
                 {dataTitles.sectors.map(item => (
                   <TD
                     key={item.code}
@@ -105,51 +114,47 @@ class Table extends Component {
                     {item.name}
                   </TD>
                 ))}
-              </List>
+              </Select>
             </DropdownContainer>
           </Col>
         </Row>
       </Container> */}
         <DropdownContainer className="dropdown-container">
           {/* <TableHead className='dropdown-button'>Substance</TableHead> */}
-          <List
+          <Select
             className="dropdown-content-substance"
-            onChange={e =>
-              this.props.tableHandler(e.target.value, 'substancesAdded')
-            }
+            onChange={e => chartFactory(e.target.value, 'substancesAdded')}
+            defaultValue="default"
           >
-            <Options hidden disabled selected value>
-              {' '}
-              - select a substance -{' '}
+            <Options hidden disabled value="default">
+              - select a {catNameSingular} -
             </Options>
-            {dataTitles.substances.map(item => (
+            {dataTitles[catName].map(item => (
               <Options key={item.code} value={JSON.stringify(item)}>
                 {item.name}
               </Options>
             ))}
-          </List>
-
-          {/* <TableHead className='dropdown-button'>Sector</TableHead> */}
-          <List
+          </Select>
+        </DropdownContainer>
+        {/* <TableHead className='dropdown-button'>Sector</TableHead> */}
+        {/* <Select
             className="dropdown-content-sector"
-            onChange={e =>
-              this.props.tableHandler(e.target.value, 'sectorsAdded')
-            }
+            onChange={e => chartFactory(e.target.value, 'sectorsAdded')}
+            defaultValue="default"
           >
-            <Options hidden disabled selected value>
-              {' '}
-              - select a sector -{' '}
+            <Options hidden disabled value="default">
+              - select a sector -
             </Options>
             {dataTitles.sectors.map(item => (
               <Options key={item.code} value={JSON.stringify(item)}>
                 {item.name}
               </Options>
             ))}
-          </List>
-        </DropdownContainer>
+          </Select>*/}
+
         {/* <DropdownContainer>
           <TableHead className="dropdown-button">Timespan</TableHead>
-          <List className="dropdown-content">
+          <Select className="dropdown-content">
             {category.years.map((item) => (
               <TD
                 key={item}
@@ -159,7 +164,7 @@ class Table extends Component {
                 {item}
               </TD>
             ))}
-          </List>
+          </Select>
         </DropdownContainer> */}
       </>
     );

@@ -5,15 +5,18 @@ import { SignUpLink } from '../SignUp';
 import { PasswordForgetLink } from '../PasswordForget';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
+import * as Styled from './styled';
 
 const SignInPage = () => {
   return (
-    <div>
-      <h1>SignIn</h1>
-      <SignInForm />
-      <PasswordForgetLink />
-      <SignUpLink />
-    </div>
+    <Styled.Grid>
+      <Styled.Wrapper>
+        <h1>Sign In</h1>
+        <SignInForm />
+        <PasswordForgetLink />
+        <SignUpLink />
+      </Styled.Wrapper>
+    </Styled.Grid>
   );
 };
 
@@ -26,7 +29,6 @@ class SignInFormBase extends Component {
   constructor(props) {
     super(props);
     this.state = { ...INITIAL_STATE };
-
   }
   onSubmit = event => {
     const { email, password } = this.state;
@@ -35,7 +37,7 @@ class SignInFormBase extends Component {
       .doSignInWithEmailAndPassword(email, password)
       .then(() => {
         this.setState({ ...INITIAL_STATE });
-        this.props.history.push(ROUTES.HOME);
+        this.props.history.push(ROUTES.DASHBOARD);
       })
       .catch(error => {
         this.setState({ error });
@@ -52,20 +54,20 @@ class SignInFormBase extends Component {
     return (
       <form onSubmit={this.onSubmit}>
         <input
-          name='email'
+          name="email"
           value={email}
           onChange={this.onChange}
-          type='text'
-          placeholder='Email Address'
+          type="text"
+          placeholder="Email Address"
         />
         <input
-          name='password'
+          name="password"
           value={password}
           onChange={this.onChange}
-          type='password'
-          placeholder='Password'
+          type="password"
+          placeholder="Password"
         />
-        <button disabled={isInvalid} type='submit'>
+        <button disabled={isInvalid} type="submit">
           Sign In
         </button>
         {error && <p> {error.message}</p>}

@@ -21,12 +21,8 @@ class Firebase {
   constructor() {
     app.initializeApp(config);
     this.auth = app.auth();
-
-
     this.storage = app.storage(); // new
-
     this.firestore = app.firestore();
-
   }
 
   // ##########
@@ -48,10 +44,11 @@ class Firebase {
   // ##########
 
   users = () => this.firestore.collection('users');
-  user = userId => this.firestore.doc(`users/${userId}`);
+  user = uid => this.firestore.doc(`users/${uid}`);
 
   organizations = () => this.firestore.collection('organizations');
   organization = orgId => this.firestore.doc(`organizations/${orgId}`);
+  storage = () => this.storage.ref();
 
   // createUser = ({ userId, email, orgId, ...rest }) =>
   //   this.user(userId).set({ email, orgId, ...rest });
@@ -66,6 +63,40 @@ class Firebase {
 
   // updateOrganization = ({ orgId, ...rest }) =>
   //   this.organization(orgId).set({ ...rest }, { merge: true });
+
+  // Add a new document in collection "cities"
+
+  //*** Merge Auth and DB User API *** //
+
+  onAuthUserListener = (next, fallback) =>
+    this.auth.onAuthStateChanged(authUser => {
+      if (authUser) {
+        this.user(authUser.uid)
+          .get()
+
+          .then(snapshot => {
+            const dbUser = snapshot.data();
+
+            // default empty roles
+            // if (!dbUser.role) {
+            //   dbUser.role = {};
+            // }
+
+            // merge auth and db user
+            authUser = {
+              uid: authUser.uid,
+              email: authUser.email,
+              providerData: authUser,
+              settings: authUser.setttings,
+              ...dbUser
+            };
+
+            next(authUser);
+          });
+      } else {
+        fallback();
+      }
+    });
 }
 
 export default Firebase;

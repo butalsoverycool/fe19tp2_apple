@@ -3,12 +3,15 @@ import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
+import * as Styled from './styled';
 
 const SignUpPage = () => (
-  <div>
-    <h1>Sign up</h1>
-    <SignUpForm />
-  </div>
+  <Styled.Grid>
+    <Styled.Wrapper>
+      <h1>Sign up</h1>
+      <SignUpForm />
+    </Styled.Wrapper>
+  </Styled.Grid>
 );
 const INITIAL_STATE = {
   name: '',
@@ -17,7 +20,6 @@ const INITIAL_STATE = {
   passwordTwo: '',
   error: null
 };
-
 class SignUpFormBase extends Component {
   constructor(props) {
     super(props);
@@ -26,26 +28,31 @@ class SignUpFormBase extends Component {
 
   onSubmit = event => {
     const { name, email, passwordOne } = this.state;
+
     this.props.firebase
       .doCreateUserWithEmailAndPassword(email, passwordOne)
       .then(authUser => {
-        const { uid: userId, email } = authUser.user;
+        const { uid, email } = authUser.user;
 
         // create org in 'organizations' collection and add user ID
         this.props.firebase
           .organizations()
-          .add({ name, users: [userId] })
+          .add({ name, users: [uid] })
           .then(org => {
             // create user in 'users' collection as admin and add org ID
-            this.props.firebase.user(userId).set({
-              email,
-              orgId: org.id,
-              role: 'admin'
-            });
+            this.props.firebase.user(uid).set(
+              {
+                email,
+                orgId: org.id,
+                role: 'Admin',
+                settings: { color: '', logo: '' }
+              },
+              { merge: true }
+            );
           });
 
         this.setState({ ...INITIAL_STATE });
-        this.props.history.push(ROUTES.HOME);
+        this.props.history.push(ROUTES.DASHBOARD);
       })
       .catch(error => {
         this.setState({ error });
@@ -55,11 +62,15 @@ class SignUpFormBase extends Component {
   onChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
-
+  onChangeCheckbox = event => {
+    this.setState({ [event.target.name]: event.target.checked });
+  };
   render() {
     const { name, email, passwordOne, passwordTwo, error } = this.state;
+
     const isInvalid =
       passwordOne !== passwordTwo || passwordOne === '' || name === '';
+
     return (
       <form onSubmit={this.onSubmit}>
         <input

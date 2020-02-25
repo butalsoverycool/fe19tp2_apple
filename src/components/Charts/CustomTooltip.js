@@ -12,7 +12,9 @@ const CustomTooltip = ({ active, payload, label, unit, sector }) => {
   if (active) {
     return (
       <div className="tooltip">
-        <Datamarkers />
+        <p className="label">
+          <Datamarkers />
+        </p>
       </div>
     );
   }

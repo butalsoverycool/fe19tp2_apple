@@ -9,9 +9,9 @@ class Theme extends Component {
     super(props);
 
     this.state = {
-      authUser: null,
       logo: null,
-      dataUrl: defaultLogoUrl,
+      logoUrl: null,
+      defaultLogoUrl: defaultLogoUrl,
       color: defaultColor
     };
 
@@ -21,15 +21,31 @@ class Theme extends Component {
   }
 
   componentDidMount() {
-    // load colors from admin user in firestore...
-    // get auth user
-    this.props.firebase.auth.onAuthStateChanged(authUser => {
-      authUser
-        ? this.setState({ authUser })
-        : this.setState({ authUser: null });
+    this.unsubscribe = this.props.firebase.auth.onAuthStateChanged(authUser => {
+      if (authUser) {
+        this.props.firebase
+          .user(authUser.uid)
+          .get()
+          .then(snapshot => {
+            const dbUser = snapshot.data();
+
+            if (dbUser.photoURL != null) {
+              const dbLogo = dbUser.photoURL;
+              console.log('DB LOGO', dbLogo);
+              this.setState({ logoUrl: dbLogo || this.state.defaultLogo });
+            }
+            if (dbUser.settings.color != null) {
+              const dbColor = dbUser.settings.color;
+              this.setState({ color: dbColor });
+            }
+          });
+      }
     });
   }
 
+  componentWillUnmount() {
+    this.unsubscribe && this.unsubscribe();
+  }
   // WIP - upload/preview logo
   previewLogo = e => {
     const logo = e.target.files[0];
@@ -42,7 +58,7 @@ class Theme extends Component {
     reader.onload = e => {
       this.setState({
         logo,
-        dataUrl: e.target.result
+        logoUrl: e.target.result
       });
     };
 
@@ -54,13 +70,41 @@ class Theme extends Component {
       color: newColor
     });
   };
+  /* get file() {
+    return this.state.logo && this.state.logo.files[0];
+  } */
 
+  /* }
+
+  } */
+
+  //
   // WIP - save changes to firestore
-  saveChanges = () => {
-    if (!this.state.logo) return;
 
-    // save logo and color...
-    // https://firebase.google.com/docs/storage/web/start
+  saveChanges = () => {
+    alert('Saved');
+
+    this.props.firebase.auth.onAuthStateChanged(authUser => {
+      if (authUser) {
+        if (this.state.logo) {
+          this.props.firebase.storage
+            .ref()
+            .child('user-profiles')
+            .child(authUser.uid)
+            .child(this.state.logo.name)
+            .put(this.state.logo)
+            .then(response => response.ref.getDownloadURL())
+            .then(photoURL =>
+              this.props.firebase.user(authUser.uid).update({ photoURL })
+            );
+        }
+        this.props.firebase.user(authUser.uid).update({
+          settings: {
+            color: this.state.color
+          }
+        });
+      }
+    });
   };
 
   render() {
@@ -69,7 +113,6 @@ class Theme extends Component {
       previewColor: this.previewColor,
       saveChanges: this.saveChanges
     };
-
     return (
       <ThemeContext.Provider
         value={{

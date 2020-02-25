@@ -5,28 +5,26 @@ import LandingPage from '../Landing';
 import SignUpPage from '../SignUp';
 import SignInPage from '../SignIn';
 import PasswordForgetPage from '../PasswordForget';
-import HomePage from '../Home';
-import AccountPage from '../Account';
-import AdminPage from '../Admin';
-
-import { ScreenBadge } from 'react-awesome-styled-grid';
-import { createGlobalStyle } from 'styled-components';
-
+import DashboardPage from '../DashboardPage';
+import AccountPage from '../AccountPage';
+import { createGlobalStyle, ThemeProvider } from 'styled-components';
+import { Theme } from '../GlobalStyles';
 import * as ROUTES from '../../constants/routes';
 import { withAuthentication } from '../Session';
+import * as Styled from './styled';
 
-/* const GlobalStyle = createGlobalStyle`
-  body {
-    background-color: ${props => (props.bg ? 'lightgrey' : 'pink')};
-    padding: 0;
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+const GlobalStyle = createGlobalStyle`
+body {
+  background-color: ${props => props.theme.bgPrimary};
+  padding: 0;
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+
+  html {
+    margin: 0; 
+    padding: 0; 
   }
-`; */
+}`;
 
 class App extends Component {
   constructor(props) {
@@ -38,19 +36,23 @@ class App extends Component {
   }
   render() {
     return (
-      <Router>
-        {/* <GlobalStyle bg padding margin /> */}
-        <div>
-          <Navigation authUser={this.state.authUser} />
-          <Route exact path={ROUTES.LANDING} component={LandingPage} />
-          <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
-          <Route path={ROUTES.SIGN_IN} component={SignInPage} />
-          <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
-          <Route path={ROUTES.HOME} component={HomePage} />
-          <Route path={ROUTES.ACCOUNT} component={AccountPage} />
-          <Route path={ROUTES.ADMIN} component={AdminPage} />
-        </div>
-      </Router>
+      <ThemeProvider theme={Theme}>
+        <Router>
+          <GlobalStyle bg />
+          <Styled.GridLayout>
+            <Navigation authUser={this.state.authUser} />
+            <Route exact path={ROUTES.LANDING} component={LandingPage} />
+            <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
+            <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+            <Route
+              path={ROUTES.PASSWORD_FORGET}
+              component={PasswordForgetPage}
+            />
+            <Route path={ROUTES.DASHBOARD} component={DashboardPage} />
+            <Route path={ROUTES.ACCOUNT} component={AccountPage} />
+          </Styled.GridLayout>
+        </Router>
+      </ThemeProvider>
     );
   }
 }
