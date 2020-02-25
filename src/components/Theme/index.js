@@ -10,8 +10,7 @@ class Theme extends Component {
 
     this.state = {
       logo: null,
-      logoUrl: null,
-      defaultLogoUrl: defaultLogoUrl,
+      dataUrl: defaultLogoUrl,
       color: defaultColor
     };
 
@@ -31,8 +30,7 @@ class Theme extends Component {
 
             if (dbUser.photoURL != null) {
               const dbLogo = dbUser.photoURL;
-              console.log('DB LOGO', dbLogo);
-              this.setState({ logoUrl: dbLogo || this.state.defaultLogo });
+              this.setState({ dataUrl: dbLogo });
             }
             if (dbUser.settings.color != null) {
               const dbColor = dbUser.settings.color;
@@ -58,7 +56,7 @@ class Theme extends Component {
     reader.onload = e => {
       this.setState({
         logo,
-        logoUrl: e.target.result
+        dataUrl: e.target.result
       });
     };
 

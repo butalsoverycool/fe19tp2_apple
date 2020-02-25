@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import { withTheme } from '../Theme';
 import { SketchPicker } from 'react-color';
 
@@ -7,7 +8,7 @@ const Colorpicker = props => {
   const { previewColor } = props.theme.setters;
 
   return (
-    <div className="colorContainer">
+    <div className='colorContainer'>
       <p>Your company's primary color</p>
       <SketchPicker color={color} onChangeComplete={previewColor} />
     </div>

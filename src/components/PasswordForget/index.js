@@ -8,13 +8,13 @@ import * as Styled from './styled';
 
 const PasswordForgotPage = () => {
   return (
-    <Styled.Grid>
-      <Styled.Wrapper>
-        {' '}
-        <h1>Password Forgot</h1>
-        <PasswordForgetForm />
-      </Styled.Wrapper>
-    </Styled.Grid>
+
+    <Styled.Wrapper>
+      {' '}
+      <h1>Password Forgot</h1>
+      <PasswordForgetForm />
+    </Styled.Wrapper>
+
   );
 };
 

@@ -19,48 +19,47 @@ const Navigation = props => (
       authUser ? (
         <NavigationAuth authUser={authUser} theme={props.theme} />
       ) : (
-        <NavigationNonAuth theme={props.theme} />
-      )
+          <NavigationNonAuth theme={props.theme} />
+        )
     }
   </AuthUserContext.Consumer>
 );
 
 const NavigationAuth = props => (
-  <Styled.Grid>
-    <Styled.Container>
-      <Link to={ROUTES.DASHBOARD}>
-        <Logo
-          src={props.theme.state.logoUrl || props.theme.state.defaultLogoUrl}
-          alt="BEV logo"
-        />
-      </Link>
-      <Styled.LI>
-        <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
-      </Styled.LI>
-      <Styled.LI>
-        <Link to={ROUTES.ACCOUNT}>Account</Link>
-      </Styled.LI>
-      <SignOutButton />
-    </Styled.Container>
-  </Styled.Grid>
+  <>
+    <Styled.Grid>
+      <Styled.Container>
+        <Link to={ROUTES.DASHBOARD}>
+          <Logo src={props.theme.state.dataUrl} alt="BEV logo" />
+        </Link>
+        <Styled.LI>
+          <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
+        </Styled.LI>
+        <Styled.LI>
+          <Link to={ROUTES.ACCOUNT}>Account</Link>
+        </Styled.LI>
+        <SignOutButton />
+      </Styled.Container>
+    </Styled.Grid>
+  </>
 );
 
 const NavigationNonAuth = props => (
-  <header>
-    <Link to={ROUTES.LANDING}>
-      <Logo
-        src={props.theme.state.logoUrl || props.theme.state.defaultLogoUrl}
-        alt="BEV logo"
-      />
-    </Link>
-
-    <Styled.LI>
-      <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
-    </Styled.LI>
-    <Styled.LI>
-      <Link to={ROUTES.SIGN_IN}>Sign In</Link>
-    </Styled.LI>
-  </header>
+  <>
+    <Styled.Grid>
+      <Styled.Container>
+        <Link to={ROUTES.LANDING}>
+          <Logo src={props.theme.state.dataUrl} alt="BEV logo" />
+        </Link>
+        <Styled.LI>
+          <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
+        </Styled.LI>
+        <Styled.LI>
+          <Link to={ROUTES.SIGN_IN}>Sign In</Link>
+        </Styled.LI>
+      </Styled.Container>
+    </Styled.Grid>
+  </>
 );
 
 export default withTheme(Navigation);

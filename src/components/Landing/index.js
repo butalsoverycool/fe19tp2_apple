@@ -1,20 +1,9 @@
 import React, { Component } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import BIRDS from './birds';
+import * as Styled from './styled';
 
-const Background = styled.div`
-width: 100vw;
-height: 100vh;
-position: absolute;
-z-index: -1000;
-`;
 
-const Intro = styled.h1`
-margin-left: 15rem;
-text-align: left;
-line-height: 80vh;
-font-size: 60px;
-`;
 class Landing extends Component {
   constructor() {
     super()
@@ -42,10 +31,13 @@ class Landing extends Component {
   }
   render() {
     return (
-      <Background className='birds' ref={this.birdAnimation}>
-
-        <Intro>Birds Eye View</Intro>
-      </Background >
+      <>
+        <Styled.Background className='birds' ref={this.birdAnimation}>
+        </Styled.Background >
+        <Styled.Grid>
+          <Styled.Intro>Birds Eye View</Styled.Intro>
+        </Styled.Grid>
+      </>
     )
   }
 }
