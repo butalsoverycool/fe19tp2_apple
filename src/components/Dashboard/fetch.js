@@ -49,7 +49,8 @@ export const fetchDataTitles = () => {
     });
 };
 
-export const fetchData = (by, value) => {
+export const fetchData = (by, value, dataTitles) => {
+  const query = queryBakery(by, value);
   /*  const queryHash = md5(JSON.stringify(query));
 
     const cache = JSON.parse(localStorage.getItem('dataCache')) || null;
@@ -66,31 +67,22 @@ export const fetchData = (by, value) => {
       this.setState({ data: cache[queryHash].data });
     } else {
       // if not found in cache then fetch from API */
+
   axios
-    .post(proxy + apiUrl, queryBakery(by, value))
+    .post(proxy + apiUrl, query)
     .then(res => {
       console.log('POST RES', res);
 
-      // if fail, bail *temp
-      if (res.status !== 200) {
-        console.log('failed to fetch data');
-
-        /* this.setState({
-          apiResponse: res
-        }); */
-
-        return;
-      }
-
       const data = res.data.data.map(item => {
         const year = parseInt(item.key[2]);
-        //const sectorCode = item.key[1];
+
         const sector = {
           name: this.state.dataTitles.sectors.filter(
             sect => sect.code === item.key[1]
           )[0].name,
           code: item.key[1]
         };
+
         //const substance = item.key[0];
         const substance = {
           name: this.state.dataTitles.substances.filter(

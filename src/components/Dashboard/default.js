@@ -6,31 +6,42 @@ export const defaultChartTypes = ['bar', 'area'];
 
 export const defaultDashboards = [];
 
-export const defaultTab = {
-  data: null,
-  catName: null,
-  catValue: null,
-  timespan: { from: 0, to: 100 }, // from/to = number
-  charts: []
+export const defaultTab = () => {
+  return {
+    id: Math.random(),
+    name: '',
+    data: null,
+    catKey: null,
+    catVal: null,
+    timespan: { from: 0, to: 100 }, // from/to = number
+    charts: []
+  };
 };
 
-export const defaultChart = {
-  type: '',
-  sectors: {
-    name: '',
-    code: ''
-  }, // populate with str:s
-  substances: [
-    {
+export const defaultChart = (key, val) => {
+  const typeIndex = Math.floor(Math.random() * defaultChartTypes.length); // rand chartType
+  const randVal = Math.floor(Math.random() * 5) + 1; // rand 1-5
+
+  const res = {
+    type: defaultChartTypes[typeIndex],
+    substance: {
       name: '',
       code: ''
-    }
-  ],
-  value: null
+    },
+    sector: {
+      name: '',
+      code: ''
+    },
+    value: randVal
+  };
+
+  res[key] = val;
+
+  return res;
 };
 
 export const queryBakery = (by, value) => {
-  const code = by === 'substance' ? 'Luftfororening' : 'Sektor';
+  const code = by === 'substances' ? 'Luftfororening' : 'Sektor';
 
   return {
     query: [
