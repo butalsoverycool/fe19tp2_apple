@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
-import styled, { ThemeProvider } from 'styled-components';
 import BIRDS from './birds';
-import * as Styled from './styled';
+import styled from 'styled-components';
 
+const Animation = styled.div`
+width: 100vw;
+height: 100vh;
+position: absolute;
+z-index: -1000;
+`;
 
-class Landing extends Component {
+class BirdAnimation extends Component {
   constructor() {
     super()
     this.birdAnimation = React.createRef();
@@ -24,24 +29,20 @@ class Landing extends Component {
       wingSpan: 40.00,
       speedLimit: 4.00,
       quantity: 3.00
+
+
     })
   }
+
   componentWillUnmount() {
     if (this.vantaEffect) this.vantaEffect.destroy()
   }
+
   render() {
     return (
-      <>
-        <Styled.Background className='birds' ref={this.birdAnimation}>
-        </Styled.Background >
-        <Styled.Grid>
-          <Styled.Intro>Birds Eye View</Styled.Intro>
-        </Styled.Grid>
-      </>
+      <Animation className='birds' ref={this.birdAnimation} />
     )
   }
 }
 
-export default Landing;
-
-
+export default BirdAnimation; 
