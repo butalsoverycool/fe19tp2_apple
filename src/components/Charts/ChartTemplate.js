@@ -36,7 +36,7 @@ const AreaChartTemplate = props => {
           <CartesianGrid />
           <Area
             type="monotone"
-            dataKey="value"
+            dataKey="values"
             stroke="#8884d8"
             fill="hotpink"
             strokeWidth={2}
@@ -53,19 +53,15 @@ const AreaChartTemplate = props => {
 };
 
 const ChartTemplate = props => {
-  if (!props.chart) return '';
+  console.log('PROPS DATA', props.data);
 
-  console.log('TEMPLATE PROP CHART', props.chart);
-
-  const data = props.chart.data;
-  if (data[0].length === 1) {
+  const data = props.data;
+  if (data.length === 1) {
     data.push(data[0]);
   }
 
-  const unit = props.chart.substances[0].code;
-
-  return props.chart.data ? (
-    <AreaChartTemplate data={props.chart.data[0]} unit={unit} />
+  return props.data ? (
+    <AreaChartTemplate data={props.data} unit={props.unit} />
   ) : null;
 };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import styled from 'styled-components';
 
 import AreaTemplate from './AreaTemplate';
@@ -104,7 +105,7 @@ const Preview = props => {
   console.log('yay going to templ');
 
   return (
-    <Wrapper className="preview">
+    <Wrapper className='preview'>
       <Title>{`Emission of ${substance.name}`}</Title>
 
       <Subtitle>{sector.name}</Subtitle>

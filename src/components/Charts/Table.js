@@ -1,7 +1,6 @@
 // all substances
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Container, Row, Col } from 'react-awesome-styled-grid';
 
 const Options = styled.option``;
 
@@ -37,79 +36,8 @@ class Table extends Component {
       setActiveClass
     } = this.props;
     return (
+      //Dropdown menus, one for substance and one for sector (year will generated )
       <>
-        {/*//Dropdown menus, one for substance and one for sector (year will
-        generated )
-         <Container>
-        <Row>
-      
-          <Col xs={2} sm={2} md={1} lg={4} xl={4}>
-            <DropdownContainer>
-              <TableHead className="dropdown-button">Chart Type</TableHead>
-              <List className="dropdown-content">
-                {dataTitles.chartTypes.map(item => (
-                  <TD
-                    key={item}
-                    onClick={() => setChartType(this.props.chartIndex, item)}
-                    //className={setActiveClass(item, category.yearsAdded)} 
-                  >
-                    {item}
-                  </TD>
-                ))}
-              </List>
-            </DropdownContainer>
-          </Col>
-
-          <Col xs={2} sm={2} md={1} lg={4} xl={4}>
-            <DropdownContainer className="dropdown-container">
-              <TableHead className="dropdown-button">Substances</TableHead>
-              <List className="dropdown-content">
-                {dataTitles.substances.map(item => (
-                  <TD
-                    key={item.code}
-                    onClick={() =>
-                      this.props.tableConfig(
-                        this.props.chartIndex,
-                        item,
-                        'substances'
-                      )
-                    }
-                    className={setActiveClass(
-                      item,
-                      this.props.chart.substances
-                    )}
-                  >
-                    {item.name}
-                  </TD>
-                ))}
-              </List>
-            </DropdownContainer>
-          </Col>
-
-          <Col xs={2} sm={2} md={1} lg={4} xl={4}>
-            <DropdownContainer>
-              <TableHead className="dropdown-button">Sector</TableHead>
-              <List className="dropdown-content">
-                {dataTitles.sectors.map(item => (
-                  <TD
-                    key={item.code}
-                    onClick={() =>
-                      this.props.tableConfig(
-                        this.props.chartIndex,
-                        item,
-                        'sectors'
-                      )
-                    }
-                    className={setActiveClass(item, this.props.chart.sectors)}
-                  >
-                    {item.name}
-                  </TD>
-                ))}
-              </List>
-            </DropdownContainer>
-          </Col>
-        </Row>
-      </Container> */}
         <DropdownContainer className="dropdown-container">
           {/* <TableHead className='dropdown-button'>Substance</TableHead> */}
           <List
@@ -147,14 +75,15 @@ class Table extends Component {
             ))}
           </List>
         </DropdownContainer>
+
         {/* <DropdownContainer>
           <TableHead className="dropdown-button">Timespan</TableHead>
           <List className="dropdown-content">
-            {category.years.map((item) => (
+            {dataTitles.years.map((item) => (
               <TD
                 key={item}
                 onClick={() => this.props.tableHandler(item, "yearsAdded")}
-                className={setActiveClass(item, category.yearsAdded)}
+                className={setActiveClass(item, dataTitles.yearsAdded)}
               >
                 {item}
               </TD>

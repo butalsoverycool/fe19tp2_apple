@@ -16,9 +16,5 @@ export const Theme = {
   fontL: '30px',
   fontXL: '42px',
   fontColorPrimary: '#202020',
-  fontColorSecondary: '383838',
-};
-
-export const Button = {
-
+  fontColorSecondary: '383838'
 };

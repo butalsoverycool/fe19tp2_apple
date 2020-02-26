@@ -21,22 +21,19 @@ const Year = styled.h2`
 `;
 
 const ChartHeader = props => {
-  if (!props.chart) return '';
+  if (!props.data) {
+    return '';
+  }
 
-  const title = `Emission of ${props.chart.substances[0].name}`;
+  const title = `Emission of ${props.data[0].substance.name}`;
 
-  /* const subtitle = props.sectors.filter(
+  const subtitle = props.sectors.filter(
     sector => sector.code === props.data[0].sector
-  )[0].name; */
-  const subtitle = props.chart.sectors[0].name;
+  )[0].name;
 
-  /* const chartHeader = `${props.data[0].year} - ${
+  const chartHeader = `${props.data[0].year} - ${
     props.data[props.data.length - 1].year
-  }`; */
-
-  const limit = props.chart.limit;
-
-  const chartHeader = `${limit.from} - ${limit.to}`;
+  }`;
 
   return (
     <ThemeProvider theme={Theme}>

@@ -8,6 +8,7 @@ import { withFirebase } from '../Firebase';
 import { withTheme } from '../Theme';
 import LogoUploader from './LogoUploader';
 import Colorpicker from './Colorpicker';
+import * as Styled from './styled';
 
 const Wrapper = styled.div`
   margin: auto;
@@ -22,23 +23,25 @@ class AccountPage extends Component {
     const { color } = this.props.theme.state;
     const { saveChanges } = this.props.theme.setters;
     return (
-      <Wrapper themeBg={color.hex}>
-        <AuthUserContext.Consumer>
-          {authUser => (
-            <div>
-              <h1>Admin: {authUser.email}</h1>
-              <PasswordChangeForm />
-            </div>
-          )}
-        </AuthUserContext.Consumer>
+      <Styled.Grid>
+        <Styled.Wrapper themeBg={color.hex}>
+          <AuthUserContext.Consumer>
+            {authUser => (
+              <div>
+                <h1>Admin: {authUser.email}</h1>
+                <PasswordChangeForm />
+              </div>
+            )}
+          </AuthUserContext.Consumer>
 
-        <LogoUploader />
+          <LogoUploader />
 
-        <Colorpicker />
-        <button type="button" onClick={saveChanges}>
-          Save Changes
-        </button>
-      </Wrapper>
+          <Colorpicker />
+          <button type="button" onClick={saveChanges}>
+            Save Changes
+          </button>
+        </Styled.Wrapper>
+      </Styled.Grid>
     );
   }
 }
