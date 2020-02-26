@@ -1,14 +1,6 @@
 import styled from 'styled-components';
 import { device } from '../device';
 
-
-export const Background = styled.div`
-width: 100vw;
-height: 100vh;
-position: absolute;
-z-index: -1000;
-`;
-
 export const Intro = styled.h1`
 font-size: 3rem;
 `;

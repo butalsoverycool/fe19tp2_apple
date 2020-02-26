@@ -2,7 +2,7 @@ import React from 'react';
 import Charts from '../Charts';
 import VictoryChart from '../VictoryChart';
 import { ScreenBadge } from 'react-awesome-styled-grid';
-
+import styled, { keyframes } from 'styled-components';
 import { withAuthorization } from '../Session';
 
 const HomePage = () => {

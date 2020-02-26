@@ -29,8 +29,6 @@ class BirdAnimation extends Component {
       wingSpan: 40.00,
       speedLimit: 4.00,
       quantity: 3.00
-
-
     })
   }
 
