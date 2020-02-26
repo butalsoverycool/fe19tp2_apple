@@ -21,7 +21,7 @@ class Firebase {
   constructor() {
     app.initializeApp(config);
     this.auth = app.auth();
-    this.storage = app.storage(); // new
+    this.storage = app.storage();
     this.firestore = app.firestore();
   }
 
@@ -48,50 +48,49 @@ class Firebase {
 
   organizations = () => this.firestore.collection('organizations');
   organization = orgId => this.firestore.doc(`organizations/${orgId}`);
+
   storage = () => this.storage.ref();
 
-  // createUser = ({ userId, email, orgId, ...rest }) =>
-  //   this.user(userId).set({ email, orgId, ...rest });
+  addOrganizationUser = ({ uid, orgId, email, role }) => {
+    this.organization(orgId).update({
+      users: app.firestore.FieldValue.arrayUnion(uid)
+    });
 
-  // updateUser = ({ userId, ...rest }) =>
-  //   this.user(userId).set({ ...rest }, { merge: true });
+    this.user(uid).set({ orgId, email, role });
+  };
 
-  // deleteUser = ({ userId }) => this.user(userId).delete();
+  removeOrganizationUser = ({ uid, orgId }) => {
+    this.organization(orgId).update({
+      users: app.firestore.FieldValue.arrayRemove(uid)
+    });
 
-  // createOrganization = ({ name, userId }) =>
-  //   this.organizations().add({ name, users: [userId] });
-
-  // updateOrganization = ({ orgId, ...rest }) =>
-  //   this.organization(orgId).set({ ...rest }, { merge: true });
-
-  // Add a new document in collection "cities"
-
-  //*** Merge Auth and DB User API *** //
+    this.user(uid).delete();
+  };
 
   onAuthUserListener = (next, fallback) =>
     this.auth.onAuthStateChanged(authUser => {
       if (authUser) {
+        // get user DB data
         this.user(authUser.uid)
           .get()
-
           .then(snapshot => {
             const dbUser = snapshot.data();
 
-            // default empty roles
-            // if (!dbUser.role) {
-            //   dbUser.role = {};
-            // }
+            // get org DB data
+            this.organization(dbUser.orgId)
+              .get()
+              .then(snapshot => {
+                const dbOrganization = snapshot.data();
 
-            // merge auth and db user
-            authUser = {
-              uid: authUser.uid,
-              email: authUser.email,
-              providerData: authUser,
-              settings: authUser.setttings,
-              ...dbUser
-            };
-
-            next(authUser);
+                // merge user and org DB data with auth
+                authUser = {
+                  uid: authUser.uid,
+                  email: authUser.email,
+                  ...dbUser,
+                  organizationData: { ...dbOrganization }
+                };
+                next(authUser);
+              });
           });
       } else {
         fallback();

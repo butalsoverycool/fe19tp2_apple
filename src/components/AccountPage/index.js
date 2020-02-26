@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { compose } from 'recompose';
 import { AuthUserContext, withAuthorization } from '../Session';
-import { PasswordForgetForm } from '../PasswordForget';
 import PasswordChangeForm from '../PasswordChange';
 import styled from 'styled-components';
 import { withFirebase } from '../Firebase';
 import { withTheme } from '../Theme';
+
 import LogoUploader from './LogoUploader';
 import Colorpicker from './Colorpicker';
+import UserManagement from './UserManagement';
 
 const Wrapper = styled.div`
   margin: auto;
@@ -38,6 +39,7 @@ class AccountPage extends Component {
         <button type="button" onClick={saveChanges}>
           Save Changes
         </button>
+        <UserManagement />
       </Wrapper>
     );
   }
