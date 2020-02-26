@@ -11,27 +11,36 @@ import { Theme } from '../GlobalStyles';
 import { withTheme } from '../Theme';
 import * as Styled from './styled';
 
-const Layout = styled.div`
+/* const Layout = styled.div`
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-auto-rows: 1fr;
-  /* 	//grid-template-columns: repeat(auto-fill, minmax(28em, 2fr)); */
   grid-gap: 10px;
   background-color: ${props => props.themeBg || 'none'};
+`; */
+
+/* <Styled.Grid>
+      <ThemeProvider theme={Theme}>
+        <Layout themeBg={color.hex}>
+          <DashBoard />
+        </Layout>
+      </ThemeProvider>
+    </Styled.Grid> */
+
+const Wrapper = styled.div`
+  width: 100vw;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  display: flex;
 `;
 
 const DashboardPage = props => {
   const { color } = props.theme.state;
-
   return (
-    <Styled.Grid>
-      <ThemeProvider theme={Theme}>
-        <Layout themeBg={color.hex}>
-          {/* <Charts /> */}
-          <DashBoard />
-        </Layout>
-      </ThemeProvider>
-    </Styled.Grid>
+    <Wrapper>
+      <DashBoard />
+    </Wrapper>
   );
 };
 

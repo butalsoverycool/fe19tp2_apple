@@ -464,12 +464,7 @@ class Charts extends Component {
         // toPoint must be more than fromPoint
         if (limit.to <= limit.from) return;
       }
-
       limit[endPoint]--;
-      /*   if (reaseType === 'dec') {
-        if (oldLimit[endPoint] <= 0) return;
-        oldLimit[endPoint]--;
-      } */
     } else {
       // + from
       if (from) {

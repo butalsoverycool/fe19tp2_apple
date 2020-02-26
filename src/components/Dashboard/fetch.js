@@ -26,10 +26,6 @@ export const fetchDataTitles = () => {
 
       const years = res.data.variables[3].values;
 
-      this.setState({
-        apiResponse: res
-      });
-
       const chartTypes = defaultChartTypes;
 
       const dataTitles = {
@@ -40,7 +36,7 @@ export const fetchDataTitles = () => {
       };
 
       // save in session
-      sessionStorage.setItem('dataTitles', JSON.stringify(dataTitles));
+      localStorage.setItem('dataTitles', JSON.stringify(dataTitles));
 
       return dataTitles;
     })

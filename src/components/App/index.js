@@ -39,18 +39,15 @@ class App extends Component {
       <ThemeProvider theme={Theme}>
         <Router>
           <GlobalStyle bg />
-          <Styled.GridLayout>
-            <Navigation authUser={this.state.authUser} />
-            <Route exact path={ROUTES.LANDING} component={LandingPage} />
-            <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
-            <Route path={ROUTES.SIGN_IN} component={SignInPage} />
-            <Route
-              path={ROUTES.PASSWORD_FORGET}
-              component={PasswordForgetPage}
-            />
-            <Route path={ROUTES.DASHBOARD} component={DashboardPage} />
-            <Route path={ROUTES.ACCOUNT} component={AccountPage} />
-          </Styled.GridLayout>
+          {/* <Styled.GridLayout> */}
+          <Navigation authUser={this.state.authUser} />
+          <Route exact path={ROUTES.LANDING} component={LandingPage} />
+          <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
+          <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+          <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
+          <Route path={ROUTES.DASHBOARD} component={DashboardPage} />
+          <Route path={ROUTES.ACCOUNT} component={AccountPage} />
+          {/* </Styled.GridLayout> */}
         </Router>
       </ThemeProvider>
     );

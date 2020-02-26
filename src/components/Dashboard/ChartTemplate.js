@@ -12,28 +12,20 @@ import {
 
 // tempstyle
 const Wrapper = styled.div`
-  width: 90%;
-  height: 20rem;
-  margin: auto;
+  flex: 1;
+  margin: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  @media (max-width: 768px) {
-    height: 400px;
-  }
 `;
 
 const AreaChartTemplate = props => {
   const unit = props.data[0].substance;
   return (
-    <Wrapper className="chart-template">
+    <Wrapper className="ChartTemplate">
       <ResponsiveContainer width={'99%'} height={'99%'}>
-        <AreaChart
-          data={props.data}
-          margin={{ top: 0, right: 0, bottom: 0, left: 20 }}
-        >
+        <AreaChart data={props.data}>
           <CartesianGrid />
           <Area
             type="monotone"
