@@ -6,17 +6,43 @@ import { PasswordForgetLink } from '../PasswordForget';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
 import * as Styled from './styled';
+import styled, { keyframes } from 'styled-components';
+
+const FadeIn = keyframes`
+from {
+  opacity: 0;
+}
+to {
+  opacity: 1;
+}
+`;
+
+const FadeOut = keyframes`
+from {
+  opacity: 1;
+}
+to {
+  opacity: 0;
+}
+`;
+const Page = styled.div``;
+
+const Content = styled(Page)`
+`;
 
 const SignInPage = () => {
   return (
     <Styled.Grid>
-      <Styled.Wrapper>
-        <h1>Sign In</h1>
-        <SignInForm />
-        <PasswordForgetLink />
-        <SignUpLink />
-      </Styled.Wrapper>
+      <Content>
+        <Styled.Wrapper>
+          <h1>Sign In</h1>
+          <SignInForm />
+          <PasswordForgetLink />
+          <SignUpLink />
+        </Styled.Wrapper>
+      </Content>
     </Styled.Grid>
+
   );
 };
 

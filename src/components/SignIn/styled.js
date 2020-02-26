@@ -1,7 +1,9 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { device } from '../device';
 
+
 export const Grid = styled.div`
+
 @media ${device.mobileS} {
   grid-column-start: 1;
   grid-column-end: 11;
@@ -38,3 +40,6 @@ flex-direction: column;
 justify-content: center;
 align-items: center;
 `;
+
+
+
