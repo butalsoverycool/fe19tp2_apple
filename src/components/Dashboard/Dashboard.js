@@ -42,20 +42,18 @@ const Btn = styled.button`
 `;
 
 const NewTabBtn = styled.button`
-  width: 4rem;
-  height: 4rem;
-  margin: 1rem 0.2rem;
+  width: 3rem;
+  height: 3rem;
   box-shadow: 0 0 20px #ddd;
-  background: #fff;
   border: none;
   outline: none;
 
   position: fixed;
   right: 1rem;
-  top: 10rem;
+  top: 8rem;
   z-index: 1;
   border-radius: 50%;
-  font-size: 2rem;
+  font-size: 1.5rem;
 `;
 
 export default class Dashboard extends Component {
@@ -66,7 +64,7 @@ export default class Dashboard extends Component {
         this.getStorage('dataTitles') || fetchDataTitles() || defaultDataTitles,
       tabs: this.getStorage('tabs') || [],
       activeTab: this.getStorage('activeTab') || null,
-      tabListOpen: this.getStorage('tabListOpen') || true
+      tabListOpen: this.getStorage('tabListOpen') || false
     };
 
     this.newTab = this.newTab.bind(this);
@@ -92,6 +90,7 @@ export default class Dashboard extends Component {
 
   setStorage = (key, val) => {
     localStorage.setItem(key, JSON.stringify(val));
+    console.log('Stored ' + key);
   };
 
   newTab = () => {
@@ -106,13 +105,19 @@ export default class Dashboard extends Component {
     });
 
     this.setStorage('tabs', tabs);
+    this.setStorage('activeTab', tabs[0]);
   };
 
-  updateActiveTab = newActive => {
+  updateActiveTab = (newActive, tabIndex) => {
+    const tabs = this.state.tabs;
+    tabs[tabIndex] = newActive;
+
     this.setState({
+      tabs,
       activeTab: newActive
     });
 
+    this.setStorage('tabs', tabs);
     this.setStorage('activeTab', newActive);
   };
 
@@ -120,17 +125,18 @@ export default class Dashboard extends Component {
     const tabs = this.state.tabs;
     tabs[tabIndex] = tab;
 
-    this.setState({ tabs });
+    this.setState({ tabs, activeTab: tab });
 
     this.setStorage('tabs', tabs);
+    this.setStorage('activeTab', tab);
   };
 
   deleteTab = tabIndex => {
-    const tabs = this.state.tabs;
+    const { tabs, activeTab } = this.state;
     tabs.splice(tabIndex, 1);
 
     const newActive =
-      tabs[tabIndex - 1] || tabs[tabIndex + 1] || tabs[tabIndex] || null;
+      tabs[tabIndex] || tabs[tabIndex - 1] || tabs[tabIndex + 1] || null;
 
     this.setState({ tabs, activeTab: newActive });
 
@@ -138,6 +144,8 @@ export default class Dashboard extends Component {
   };
 
   toggleTabList = () => {
+    if (this.state.tabs.length < 1) return;
+
     const tabListOpen = this.state.tabListOpen;
     this.setState({
       tabListOpen: !tabListOpen
@@ -165,6 +173,7 @@ export default class Dashboard extends Component {
               tabListOpen={tabListOpen}
               updateActiveTab={this.updateActiveTab}
               toggleTabList={this.toggleTabList}
+              deleteTab={this.deleteTab}
             />
 
             {tabs.length > 0 && activeTab ? (
@@ -175,11 +184,7 @@ export default class Dashboard extends Component {
                 tabContent={tab}
                 updateTabs={this.updateTabs}
                 updateCat={this.updateCat}
-              >
-                <Btn onClick={() => this.deleteTab(tabIndex)} type="delete">
-                  Delete Tab
-                </Btn>
-              </Tab>
+              ></Tab>
             ) : null}
           </RowWrapper>
         </ColumnWrapper>
@@ -191,37 +196,65 @@ export default class Dashboard extends Component {
 const TabListWrapper = styled.div`
   position: fixed;
   left: 0;
-  top: 5rem;
+  top: 8rem;
   z-index: 1;
+  transform: ${props =>
+    props.tabListOpen ? 'translate3d(0, 0,0)' : 'translate3d(-10rem, 0,0)'};
 `;
 
 const List = styled.div`
-  width: ${props => (props.tabListOpen ? '7rem' : '0')};
+  transform: ${props =>
+    props.tabListOpen ? 'translate3d(10rem, 0,0)' : 'translate3d(-10rem, 0,0)'};
   display: flex;
   flex-direction: column;
   justify-content: center;
   overflow-x: hidden;
-  transition-duration: 0.4s;
   background: #fff;
   box-shadow: 0 0 20px #eee;
   margin: 0;
+  transition-duration: 0.4s;
 `;
 
 const ToggleBtn = styled.button`
-  background: #fff;
   height: 2rem;
+  box-shadow: 0 0 20px #ddd;
+  border-radius: 0 5px 5px 0;
   outline: none;
   border: none;
+  transform: ${props =>
+    props.tabListOpen || !props.tabsExist
+      ? 'translate3d(-2rem, 0,0)'
+      : 'translate3d(10rem, 0,0)'};
+  overflow-x: ${props => (props.tabListOpen ? 'hidden' : 'unset')};
+  transition-duration: 0.4s;
+  background: #ffa6d2;
 `;
 
-const Item = styled.button`
-  height: 2rem;
-  box-shadow: 2px 0 20px #eee;
+const ToggleTxt = styled.p`
+  opacity: ${props => (props.tabListOpen || !props.tabsExist ? 0 : 1)};
+  transition-delay: ${props => (props.tabListOpen ? '0' : '0.2s')};
+  transition-duration: 0.5s;
+  font-weight: 700;
+`;
+
+const Item = styled.div`
+  height: 100%;
   font-size: 0.8rem;
   outline: none;
+  box-shadow: 2px 0 20px #eee;
   border: none;
-  font-weight: ${props => (props.active ? '700' : '100')};
   margin: 0.2rem;
+`;
+
+const ItemBtn = styled.button`
+  float: left;
+  display: inline-block;
+  font-weight: ${props => (props.active ? '700' : '100')};
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  padding: 1rem;
 `;
 
 class TabList extends Component {
@@ -253,14 +286,14 @@ class TabList extends Component {
    * Alert if clicked on outside of element
    */
   handleClickOutside(event) {
-    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-      if (this.props.tabListOpen) {
-        this.props.toggleTabList();
-      }
+    /* if (this.wrapperRef && !this.wrapperRef.contains(event.target)) { */
+    if (this.props.tabListOpen) {
+      this.props.toggleTabList();
+      /* } */
     }
   }
 
-  clickHandler = (id, name) => {
+  clickHandler = (id, name, tabIndex) => {
     const { tabs, updateActiveTab } = this.props;
 
     const tab = tabs.filter(tab => tab.id === id)[0];
@@ -269,27 +302,41 @@ class TabList extends Component {
 
     console.log('active tab', tab, tabIndex); */
 
-    updateActiveTab(tab);
+    updateActiveTab(tab, tabIndex);
   };
 
   render() {
-    let { tabs, activeTab, tabListOpen, toggleTabList } = this.props;
-
-    const toggleTxt = tabListOpen ? '<--' : '--> MY TABS';
+    let { tabs, activeTab, tabListOpen, toggleTabList, deleteTab } = this.props;
+    const activeId = activeTab ? activeTab.id : null;
 
     return (
       <TabListWrapper ref={this.setWrapperRef}>
-        <ToggleBtn onClick={toggleTabList}>{toggleTxt}</ToggleBtn>
+        <ToggleBtn
+          onClick={toggleTabList}
+          tabListOpen={tabListOpen}
+          tabsExist={tabs.length > 0}
+        >
+          <ToggleTxt tabListOpen={tabListOpen} tabsExist={tabs.length > 0}>
+            {'<<'}
+          </ToggleTxt>
+        </ToggleBtn>
+
         <List className="TabList" tabListOpen={tabListOpen ? true : false}>
-          {tabs.map((tab, nth) => (
-            <Item
-              key={nth}
-              active={tab.id === activeTab.id}
-              onClick={e => this.clickHandler(tab.id, tab.name)}
-            >
-              {tab.name || `(id-${tab.id.toFixed(4)})`}
-            </Item>
-          ))}
+          {tabs.length > 0
+            ? tabs.map((tab, nth) => (
+                <Item key={'item' + nth}>
+                  <ItemBtn
+                    active={tab.id === activeId}
+                    onClick={e => this.clickHandler(tab.id, tab.name, nth)}
+                  >
+                    {tab.name || `(id-${tab.id.toFixed(4)})`}
+                  </ItemBtn>
+                  <ItemBtn onClick={() => deleteTab(nth)} type="delete">
+                    Del
+                  </ItemBtn>
+                </Item>
+              ))
+            : null}
         </List>
       </TabListWrapper>
     );

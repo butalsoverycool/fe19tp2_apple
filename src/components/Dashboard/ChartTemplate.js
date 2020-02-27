@@ -21,7 +21,6 @@ const Wrapper = styled.div`
 `;
 
 const AreaChartTemplate = props => {
-  const unit = props.data[0].substance;
   return (
     <Wrapper className="ChartTemplate">
       <ResponsiveContainer width={'99%'} height={'99%'}>
@@ -53,15 +52,13 @@ const AreaChartTemplate = props => {
 const ChartTemplate = props => {
   if (!props.data) return '';
 
-  const data = props.data;
+  let data = props.data;
 
   if (data.length === 1) {
     data.push(data[0]);
   }
 
-  //const unit = props.chart.substances[0].code;
-
-  return <AreaChartTemplate data={data} unit="hej" />;
+  return <AreaChartTemplate data={data} />;
 };
 
 export default ChartTemplate;

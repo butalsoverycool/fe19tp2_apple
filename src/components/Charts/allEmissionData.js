@@ -1,4 +1,4 @@
-[
+const allEmissionData = [
     {
         "key": [
             "NOx",

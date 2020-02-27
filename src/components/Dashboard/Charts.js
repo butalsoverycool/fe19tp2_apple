@@ -45,17 +45,19 @@ export default class Charts extends Component {
           // format title
           const titleKey =
             antiKey[0].toUpperCase() + antiKey.slice(1).slice(0, -1);
+
           const titleVal = data[0][antiKey.slice(0, -1)].name;
 
           //measure title
           const flex = titleVal.length > 30 ? 'auto' : '1';
+          const cutYear = titleVal.length > 30 ? false : true;
 
           return (
             <ChartContainer key={nth} className="ChartContainer" flex={flex}>
               <ChartTitle>
                 {titleKey}: {titleVal}
               </ChartTitle>
-              <ChartTemplate data={data} catVal={catVal} />
+              <ChartTemplate data={data} catVal={catVal} cutYear={cutYear} />
             </ChartContainer>
           );
         })}

@@ -133,47 +133,6 @@ class Timespan extends Component {
       <>
         <Wrapper>
           {/* Timespan dropdowns */}
-          <Select
-            className="dropdown-content-timespan-from"
-            onChange={e =>
-              updateTab(
-                'timespan',
-                { from: e.target.value, to: timespan.to },
-                tabIndex
-              )
-            }
-            value={timespan.from || 'default'}
-          >
-            <Option disabled value="default">
-              - view from year -
-            </Option>
-            {dataTitles.years.map(item => (
-              <Option key={item} value={Number(item)}>
-                from {item}
-              </Option>
-            ))}
-          </Select>
-
-          <Select
-            className="dropdown-content-timespan-to"
-            onChange={e =>
-              updateTab(
-                'timespan',
-                { from: timespan.from, to: e.target.value },
-                tabIndex
-              )
-            }
-            value={timespan.to || 'default'}
-          >
-            <Option disabled value="default">
-              - view from year -
-            </Option>
-            {dataTitles.years.map(item => (
-              <Option key={item} value={Number(item)}>
-                to {item}
-              </Option>
-            ))}
-          </Select>
 
           {/* <ButtonContainer justifyContent="space-between">
             <Button onClick={() => this.pushTimespan('from', 'dec')} margin="0">

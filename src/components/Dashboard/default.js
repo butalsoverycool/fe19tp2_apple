@@ -4,8 +4,6 @@ export const apiUrl =
 
 export const defaultChartTypes = ['bar', 'area'];
 
-export const defaultDashboards = [];
-
 export const defaultTab = () => {
   return {
     id: Math.random(),

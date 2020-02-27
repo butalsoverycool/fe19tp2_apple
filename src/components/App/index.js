@@ -48,9 +48,9 @@ class App extends Component {
               path={ROUTES.PASSWORD_FORGET}
               component={PasswordForgetPage}
             />
-            <Route path={ROUTES.DASHBOARD} component={DashboardPage} />
             <Route path={ROUTES.ACCOUNT} component={AccountPage} />
           </Styled.GridLayout>
+          <Route path={ROUTES.DASHBOARD} component={DashboardPage} />
         </Router>
       </ThemeProvider>
     );
