@@ -10,7 +10,7 @@ class Theme extends Component {
 
     this.state = {
       logo: null,
-      logoUrl: null,
+      dataUrl: null,
       defaultLogoUrl: defaultLogoUrl,
       color: defaultColor
     };
@@ -23,10 +23,10 @@ class Theme extends Component {
   componentDidMount() {
     this.listener = this.props.firebase.onAuthUserListener(authUser => {
       if (authUser) {
-        const { color, dataUrl } = authUser.organizationData;
+        const { color, logoUrl } = authUser.organizationData;
 
-        if (dataUrl != null) {
-          this.setState({ dataUrl: dataUrl || this.state.defaultLogo });
+        if (logoUrl != null) {
+          this.setState({ dataUrl: logoUrl || this.state.defaultLogo });
         }
 
         if (color != null) {
