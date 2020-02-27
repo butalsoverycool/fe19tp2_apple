@@ -20,30 +20,25 @@ class Theme extends Component {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.props.firebase.auth.onAuthStateChanged(authUser => {
+    this.listener = this.props.firebase.onAuthUserListener(authUser => {
       if (authUser) {
-        this.props.firebase
-          .user(authUser.uid)
-          .get()
-          .then(snapshot => {
-            const dbUser = snapshot.data();
+        const { color, dataUrl } = authUser.organizationData;
 
-            if (dbUser.photoURL != null) {
-              const dbLogo = dbUser.photoURL;
-              this.setState({ dataUrl: dbLogo });
-            }
-            if (dbUser.settings.color != null) {
-              const dbColor = dbUser.settings.color;
-              this.setState({ color: dbColor });
-            }
-          });
+        if (dataUrl != null) {
+          this.setState({ dataUrl: dataUrl || this.state.defaultLogo });
+        }
+
+        if (color != null) {
+          this.setState({ color });
+        }
       }
     });
   }
 
   componentWillUnmount() {
-    this.unsubscribe && this.unsubscribe();
+    this.listener();
   }
+
   // WIP - upload/preview logo
   previewLogo = e => {
     const logo = e.target.files[0];
@@ -68,41 +63,30 @@ class Theme extends Component {
       color: newColor
     });
   };
-  /* get file() {
-    return this.state.logo && this.state.logo.files[0];
-  } */
-
-  /* }
-
-  } */
-
-  //
-  // WIP - save changes to firestore
 
   saveChanges = () => {
-    alert('Saved');
-
-    this.props.firebase.auth.onAuthStateChanged(authUser => {
+    this.listener = this.props.firebase.onAuthUserListener(authUser => {
       if (authUser) {
         if (this.state.logo) {
           this.props.firebase.storage
             .ref()
-            .child('user-profiles')
-            .child(authUser.uid)
-            .child(this.state.logo.name)
+            .child(
+              `organization-profiles/${authUser.orgId}/${this.state.logo.name}`
+            )
             .put(this.state.logo)
             .then(response => response.ref.getDownloadURL())
-            .then(photoURL =>
-              this.props.firebase.user(authUser.uid).update({ photoURL })
+            .then(logoUrl =>
+              this.props.firebase
+                .organization(authUser.orgId)
+                .update({ logoUrl })
             );
         }
-        this.props.firebase.user(authUser.uid).update({
-          settings: {
-            color: this.state.color
-          }
+        this.props.firebase.organization(authUser.orgId).update({
+          color: this.state.color
         });
       }
     });
+    alert('Saved');
   };
 
   render() {

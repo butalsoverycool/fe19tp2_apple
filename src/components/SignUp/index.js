@@ -3,6 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
+import * as ROLES from '../../constants/roles';
 import * as Styled from './styled';
 
 
@@ -40,18 +41,14 @@ class SignUpFormBase extends Component {
         // create org in 'organizations' collection and add user ID
         this.props.firebase
           .organizations()
-          .add({ name, users: [uid] })
+          .add({ name, users: [uid], color: null, logoUrl: null })
           .then(org => {
             // create user in 'users' collection as admin and add org ID
-            this.props.firebase.user(uid).set(
-              {
-                email,
-                orgId: org.id,
-                role: 'Admin',
-                settings: { color: '', logo: '' }
-              },
-              { merge: true }
-            );
+            this.props.firebase.user(uid).set({
+              email,
+              orgId: org.id,
+              role: ROLES.ADMIN
+            });
           });
 
         this.setState({ ...INITIAL_STATE });
