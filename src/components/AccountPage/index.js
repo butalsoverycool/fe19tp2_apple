@@ -35,7 +35,7 @@ class AccountPage extends Component {
         <LogoUploader />
 
         <Colorpicker />
-        <button type="button" onClick={saveChanges}>
+        <button type='button' onClick={saveChanges}>
           Save Changes
         </button>
       </Wrapper>

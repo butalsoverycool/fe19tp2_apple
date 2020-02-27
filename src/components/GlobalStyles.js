@@ -5,9 +5,9 @@ export const UserTheme = {
 };
 
 export const Theme = {
-  bgPrimary: 'whitesmoke',
-  bgSecondary: 'offwhite',
-  chartbuttonbg: 'offwhite',
+  bgPrimary: '#F8F8F8',
+  bgSecondary: '#F8F8F8',
+  chartbuttonbg: 'white',
   navbuttonbg: 'lightgrey',
   fontHeader: "'Krona One', sans-serif;",
   fontsecondary: '',
@@ -16,9 +16,7 @@ export const Theme = {
   fontL: '30px',
   fontXL: '42px',
   fontColorPrimary: '#202020',
-  fontColorSecondary: '383838',
+  fontColorSecondary: '383838'
 };
 
-export const Button = {
-
-};
+export const Button = {};

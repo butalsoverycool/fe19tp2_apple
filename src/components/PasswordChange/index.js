@@ -49,7 +49,7 @@ class PasswordChangeForm extends Component {
           />
           <button disabled={isInvalid} type='submit'>
             Reset My Password
-        </button>
+          </button>
           {error && <p>{error.message}</p>}
         </form>
       </Styled.Grid>

@@ -31,7 +31,7 @@ class Theme extends Component {
 
             if (dbUser.photoURL != null) {
               const dbLogo = dbUser.photoURL;
-              console.log('DB LOGO', dbLogo);
+
               this.setState({ logoUrl: dbLogo || this.state.defaultLogo });
             }
             if (dbUser.settings.color != null) {

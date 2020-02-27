@@ -15,10 +15,11 @@ const emissionTable =
   'http://api.scb.se/OV0104/v1/doris/en/ssd/START/MI/MI0108/TotaltUtslapp';
 
 const GridContainer = styled.div`
-  grid-column-start: 2;
-  grid-column-end: span 8;
+  // grid-column-start: 2;
+  // grid-column-end: span 8;
   border-radius: 15px;
-  background-color: gainsboro;
+
+  background-color: #fff;
 `;
 
 const queryBakery = {
@@ -320,6 +321,11 @@ class Charts extends Component {
 
     return (
       <GridContainer>
+        <Table
+          setActiveClass={this.setActiveClass}
+          tableHandler={this.tableHandler}
+          category={this.state}
+        />
         <ChartHeader
           data={
             data
@@ -329,12 +335,6 @@ class Charts extends Component {
                 )
           }
           sectors={this.state.sectors}
-        />
-
-        <Table
-          setActiveClass={this.setActiveClass}
-          tableHandler={this.tableHandler}
-          category={this.state}
         />
 
         {/* <Preview

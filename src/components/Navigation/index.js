@@ -10,7 +10,10 @@ import { Theme } from '../GlobalStyles';
 import { withTheme } from '../Theme';
 
 const Logo = styled.img`
-  max-width: 100px;
+  width: 50px;
+  position: absolute;
+  border-radius: 50%;
+  margin: 0.5rem 0 0 1rem;
 `;
 
 const Navigation = props => (
@@ -26,23 +29,25 @@ const Navigation = props => (
 );
 
 const NavigationAuth = props => (
-  <Styled.Grid>
+  <Styled.Nav>
     <Styled.Container>
       <Link to={ROUTES.DASHBOARD}>
         <Logo
           src={props.theme.state.logoUrl || props.theme.state.defaultLogoUrl}
-          alt="BEV logo"
+          alt='BEV logo'
         />
-      </Link>
-      <Styled.LI>
-        <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
-      </Styled.LI>
-      <Styled.LI>
+      </Link>{' '}
+      <Styled.NavLi>
+        <SignOutButton />
+      </Styled.NavLi>{' '}
+      <Styled.NavLi>
         <Link to={ROUTES.ACCOUNT}>Account</Link>
-      </Styled.LI>
-      <SignOutButton />
+      </Styled.NavLi>
+      <Styled.NavLi>
+        <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
+      </Styled.NavLi>
     </Styled.Container>
-  </Styled.Grid>
+  </Styled.Nav>
 );
 
 const NavigationNonAuth = props => (
@@ -50,7 +55,7 @@ const NavigationNonAuth = props => (
     <Link to={ROUTES.LANDING}>
       <Logo
         src={props.theme.state.logoUrl || props.theme.state.defaultLogoUrl}
-        alt="BEV logo"
+        alt='BEV logo'
       />
     </Link>
 

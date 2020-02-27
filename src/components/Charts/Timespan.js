@@ -4,8 +4,8 @@ import { IoMdArrowDropleft, IoMdArrowDropright } from 'react-icons/io';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  width: 85%;
-  margin: auto;
+  // width: 100%;
+  // margin: auto;
   background: ${props => props.bg || 'none'};
   color: ${props => props.color || 'black'};
   text-align: center;
@@ -19,8 +19,8 @@ const ButtonContainer = styled.div`
 
 const Button = styled.button`
   text-decoration: none;
-  height: 56px;
-  width: 56px;
+  height: 20px;
+  width: 20px;
   font-size: 1.5rem;
   color: dimgrey;
   border: none;
@@ -31,8 +31,9 @@ const Button = styled.button`
   transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
 
   & > svg {
-    display: block;
+    width: 20px;
     margin: auto;
+    text-align: center;
   }
 
   &:hover {
@@ -69,17 +70,17 @@ class Timespan extends Component {
     return (
       <>
         <Wrapper>
-          <ButtonContainer justifyContent="space-between">
+          <ButtonContainer justifyContent='space-between'>
             <Button
               onClick={() => this.props.pushRangeLimit('from', 'dec')}
-              margin="0"
+              margin='0'
             >
               <IoMdArrowDropleft />
             </Button>
             from
             <Button
               onClick={() => this.props.pushRangeLimit('from', 'inc')}
-              margin="0"
+              margin='0'
             >
               <IoMdArrowDropright />
             </Button>
@@ -112,14 +113,14 @@ class Timespan extends Component {
           <ButtonContainer>
             <Button
               onClick={() => this.props.pushRangeLimit('to', 'dec')}
-              margin="0"
+              margin='0'
             >
               <IoMdArrowDropleft />
             </Button>
             to
             <Button
               onClick={() => this.props.pushRangeLimit('to', 'inc')}
-              margin="0"
+              margin='0'
             >
               <IoMdArrowDropright />
             </Button>

@@ -11,38 +11,45 @@ import {
 } from 'recharts';
 
 const Wrapper = styled.div`
-  width: 90%;
-  height: 20rem;
+ width: 90%;
+  height: 10rem;
+  background: 3rem;
   margin: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  @media (max-width: 768px) {
-    height: 400px;
+}
+  .recharts-surface {
+    padding: 0;
+    margin-left: -5%;
   }
 `;
 
 const AreaChartTemplate = props => {
   const unit = props.data[0].substance;
   return (
-    <Wrapper className="chart-template">
-      <ResponsiveContainer width={'99%'} height={'99%'}>
+    <Wrapper className='chart-template'>
+      <ResponsiveContainer>
         <AreaChart
           data={props.data}
           margin={{ top: 0, right: 0, bottom: 0, left: 20 }}
         >
           <CartesianGrid />
           <Area
-            type="monotone"
-            dataKey="values"
-            stroke="#8884d8"
-            fill="hotpink"
+            type='monotone'
+            dataKey='values'
+            stroke='#8884d8'
+            fill='limegreen'
             strokeWidth={2}
           />
-          <XAxis dataKey="year" strokeWidth={2} />
-          <YAxis tickMargin={10} strokeWidth={2} domain={['auto', 'auto']} />
+          <XAxis dataKey='year' strokeWidth={2} tick={{ fontSize: 12 }} />
+          <YAxis
+            tickMargin={10}
+            tick={{ fontSize: 12 }}
+            strokeWidth={2}
+            domain={['auto', 'auto']}
+          />
 
           {/* <Tooltip content={<CustomTooltip unit={props.unit} />} /> */}
           <Tooltip />

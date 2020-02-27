@@ -5,7 +5,6 @@ import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
 import * as Styled from './styled';
 
-
 const PasswordForgotPage = () => {
   return (
     <Styled.Grid>
