@@ -1,9 +1,6 @@
 import styled from 'styled-components';
+import { device } from '../device';
 
-export const Grid = styled.div`
-grid-column-start: 4;
-grid-column-end: 8;
-`;
 
 export const Wrapper = styled.div`
 display: flex;

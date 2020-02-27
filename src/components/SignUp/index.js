@@ -6,13 +6,16 @@ import * as ROUTES from '../../constants/routes';
 import * as ROLES from '../../constants/roles';
 import * as Styled from './styled';
 
+
 const SignUpPage = () => (
-  <Styled.Grid>
-    <Styled.Wrapper>
-      <h1>Sign up</h1>
-      <SignUpForm />
-    </Styled.Wrapper>
-  </Styled.Grid>
+  <>
+    <Styled.Grid>
+      <Styled.Wrapper>
+        <h1>Sign up</h1>
+        <SignUpForm />
+      </Styled.Wrapper>
+    </Styled.Grid>
+  </>
 );
 const INITIAL_STATE = {
   name: '',

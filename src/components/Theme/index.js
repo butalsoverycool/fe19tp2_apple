@@ -10,8 +10,7 @@ class Theme extends Component {
 
     this.state = {
       logo: null,
-      logoUrl: defaultLogoUrl,
-      defaultLogoUrl: defaultLogoUrl,
+      dataUrl: defaultLogoUrl,
       color: defaultColor
     };
 
@@ -23,10 +22,10 @@ class Theme extends Component {
   componentDidMount() {
     this.listener = this.props.firebase.onAuthUserListener(authUser => {
       if (authUser) {
-        const { color, logoUrl } = authUser.organizationData;
+        const { color, dataUrl } = authUser.organizationData;
 
-        if (logoUrl != null) {
-          this.setState({ logoUrl: logoUrl || this.state.defaultLogo });
+        if (dataUrl != null) {
+          this.setState({ dataUrl: dataUrl || this.state.defaultLogo });
         }
 
         if (color != null) {
@@ -52,7 +51,7 @@ class Theme extends Component {
     reader.onload = e => {
       this.setState({
         logo,
-        logoUrl: e.target.result
+        dataUrl: e.target.result
       });
     };
 

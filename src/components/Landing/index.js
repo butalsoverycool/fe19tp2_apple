@@ -1,16 +1,19 @@
-import React from 'react';
-/* import Birds from './birds' */
-import styled, { ThemeProvider } from 'styled-components';
-import { Theme } from '../GlobalStyles';
+import React, { Component } from 'react';
+import * as Styled from './styled';
 
-const Landing = () => {
-  return (
-    <ThemeProvider theme={Theme}>
-      <div>
-        {/* <Birds /> */}
-      </div>
-    </ThemeProvider>
-  )
+class Landing extends Component {
+
+  render() {
+    return (
+
+      <Styled.Grid>
+        <Styled.Intro>Birds Eye View</Styled.Intro>
+      </Styled.Grid>
+
+    )
+  }
 }
 
 export default Landing;
+
+
