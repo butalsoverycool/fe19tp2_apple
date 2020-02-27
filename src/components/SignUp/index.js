@@ -8,7 +8,7 @@ import * as Styled from './styled';
 const SignUpPage = () => (
 	<Styled.Grid>
 		<Styled.Wrapper>
-			<h1>Sign up</h1>
+			<Styled.Header>Sign up</Styled.Header>
 			<SignUpForm />
 		</Styled.Wrapper>
 	</Styled.Grid>
@@ -81,45 +81,49 @@ class SignUpFormBase extends Component {
 
 		return (
 			<form onSubmit={this.onSubmit}>
-				<input
+				<Styled.Form
 					name="name"
 					onChange={this.onChange}
 					type="text"
 					placeholder="Organization name"
 				/>
-				<input
+				<br />
+				<Styled.Form
 					name="email"
 					value={email}
 					onChange={this.onChange}
 					type="text"
 					placeholder="Email Adress"
 				/>
-				<input
+				<br />
+				<Styled.Form
 					name="passwordOne"
 					value={passwordOne}
 					onChange={this.onChange}
 					type="password"
 					placeholder="Password"
 				/>{' '}
-				<input
+				<br />
+				<Styled.Form
 					name="passwordTwo"
 					value={passwordTwo}
 					onChange={this.onChange}
 					type="password"
 					placeholder="Confirm Password"
 				/>
-				<button disabled={isInvalid} type="submit">
+				<br />
+				<Styled.Submit disabled={isInvalid} type="submit">
 					Sign Up
-				</button>
+				</Styled.Submit>
 				{error && <p>{error.message}</p>}
 			</form>
 		);
 	}
 }
 const SignUpLink = () => (
-	<p>
+	<Styled.Text>
 		Don't have an account? <Link to={ROUTES.SIGN_UP}> Sign Up</Link>
-	</p>
+	</Styled.Text>
 );
 
 const SignUpForm = compose(withRouter, withFirebase)(SignUpFormBase);

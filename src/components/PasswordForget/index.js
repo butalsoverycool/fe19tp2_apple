@@ -7,11 +7,12 @@ import * as Styled from './styled';
 
 const PasswordForgotPage = () => {
 	return (
-		<Styled.Wrapper>
-			{' '}
-			<h1>Password Forgot</h1>
-			<PasswordForgetForm />
-		</Styled.Wrapper>
+		<Styled.Grid>
+			<Styled.Wrapper>
+				<Styled.Header>Password Forgot</Styled.Header>
+				<PasswordForgetForm />
+			</Styled.Wrapper>
+		</Styled.Grid>
 	);
 };
 
@@ -49,16 +50,17 @@ class PasswordForgetFormBase extends Component {
 		const isInvalid = email === '';
 		return (
 			<form onSubmit={this.onSubmit}>
-				<input
+				<Styled.Form
 					name="email"
 					value={this.state.email}
 					onChange={this.onChange}
 					type="text"
 					placeholder="Email Address"
 				/>
-				<button disabled={isInvalid} type="submit">
+				<br />
+				<Styled.Submit disabled={isInvalid} type="submit">
 					Reset My Password
-				</button>
+				</Styled.Submit>
 				{error && <p>{error.message}</p>}
 			</form>
 		);
