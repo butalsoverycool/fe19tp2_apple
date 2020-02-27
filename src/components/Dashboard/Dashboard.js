@@ -166,6 +166,7 @@ export default class Dashboard extends Component {
           <NewTabBtn type="add" onClick={this.newTab}>
             +
           </NewTabBtn>
+
           <RowWrapper>
             <TabList
               tabs={tabs}

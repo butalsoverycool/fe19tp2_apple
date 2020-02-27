@@ -6,6 +6,7 @@ import { proxy, apiUrl, queryBakery } from './default';
 import { fetchDataTitles, fetchData } from './fetch';
 import allEmissionData from './allEmissionData';
 
+import BirdLoader from '../BirdLoader';
 import Timespan from './Timespan';
 import Charts from './Charts';
 
@@ -239,6 +240,9 @@ export default class Tab extends Component {
             <DropdownContainer> */}
             {catVal ? (
               <>
+                {/* BirdLoader */}
+                <BirdLoader chartsReady={data} />
+
                 {/* Timespan arrows */}
                 <Select
                   className="dropdown-content-timespan-from"
