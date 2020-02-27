@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { device } from '../device';
 
 export const Grid = styled.div`

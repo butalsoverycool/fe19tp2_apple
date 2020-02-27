@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Navigation from '../Navigation';
 import LandingPage from '../Landing';
 import SignUpPage from '../SignUp';
@@ -11,6 +11,7 @@ import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { Theme } from '../GlobalStyles';
 import * as ROUTES from '../../constants/routes';
 import { withAuthentication } from '../Session';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import * as Styled from './styled';
 
 const GlobalStyle = createGlobalStyle`
@@ -39,18 +40,39 @@ class App extends Component {
       <ThemeProvider theme={Theme}>
         <Router>
           <GlobalStyle bg />
-          <Styled.GridLayout>
-            <Navigation authUser={this.state.authUser} />
-            <Route exact path={ROUTES.LANDING} component={LandingPage} />
-            <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
-            <Route path={ROUTES.SIGN_IN} component={SignInPage} />
-            <Route
-              path={ROUTES.PASSWORD_FORGET}
-              component={PasswordForgetPage}
-            />
-            <Route path={ROUTES.ACCOUNT} component={AccountPage} />
-          </Styled.GridLayout>
-          <Route path={ROUTES.DASHBOARD} component={DashboardPage} />
+
+          <Navigation authUser={this.state.authUser} />
+          <Route
+            render={({ location }) => (
+              <TransitionGroup component={null}>
+                <CSSTransition
+                  in={this.state.in}
+                  key={location.key}
+                  timeout={{ enter: 450, exit: 450 }}
+                  classNames="page"
+                  className="transition"
+                >
+                  {/*  <Styled.GridLayout> */}
+                  <Switch location={location}>
+                    <Route
+                      exact
+                      path={ROUTES.LANDING}
+                      component={LandingPage}
+                    />
+                    <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
+                    <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+                    <Route
+                      path={ROUTES.PASSWORD_FORGET}
+                      component={PasswordForgetPage}
+                    />
+                    <Route path={ROUTES.ACCOUNT} component={AccountPage} />
+                    <Route path={ROUTES.DASHBOARD} component={DashboardPage} />
+                  </Switch>
+                  {/* </Styled.GridLayout> */}
+                </CSSTransition>
+              </TransitionGroup>
+            )}
+          />
         </Router>
       </ThemeProvider>
     );

@@ -21,10 +21,14 @@ export const Grid = styled.div`
   @media ${device.laptop} {
     grid-column-start: 4;
     grid-column-end: 8;
+    grid-row-start: 2;
+    grid-row-end: 5;
   }
   @media ${device.laptopL} {
     grid-column-start: 4;
     grid-column-end: 8;
+    grid-row-start: 2;
+    grid-row-end: 5;
   }
   @media ${device.desktop} {
     grid-column-start: 4;
