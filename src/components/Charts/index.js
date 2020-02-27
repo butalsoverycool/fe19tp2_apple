@@ -42,15 +42,37 @@ const queryBakery = {
   response: { format: 'json' }
 };
 
+const groupData = function(arr, key1, key2) {
+  const obj = arr.reduce(function(res, item) {
+    (res[item[key1][key2]] = res[item[key1][key2]] || []).push(item);
+
+    return res;
+  }, {});
+
+  /* const res = [];
+  for (let prop in obj) {
+    res.push(obj[prop]);
+  } */
+
+  return obj;
+};
+
 class Charts extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      apiResponse: null,
+      dataTitles: {
+        chartTypes: ['area', 'bar'],
+        substances: [],
+        sectors: [],
+        years: []
+      },
       data: null,
       dataRequest: null, // availableData.dataRequest, // [], // temp to skip reqs
-      substances: /* availableData.substances, // */[],
-      sectors: /* availableData.sectors, // */[],
-      years: /* availableData.years, // */[],
+      substances: /* availableData.substances, // */ [],
+      sectors: /* availableData.sectors, // */ [],
+      years: /* availableData.years, // */ [],
       limit: { from: 0, to: 28 },
       isLoading: false,
 
@@ -58,12 +80,22 @@ class Charts extends Component {
       sectorsAdded: [],
       yearsAdded: []
     };
-    this.getEmissionData = this.getEmissionData.bind(this);
-    this.postEmissionData = this.postEmissionData.bind(this);
+
+    this.fetchDataTitles = this.fetchDataTitles.bind(this);
+    this.fetchData = this.fetchData.bind(this);
     this.tableHandler = this.tableHandler.bind(this);
+    this.setChartType = this.setChartType.bind(this);
     this.pushRangeLimit = this.pushRangeLimit.bind(this);
     //this.setRangeLimit = this.setRangeLimit.bind(this);
     this.setActiveClass = this.setActiveClass.bind(this);
+    this.newChart = this.newChart.bind(this);
+
+    this.tableConfig = this.tableConfig.bind(this);
+
+    this.setSectors = this.setSectors.bind(this);
+
+    this.chartBakery = this.chartBakery.bind(this);
+    this.chartDataBakery = this.chartDataBakery.bind(this);
   }
 
   componentDidMount() {
@@ -88,7 +120,6 @@ class Charts extends Component {
         // toPoint must be more than fromPoint
         if (limit.to <= limit.from) return;
       }
-
       limit[endPoint]--;
       /*   if (reaseType === 'dec') {
         if (oldLimit[endPoint] <= 0) return;
@@ -127,7 +158,6 @@ class Charts extends Component {
       limit
     });
   } */
-
   tableHandler = (itemToParse, array) => {
     const item = JSON.parse(itemToParse);
     const indicator = array === 'substancesAdded' ? 0 : 1;
@@ -142,7 +172,7 @@ class Charts extends Component {
 
           queryBakery.query[indicator].selection.values =
             indicator === 0 ? substancesAdded : sectorsAdded;
-          this.postEmissionData(queryBakery);
+          this.fetchData(queryBakery);
           return {
             [array]: newArr
           };
@@ -151,40 +181,39 @@ class Charts extends Component {
           newArr = [...prevState[array], item];
 
           const substancesAdded = newArr.map(item => item.code); */
-      /* const sectorsAdded = newArr.map(item => item.code); */
-
-      this.setState(prevState => {
-        newArr = prevState[array].filter(el => el !== item);
-        console.log(newArr);
-        const substancesAdded = newArr.map(item => item.code);
-        const sectorsAdded = newArr.map(item => item.code);
-
-        queryBakery.query[indicator].selection.values =
-          indicator === 0 ? substancesAdded : sectorsAdded;
-        this.postEmissionData(queryBakery);
-        return {
-          [array]: newArr
-        };
-      })
-      : this.setState(prevState => {
-        newArr = [...prevState[array], item];
-        console.log(newArr);
-        const substancesAdded = newArr.map(item => item.code);
         /* const sectorsAdded = newArr.map(item => item.code); */
 
-        queryBakery.query[indicator].selection.values = substancesAdded;
+        this.setState(prevState => {
+          newArr = prevState[array].filter(el => el !== item);
+          console.log(newArr);
+          const substancesAdded = newArr.map(item => item.code);
+          const sectorsAdded = newArr.map(item => item.code);
 
-        this.postEmissionData(queryBakery);
-        return {
-          [array]: newArr
-        };
-      });
+          queryBakery.query[indicator].selection.values =
+            indicator === 0 ? substancesAdded : sectorsAdded;
+          this.postEmissionData(queryBakery);
+          return {
+            [array]: newArr
+          };
+        })
+      : this.setState(prevState => {
+          newArr = [...prevState[array], item];
+          console.log(newArr);
+          const substancesAdded = newArr.map(item => item.code);
+          /* const sectorsAdded = newArr.map(item => item.code); */
+
+          queryBakery.query[indicator].selection.values = substancesAdded;
+
+          this.postEmissionData(queryBakery);
+          return {
+            [array]: newArr
+          };
+        });
     /* this.postEmissionData(queryBakery); */ //don't think we need another request here.
   };
 
-  setActiveClass = (item, array) => {
-    const ifArray = array;
-    return ifArray.includes(item) ? 'active' : '';
+  setActiveClass = (item, arr = []) => {
+    return arr.includes(item) ? 'active' : '';
   };
 
   getEmissionData() {
@@ -323,8 +352,8 @@ class Charts extends Component {
             data
               ? sliceData()
               : console.log(
-                'ChartHeader = need to select substance/sector to show header'
-              )
+                  'ChartHeader = need to select substance/sector to show header'
+                )
           }
           sectors={this.state.sectors}
         />
@@ -332,7 +361,8 @@ class Charts extends Component {
         <Table
           setActiveClass={this.setActiveClass}
           tableHandler={this.tableHandler}
-          category={this.state}
+          dataTitles={this.state.dataTitles}
+          charts={this.state.charts}
         />
 
         {/* <Preview
@@ -347,8 +377,8 @@ class Charts extends Component {
               data
                 ? sliceData()
                 : console.log(
-                  'Preview = need to select substance, sector for preview to show'
-                )
+                    'Preview = need to select substance, sector for preview to show'
+                  )
             }
             sectors={this.state.sectors}
             limit={this.state.limit}
@@ -361,7 +391,7 @@ class Charts extends Component {
         <Timespan
           data={this.state.data}
           limit={this.state.limit}
-          /* update={(key, val) => this.updateConfig(key, val)} */
+          // update={(key, val) => this.updateConfig(key, val)}
           totalTimespan={totalTimespan}
           pushRangeLimit={this.pushRangeLimit}
           setRangeLimit={this.setRangeLimit}

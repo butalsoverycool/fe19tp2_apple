@@ -10,7 +10,8 @@ class Theme extends Component {
 
     this.state = {
       logo: null,
-      dataUrl: defaultLogoUrl,
+      logoUrl: null,
+      defaultLogoUrl: defaultLogoUrl,
       color: defaultColor
     };
 
@@ -51,7 +52,7 @@ class Theme extends Component {
     reader.onload = e => {
       this.setState({
         logo,
-        dataUrl: e.target.result
+        logoUrl: e.target.result
       });
     };
 

@@ -1,13 +1,25 @@
 import React, { Component } from 'react';
 import { compose } from 'recompose';
 import { AuthUserContext, withAuthorization } from '../Session';
+import { PasswordForgetForm } from '../PasswordForget';
 import PasswordChangeForm from '../PasswordChange';
+import styled from 'styled-components';
 import { withFirebase } from '../Firebase';
 import { withTheme } from '../Theme';
 import LogoUploader from './LogoUploader';
 import Colorpicker from './Colorpicker';
 import * as Styled from './styled';
 import UserManagement from './UserManagement';
+
+
+const Wrapper = styled.div`
+  margin: auto;
+  width: 100vw;
+  max-width: 600px;
+  background-color: ${props => props.themeBg || 'none'};
+`;
+
+
 class AccountPage extends Component {
   render() {
     //theme

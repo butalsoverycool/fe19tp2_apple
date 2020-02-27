@@ -8,6 +8,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+<<<<<<< HEAD
+html {
+  min-width: 100%;
+}
+
+=======
+>>>>>>> master
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
