@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
 export const Nav = styled.div`
-  grid-column-start: 1;
-  grid-column-end: span 10;
+  position: absolute;
+  height: 60px;
+  min-width: 100%;
 `;
 
 export const Container = styled.nav`

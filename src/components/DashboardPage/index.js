@@ -22,6 +22,7 @@ const Layout = styled.div`
 const Header = styled.div`
   height: 40px;
   padding-bottom: 2rem;
+  padding-top: 90px;
 `;
 const Title = styled.div`
   font-weight: bold;

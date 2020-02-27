@@ -35,8 +35,8 @@ const Button = styled.div`
 `;
 const Card = styled.div`
   background: #fff;
+  width: 400px;
   text-align: center;
-  width: 350px;
   position: absolute;
 `;
 
@@ -54,14 +54,14 @@ const Table = props => {
     //Dropdown menus, one for substance and one for sector (year will generated )
     <>
       <Button onClick={toggle}>Edit</Button>{' '}
-      <DropdownContainer className='dropdown-container'>
+      <DropdownContainer className="dropdown-container">
         {/* <TableHead className='dropdown-button'>Substance</TableHead> */}
         {isToggled && (
           <div ref={ref}>
             <Card>
               {' '}
               <List
-                className='dropdown-content-substance'
+                className="dropdown-content-substance"
                 onChange={e =>
                   props.tableHandler(e.target.value, 'substancesAdded')
                 }
@@ -78,7 +78,7 @@ const Table = props => {
               </List>
               {/* <TableHead className='dropdown-button'>Sector</TableHead> */}
               <List
-                className='dropdown-content-sector'
+                className="dropdown-content-sector"
                 onChange={e =>
                   props.tableHandler(e.target.value, 'sectorsAdded')
                 }

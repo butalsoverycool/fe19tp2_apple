@@ -11,8 +11,8 @@ import Colorpicker from './Colorpicker';
 
 const Wrapper = styled.div`
   margin: auto;
-  width: 100vw;
   max-width: 600px;
+  padding-top: 90px;
   background-color: ${props => props.themeBg || 'none'};
 `;
 
@@ -35,7 +35,7 @@ class AccountPage extends Component {
         <LogoUploader />
 
         <Colorpicker />
-        <button type='button' onClick={saveChanges}>
+        <button type="button" onClick={saveChanges}>
           Save Changes
         </button>
       </Wrapper>

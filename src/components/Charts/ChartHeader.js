@@ -3,8 +3,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { Theme } from '../GlobalStyles';
 
 const Wrapper = styled.div`
-  width: 84%;
-  margin: auto;
+  // width: 84%;
   margin: auto;
 `;
 const Title = styled.h2`

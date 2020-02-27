@@ -34,7 +34,7 @@ const NavigationAuth = props => (
       <Link to={ROUTES.DASHBOARD}>
         <Logo
           src={props.theme.state.logoUrl || props.theme.state.defaultLogoUrl}
-          alt='BEV logo'
+          alt="BEV logo"
         />
       </Link>{' '}
       <Styled.NavLi>
@@ -55,7 +55,7 @@ const NavigationNonAuth = props => (
     <Link to={ROUTES.LANDING}>
       <Logo
         src={props.theme.state.logoUrl || props.theme.state.defaultLogoUrl}
-        alt='BEV logo'
+        alt="BEV logo"
       />
     </Link>
 

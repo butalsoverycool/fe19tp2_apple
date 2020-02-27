@@ -21,17 +21,16 @@ const Button = styled.button`
   text-decoration: none;
   height: 20px;
   width: 20px;
-  font-size: 1.5rem;
-  color: dimgrey;
-  border: none;
+  // font-size: 1.5rem;
+  color: #000;
   text-align: center;
   outline: none;
-  border-radius: 50px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-  transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
+  // border-radius: 50px;
+  // box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  // transition: all 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
 
   & > svg {
-    width: 20px;
+    font-size: 1rem;
     margin: auto;
     text-align: center;
   }
@@ -70,17 +69,17 @@ class Timespan extends Component {
     return (
       <>
         <Wrapper>
-          <ButtonContainer justifyContent='space-between'>
+          <ButtonContainer justifyContent="space-between">
             <Button
               onClick={() => this.props.pushRangeLimit('from', 'dec')}
-              margin='0'
+              margin="0"
             >
               <IoMdArrowDropleft />
             </Button>
-            from
+
             <Button
               onClick={() => this.props.pushRangeLimit('from', 'inc')}
-              margin='0'
+              margin="0"
             >
               <IoMdArrowDropright />
             </Button>
@@ -113,14 +112,14 @@ class Timespan extends Component {
           <ButtonContainer>
             <Button
               onClick={() => this.props.pushRangeLimit('to', 'dec')}
-              margin='0'
+              margin="0"
             >
               <IoMdArrowDropleft />
             </Button>
-            to
+
             <Button
               onClick={() => this.props.pushRangeLimit('to', 'inc')}
-              margin='0'
+              margin="0"
             >
               <IoMdArrowDropright />
             </Button>
