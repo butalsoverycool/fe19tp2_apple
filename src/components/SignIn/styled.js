@@ -3,9 +3,7 @@ import { device } from '../device';
 import { Theme } from '../GlobalStyles';
 import { SignUpLink } from '../SignUp';
 
-
 export const Grid = styled.div`
-
 	@media ${device.mobileS} {
 		grid-column-start: 2;
 		grid-column-end: 10;
@@ -19,8 +17,8 @@ export const Grid = styled.div`
 		grid-row-end: 8;
 	}
 	@media ${device.mobileL} {
-		grid-column-start: 2;
-		grid-column-end: 10;
+		grid-column-start: 5;
+		grid-column-end: 7;
 		grid-row-start: 2;
 		grid-row-end: 8;
 	}
@@ -83,5 +81,4 @@ export const Wrapper = styled.div`
 		max-width: none;
 		min-width: none;
 	}
-
 `;
