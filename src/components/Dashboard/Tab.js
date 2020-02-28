@@ -6,7 +6,7 @@ import { proxy, apiUrl, queryBakery } from './default';
 import { fetchDataTitles, fetchData } from './fetch';
 import allEmissionData from './allEmissionData';
 
-import BirdLoader from '../BirdLoader';
+import PopupMsg from '../PopupMsg';
 import Timespan from './Timespan';
 import Charts from './Charts';
 
@@ -185,9 +185,10 @@ export default class Tab extends Component {
     const antiKey = catKey === 'substances' ? 'sectors' : 'substances';
     const tabPlaceholder = '*Give this tab a name*';
 
-    /* if (catVal && !data) {
-      this.updateData();
-    } */
+    const loaderEnter = Boolean(catVal && !data);
+    const loaderExit = Boolean(data);
+
+    console.log('enter', loaderEnter, 'exit', loaderExit);
 
     return (
       <Wrapper className={'Tab-' + tabIndex}>
@@ -240,8 +241,14 @@ export default class Tab extends Component {
             <DropdownContainer> */}
             {catVal ? (
               <>
-                {/* BirdLoader */}
-                <BirdLoader chartsReady={data} />
+                {/* PopupMsg */}
+                <PopupMsg
+                  txt="Fetching your charts"
+                  enter={loaderEnter}
+                  exit={loaderExit}
+                  timeout={0}
+                  loader={true}
+                />
 
                 {/* Timespan arrows */}
                 <Select
