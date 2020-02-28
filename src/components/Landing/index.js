@@ -5,7 +5,10 @@ class Landing extends Component {
   render() {
     return (
       <Styled.Grid>
-        <Styled.Intro>Birds Eye View</Styled.Intro>
+        <Styled.Wrapper>
+          <Styled.Intro>Birds Eye View</Styled.Intro>
+          <Styled.Info>Lorem Ipsum</Styled.Info>
+        </Styled.Wrapper>
       </Styled.Grid>
     );
   }

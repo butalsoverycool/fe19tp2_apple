@@ -5,6 +5,14 @@ export const Intro = styled.h1`
 font-size: 3rem;
 `;
 
+export const Info = styled.p`
+
+`;
+
+export const Wrapper = styled.div`
+
+`;
+
 export const Grid = styled.div`
 grid-row-start: 3;
 
