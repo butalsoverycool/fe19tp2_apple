@@ -1,268 +1,63 @@
-const exampleData = [
-  {
-    year: '1990',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 275578
-  },
-  {
-    year: '1991',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 280933
-  },
-  {
-    year: '1992',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 269098
-  },
-  {
-    year: '1993',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 257762
-  },
-  {
-    year: '1994',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 261857
-  },
-  {
-    year: '1995',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 250666
-  },
-  {
-    year: '1996',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 245545
-  },
-  {
-    year: '1997',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 234702
-  },
-  {
-    year: '1998',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 224555
-  },
-  {
-    year: '1999',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 217000
-  },
-  {
-    year: '2000',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 212679
-  },
-  {
-    year: '2001',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 202906
-  },
-  {
-    year: '2002',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 195503
-  },
-  {
-    year: '2003',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 190985
-  },
-  {
-    year: '2004',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 186117
-  },
-  {
-    year: '2005',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 181586
-  },
-  {
-    year: '2006',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 178411
-  },
-  {
-    year: '2007',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 172262
-  },
-  {
-    year: '2008',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 164348
-  },
-  {
-    year: '2009',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 152365
-  },
-  {
-    year: '2010',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 156346
-  },
-  {
-    year: '2011',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 148562
-  },
-  {
-    year: '2012',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 142554
-  },
-  {
-    year: '2013',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 139895
-  },
-  {
-    year: '2014',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 138487
-  },
-  {
-    year: '2015',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 134241
-  },
-  {
-    year: '2016',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 131712
-  },
-  {
-    year: '2017',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 128133
-  },
-  {
-    year: '2018',
-    sector: '0.5',
-    substance: {
-      name: 'Kväveoxider (NOx) (t)',
-      code: 'NOx'
-    },
-    values: 126237
-  }
-];
+export const proxy = 'https://cors-anywhere.herokuapp.com/';
+export const apiUrl =
+  'http://api.scb.se/OV0104/v1/doris/en/ssd/START/MI/MI0108/TotaltUtslapp';
 
-export const availableData = {
+export const defaultChartTypes = ['bar', 'area'];
+
+export const defaultTab = () => {
+  return {
+    id: Math.random(),
+    name: '',
+    data: null,
+    catKey: null,
+    catVal: null,
+    timespan: { from: 0, to: 100 }, // from/to = number
+    charts: []
+  };
+};
+
+export const defaultChart = (key, val) => {
+  const typeIndex = Math.floor(Math.random() * defaultChartTypes.length); // rand chartType
+  const randVal = Math.floor(Math.random() * 5) + 1; // rand 1-5
+
+  const res = {
+    type: defaultChartTypes[typeIndex],
+    substance: {
+      name: '',
+      code: ''
+    },
+    sector: {
+      name: '',
+      code: ''
+    },
+    value: randVal
+  };
+
+  res[key] = val;
+
+  return res;
+};
+
+export const queryBakery = (by, value) => {
+  const code = by === 'substances' ? 'Luftfororening' : 'Sektor';
+
+  return {
+    query: [
+      {
+        code,
+        selection: {
+          filter: 'item',
+          values: [value]
+        }
+      }
+    ],
+    response: {
+      format: 'json'
+    }
+  };
+};
+
+export const defaultDataTitles = {
   substances: [
     {
       name: 'Kväveoxider (NOx) (t)',
@@ -647,74 +442,3 @@ export const availableData = {
     request: {}
   }
 };
-
-export const exampleChartData = [
-  {
-    year: 'time start',
-    sector: '*unknown substance*',
-    substance: { name: '*unknown substance*', code: '*unit*' },
-    values: 1
-  },
-  {
-    year: 'time',
-    sector: '*unknown substance*',
-    substance: { name: '*unknown substance*', code: '*unit*' },
-    values: 3
-  },
-  {
-    year: 'time',
-    sector: '*unknown substance*',
-    substance: { name: '*unknown substance*', code: '*unit*' },
-    values: 5
-  },
-  {
-    year: 'time',
-    sector: '*unknown substance*',
-    substance: { name: '*unknown substance*', code: '*unit*' },
-    values: 2
-  },
-  {
-    year: 'time',
-    sector: '*unknown substance*',
-    substance: { name: '*unknown substance*', code: '*unit*' },
-    values: 3
-  },
-  {
-    year: 'time end',
-    sector: '*unknown substance*',
-    substance: { name: '*unknown substance*', code: '*unit*' },
-    values: 2
-  }
-];
-
-export const exampleUser = {
-  email: 'test@test.test',
-  charts: [
-    {
-      type: 'area',
-      sectors: ['0.5'],
-      substances: [
-        {
-          name: 'Kväveoxider (NOx) (t)',
-          code: 'NOx'
-        }
-      ],
-      limit: { from: 0, to: 28 },
-      data: exampleChartData
-    },
-    {
-      type: 'bar',
-      sectors: ['0.5'],
-      substances: [
-        {
-          name: 'Kväveoxider (NOx) (t)',
-          code: 'NOx'
-        }
-      ],
-      limit: { from: 0, to: 28 },
-      data: exampleChartData
-    }
-  ]
-};
-
-export default exampleData;

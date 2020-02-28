@@ -29,7 +29,12 @@ const DropdownContainer = styled.div`
 
 class Table extends Component {
   render() {
-    const { tableHandler, category, setActiveClass } = this.props;
+    const {
+      setChartType,
+      tableHandler,
+      dataTitles,
+      setActiveClass
+    } = this.props;
     return (
       //Dropdown menus, one for substance and one for sector (year will generated )
       <>
@@ -45,7 +50,7 @@ class Table extends Component {
               {' '}
               - select a substance -{' '}
             </Options>
-            {category.substances.map(item => (
+            {dataTitles.substances.map(item => (
               <Options key={item.code} value={JSON.stringify(item)}>
                 {item.name}
               </Options>
@@ -63,7 +68,7 @@ class Table extends Component {
               {' '}
               - select a sector -{' '}
             </Options>
-            {category.sectors.map(item => (
+            {dataTitles.sectors.map(item => (
               <Options key={item.code} value={JSON.stringify(item)}>
                 {item.name}
               </Options>
@@ -74,11 +79,11 @@ class Table extends Component {
         {/* <DropdownContainer>
           <TableHead className="dropdown-button">Timespan</TableHead>
           <List className="dropdown-content">
-            {category.years.map((item) => (
+            {dataTitles.years.map((item) => (
               <TD
                 key={item}
                 onClick={() => this.props.tableHandler(item, "yearsAdded")}
-                className={setActiveClass(item, category.yearsAdded)}
+                className={setActiveClass(item, dataTitles.yearsAdded)}
               >
                 {item}
               </TD>

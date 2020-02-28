@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { device } from '../device';
 
 export const Grid = styled.div`
+
 	@media ${device.mobileS} {
 		grid-column-start: 2;
 		grid-column-end: 10;
@@ -62,4 +63,5 @@ export const Wrapper = styled.div`
 		max-width: none;
 		min-width: none;
 	}
+
 `;

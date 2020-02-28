@@ -8,6 +8,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+<<<<<<< HEAD
+html {
+  min-width: 100%;
+}
+
+=======
+>>>>>>> master
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -15,4 +22,23 @@ code {
 
 .recharts-surface {
   overflow: visible;
+}
+
+.page-enter {
+  opacity: 0;
+  height: 100vh;
+}
+
+.page-enter-active {
+  opacity: 1;
+  transition: opacity 450ms ease-in;
+}
+
+.page-exit {
+  opacity: 1;
+}
+
+.page-exit.page-exit-active {
+  opacity: 0;
+  transition: opacity 450ms ease-out;
 }

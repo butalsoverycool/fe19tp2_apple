@@ -6,6 +6,7 @@ import * as ROUTES from '../../constants/routes';
 import * as Styled from './styled';
 
 const PasswordForgotPage = () => {
+
 	return (
 		<Styled.Grid>
 			<Styled.Wrapper>
@@ -14,6 +15,7 @@ const PasswordForgotPage = () => {
 			</Styled.Wrapper>
 		</Styled.Grid>
 	);
+
 };
 
 const INITIAL_STATE = {
@@ -40,6 +42,7 @@ class PasswordForgetFormBase extends Component {
 				this.setState({ error });
 			});
 
+
 		event.preventDefault();
 	};
 	onChange = (event) => {
@@ -65,6 +68,7 @@ class PasswordForgetFormBase extends Component {
 			</form>
 		);
 	}
+
 }
 
 const PasswordForgetLink = () => (

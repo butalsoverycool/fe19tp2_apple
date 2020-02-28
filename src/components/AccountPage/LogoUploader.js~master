@@ -8,10 +8,6 @@ const Logo = styled.img`
 `;
 
 class LogoUploader extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   changeHandler = e => {};
 
   render() {
@@ -29,11 +25,11 @@ class LogoUploader extends Component {
     );
 
     return (
-      <div className='logoContainer'>
+      <div className="logoContainer">
         <p>Upload company logo</p>
-        <Logo className='logoPreview' src={dataUrl} alt='your_company_logo' />
+        <Logo className="logoPreview" src={dataUrl} alt="your_company_logo" />
         <div>{uploadInfo}</div>
-        <input type='file' onChange={previewLogo} />
+        <input type="file" onChange={previewLogo} />
       </div>
     );
   }

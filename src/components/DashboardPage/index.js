@@ -1,15 +1,37 @@
 import React from 'react';
+
 import Charts from '../Charts';
+import { ScreenBadge } from 'react-awesome-styled-grid';
+import DashBoard from '../Dashboard';
+
 import styled, { ThemeProvider } from 'styled-components';
 import { compose } from 'recompose';
 import { withAuthorization } from '../Session';
 import { Theme } from '../GlobalStyles';
 import { withTheme } from '../Theme';
+import * as Styled from './styled';
+
 import { device } from '../device';
-import { Container, Row, Col } from 'react-awesome-styled-grid'
+import { Container, Row, Col } from 'react-awesome-styled-grid';
 
+const Wrapper = styled.div`
+  width: 100vw;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  display: flex;
+`;
 
-const Grid = styled.div`
+const DashboardPage = props => {
+  const { color } = props.theme.state;
+  return (
+    <Wrapper>
+      <DashBoard />
+    </Wrapper>
+  );
+};
+
+/* const Grid = styled.div`
   max-width: 1440px;
   display: grid;
   grid-gap: 10px;
@@ -73,7 +95,6 @@ const DashboardPage = props => {
 
   return (
     <ThemeProvider theme={Theme}>
-
       <GridWrapper>
         <Grid>
           <Charts />
@@ -84,14 +105,10 @@ const DashboardPage = props => {
           <Charts />
         </Grid>
       </GridWrapper>
-
-
-
-
     </ThemeProvider >
 
   );
-};
+}; */
 
 const condition = authUser => !!authUser;
 export default compose(withTheme, withAuthorization(condition))(DashboardPage);

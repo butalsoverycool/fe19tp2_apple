@@ -5,6 +5,7 @@ export const UserTheme = {
 };
 
 export const Theme = {
+
 	bgPrimary: 'whitesmoke',
 	bgSecondary: 'offwhite',
 	chartbuttonbg: 'offwhite',
@@ -18,4 +19,5 @@ export const Theme = {
 	fontXL: '42px',
 	fontColorPrimary: '#202020',
 	fontColorSecondary: '383838'
+
 };

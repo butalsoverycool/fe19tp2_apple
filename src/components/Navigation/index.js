@@ -8,6 +8,7 @@ import * as Styled from './styled';
 import { AuthUserContext } from '../Session';
 import { Theme } from '../GlobalStyles';
 import { withTheme } from '../Theme';
+import BirdAnimation from '../BirdAnimation';
 
 const Logo = styled.img`
   max-width: 100px;
@@ -19,8 +20,8 @@ const Navigation = props => (
       authUser ? (
         <NavigationAuth authUser={authUser} theme={props.theme} />
       ) : (
-          <NavigationNonAuth theme={props.theme} />
-        )
+        <NavigationNonAuth theme={props.theme} />
+      )
     }
   </AuthUserContext.Consumer>
 );
@@ -30,7 +31,10 @@ const NavigationAuth = props => (
     <Styled.Grid>
       <Styled.Container>
         <Link to={ROUTES.DASHBOARD}>
-          <Logo src={props.theme.state.dataUrl} alt="BEV logo" />
+          <Logo
+            src={props.theme.state.dataUrl || props.theme.state.defaultLogoUrl}
+            alt="BEV logo"
+          />
         </Link>
         <Styled.LI>
           <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
@@ -46,14 +50,12 @@ const NavigationAuth = props => (
 
 const NavigationNonAuth = props => (
   <>
+    <BirdAnimation />
     <Styled.Grid>
       <Styled.Container>
         <Link to={ROUTES.LANDING}>
           <Logo src={props.theme.state.dataUrl} alt="BEV logo" />
         </Link>
-        <Styled.LI>
-          <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
-        </Styled.LI>
         <Styled.LI>
           <Link to={ROUTES.SIGN_IN}>Sign In</Link>
         </Styled.LI>

@@ -1,8 +1,9 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { device } from '../device';
 import { Theme } from '../GlobalStyles';
 import { SignUpLink } from '../SignUp';
 export const Grid = styled.div`
+
 	@media ${device.mobileS} {
 		grid-column-start: 2;
 		grid-column-end: 10;
@@ -66,4 +67,5 @@ export const Wrapper = styled.div`
 		max-width: none;
 		min-width: none;
 	}
+
 `;
