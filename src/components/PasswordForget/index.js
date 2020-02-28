@@ -6,68 +6,77 @@ import * as ROUTES from '../../constants/routes';
 import * as Styled from './styled';
 
 const PasswordForgotPage = () => {
-  return (
-    <Styled.Wrapper>
-      <h1>Password Forgot</h1>
-      <PasswordForgetForm />
-    </Styled.Wrapper>
-  );
+
+	return (
+		<Styled.Grid>
+			<Styled.Wrapper>
+				<Styled.Header>Password Forgot</Styled.Header>
+				<PasswordForgetForm />
+			</Styled.Wrapper>
+		</Styled.Grid>
+	);
+
 };
 
 const INITIAL_STATE = {
-  email: '',
-  error: null
+	email: '',
+	error: null
 };
 
 class PasswordForgetFormBase extends Component {
-  constructor(props) {
-    super(props);
+	constructor(props) {
+		super(props);
 
-    this.state = { ...INITIAL_STATE };
-  }
+		this.state = { ...INITIAL_STATE };
+	}
 
-  onSubmit = event => {
-    const { email } = this.state;
+	onSubmit = (event) => {
+		const { email } = this.state;
 
-    this.props.firebase
-      .doPasswordReset(email)
-      .then(() => {
-        this.setState({ ...INITIAL_STATE });
-      })
-      .catch(error => {
-        this.setState({ error });
-      });
+		this.props.firebase
+			.doPasswordReset(email)
+			.then(() => {
+				this.setState({ ...INITIAL_STATE });
+			})
+			.catch((error) => {
+				this.setState({ error });
+			});
 
-    event.preventDefault();
-  };
-  onChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
-  render() {
-    const { email, error } = this.state;
-    const isInvalid = email === '';
-    return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          name="email"
-          value={this.state.email}
-          onChange={this.onChange}
-          type="text"
-          placeholder="Email Address"
-        />
-        <button disabled={isInvalid} type="submit">
-          Reset My Password
-        </button>
-        {error && <p>{error.message}</p>}
-      </form>
-    );
-  }
+
+		event.preventDefault();
+	};
+	onChange = (event) => {
+		this.setState({ [event.target.name]: event.target.value });
+	};
+	render() {
+		const { email, error } = this.state;
+		const isInvalid = email === '';
+		return (
+			<form onSubmit={this.onSubmit}>
+				<Styled.Form
+					name="email"
+					value={this.state.email}
+					onChange={this.onChange}
+					type="text"
+					placeholder="Email Address"
+				/>
+				<br />
+				<Styled.Submit disabled={isInvalid} type="submit">
+					Reset My Password
+				</Styled.Submit>
+				{error && <p>{error.message}</p>}
+			</form>
+		);
+	}
+
 }
 
 const PasswordForgetLink = () => (
-  <p>
-    <Link to={ROUTES.PASSWORD_FORGET}>Forgot Password?</Link>
-  </p>
+	<p>
+		<Styled.ForgotLink to={ROUTES.PASSWORD_FORGET}>
+			Forgot Password?
+		</Styled.ForgotLink>
+	</p>
 );
 
 export default PasswordForgotPage;

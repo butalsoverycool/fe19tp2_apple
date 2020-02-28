@@ -8,35 +8,36 @@ import * as Styled from './styled';
 
 
 const SignUpPage = () => (
-  <>
-    <Styled.Grid>
-      <Styled.Wrapper>
-        <h1>Sign up</h1>
-        <SignUpForm />
-      </Styled.Wrapper>
-    </Styled.Grid>
-  </>
+
+	<Styled.Grid>
+		<Styled.Wrapper>
+			<Styled.Header>Sign up</Styled.Header>
+			<SignUpForm />
+		</Styled.Wrapper>
+	</Styled.Grid>
+
 );
 const INITIAL_STATE = {
-  name: '',
-  email: '',
-  passwordOne: '',
-  passwordTwo: '',
-  error: null
+	name: '',
+	email: '',
+	passwordOne: '',
+	passwordTwo: '',
+	error: null
 };
 class SignUpFormBase extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { ...INITIAL_STATE };
-  }
+	constructor(props) {
+		super(props);
+		this.state = { ...INITIAL_STATE };
+	}
 
-  onSubmit = event => {
-    const { name, email, passwordOne } = this.state;
+	onSubmit = (event) => {
+		const { name, email, passwordOne } = this.state;
 
-    this.props.firebase
-      .doCreateUserWithEmailAndPassword(email, passwordOne)
-      .then(authUser => {
-        const { uid, email } = authUser.user;
+		this.props.firebase
+			.doCreateUserWithEmailAndPassword(email, passwordOne)
+			.then((authUser) => {
+				const { uid, email } = authUser.user;
+
 
         // create org in 'organizations' collection and add user ID
         this.props.firebase
@@ -51,67 +52,80 @@ class SignUpFormBase extends Component {
             });
           });
 
-        this.setState({ ...INITIAL_STATE });
-        this.props.history.push(ROUTES.DASHBOARD);
-      })
-      .catch(error => {
-        this.setState({ error });
-      });
-    event.preventDefault();
-  };
-  onChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
-  onChangeCheckbox = event => {
-    this.setState({ [event.target.name]: event.target.checked });
-  };
-  render() {
-    const { name, email, passwordOne, passwordTwo, error } = this.state;
 
-    const isInvalid =
-      passwordOne !== passwordTwo || passwordOne === '' || name === '';
+				this.setState({ ...INITIAL_STATE });
+				this.props.history.push(ROUTES.DASHBOARD);
+			})
+			.catch((error) => {
+				this.setState({ error });
+			});
+		event.preventDefault();
+	};
+	onChange = (event) => {
+		this.setState({ [event.target.name]: event.target.value });
+	};
+	onChangeCheckbox = (event) => {
+		this.setState({ [event.target.name]: event.target.checked });
+	};
+	render() {
+		const {
+			name,
+			email,
+			passwordOne,
+			passwordTwo,
+			error
+		} = this.state;
 
-    return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          name="name"
-          onChange={this.onChange}
-          type="text"
-          placeholder="Organization name"
-        />
-        <input
-          name="email"
-          value={email}
-          onChange={this.onChange}
-          type="text"
-          placeholder="Email Adress"
-        />
-        <input
-          name="passwordOne"
-          value={passwordOne}
-          onChange={this.onChange}
-          type="password"
-          placeholder="Password"
-        />{' '}
-        <input
-          name="passwordTwo"
-          value={passwordTwo}
-          onChange={this.onChange}
-          type="password"
-          placeholder="Confirm Password"
-        />
-        <button disabled={isInvalid} type="submit">
-          Sign Up
-        </button>
-        {error && <p>{error.message}</p>}
-      </form>
-    );
-  }
+		const isInvalid =
+			passwordOne !== passwordTwo ||
+			passwordOne === '' ||
+			name === '';
+
+		return (
+			<form onSubmit={this.onSubmit}>
+				<Styled.Form
+					name="name"
+					onChange={this.onChange}
+					type="text"
+					placeholder="Organization name"
+				/>
+				<br />
+				<Styled.Form
+					name="email"
+					value={email}
+					onChange={this.onChange}
+					type="text"
+					placeholder="Email Adress"
+				/>
+				<br />
+				<Styled.Form
+					name="passwordOne"
+					value={passwordOne}
+					onChange={this.onChange}
+					type="password"
+					placeholder="Password"
+				/>{' '}
+				<br />
+				<Styled.Form
+					name="passwordTwo"
+					value={passwordTwo}
+					onChange={this.onChange}
+					type="password"
+					placeholder="Confirm Password"
+				/>
+				<br />
+				<Styled.Submit disabled={isInvalid} type="submit">
+					Sign Up
+				</Styled.Submit>
+				{error && <p>{error.message}</p>}
+			</form>
+		);
+	}
 }
 const SignUpLink = () => (
-  <p>
-    Don't have an account? <Link to={ROUTES.SIGN_UP}> Sign Up</Link>
-  </p>
+	<Styled.Text>
+		Don't have an account? <Link to={ROUTES.SIGN_UP}> Sign Up</Link>
+	</Styled.Text>
 );
 
 const SignUpForm = compose(withRouter, withFirebase)(SignUpFormBase);

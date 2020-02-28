@@ -16,7 +16,7 @@ import * as Styled from './styled';
 
 const GlobalStyle = createGlobalStyle`
 body {
-  background-color: ${props => props.theme.bgPrimary};
+  background-color: ${(props) => props.theme.bgPrimary};
   padding: 0;
   margin: 0;
   font-family: 'Open Sans', sans-serif;
@@ -28,8 +28,9 @@ body {
 }`;
 
 class App extends Component {
-  constructor(props) {
-    super(props);
+	constructor(props) {
+		super(props);
+
 
     this.state = {
       authUser: null
@@ -77,6 +78,7 @@ class App extends Component {
       </ThemeProvider>
     );
   }
+
 }
 
 export default withAuthentication(App);
