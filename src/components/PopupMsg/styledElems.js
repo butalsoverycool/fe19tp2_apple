@@ -1,40 +1,18 @@
 import styled, { css } from 'styled-components';
 
-import {
-  intro,
-  outro,
-  dots,
-  flyCycle,
-  flyRightOne,
-  flyRightTwo
-} from './keyframes';
-
-const introProps = '1.2s normal ease-out 1 forwards';
-
-const outroProps = '.4s 0s normal ease-in 1 forwards';
-
-const containerIntro = props =>
-  css`
-    ${intro} ${introProps};
-  `;
-
-const containerOutro = props =>
-  css`
-    ${outro} ${outroProps};
-  `;
+import { containerAnim, loaderDots, flyCycle, flyRightOne } from './keyframes';
 
 export const Container = styled.div`
   z-index: 2;
   position: fixed;
-  width: 180px;
-  height: 80px;
   left: 50%;
   top: 50%;
+  width: 10rem;
   margin-left: -80px;
   margin-top: -40px;
-  padding: 0;
-  overflow: hidden;
-  display: flex;
+  padding: 0 0 5rem 0;
+  overflow-x: hidden;
+  display: ${props => (props.name ? 'flex' : 'none')};
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
@@ -48,33 +26,45 @@ export const Container = styled.div`
     box-sizing: border-box;
   }
 
-  animation: ${props => (props.chartsReady ? containerOutro : containerIntro)};
+  animation: ${props => (props.name ? containerAnim(props) : 'none')};
+`;
+
+export const TxtContainer = styled.div`
+  position: relative;
+  margin: 0;
+  padding: 0 1rem;
+  text-align: center;
+  background: #fff;
+  box-shadow: 0 0 10px #ddd;
+  border-radius: 5px;
 `;
 
 export const Txt = styled.p`
-  position: relative;
-  z-index: 3;
-  height: auto;
-  margin: 0;
+  max-width: 8rem;
 
   &::after {
     font-size: 2rem;
-    content: '.';
-    animation: ${dots} 1.3s steps(5, end) infinite;
+    line-height: 1rem;
+    content: ${props => (props.loader ? "'.'" : '')};
+    animation: ${props => (props.loader ? loaderDots() : 'none')};
   }
+`;
+
+export const BoxContainer = styled.div`
+  position: relative;
 `;
 
 export const BirdBox = styled.div`
   position: absolute;
-  top: -15%;
-  left: -10%;
+  top: -2rem;
+  left: -7rem;
   transform: scale(0) translateX(0vw);
   will-change: transform;
 
   animation: ${flyRightOne} linear infinite;
 
-  animation-duration: 12s;
-  animation-delay: ${props => props.order || '0s'};
+  animation-duration: ${props => props.duration || '7s'};
+  animation-delay: ${props => props.delay || '0s'};
 `;
 
 export const Bird = styled.div`

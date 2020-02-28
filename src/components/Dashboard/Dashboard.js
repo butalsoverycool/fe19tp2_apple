@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 import Tab from './Tab';
+import PopupMsg from '../PopupMsg';
 
 import { defaultTab, defaultDataTitles } from './default';
 
@@ -262,6 +263,11 @@ class TabList extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      deleting: false,
+      deleteMsg: null
+    };
+
     this.clickHandler = this.clickHandler.bind(this);
 
     this.setWrapperRef = this.setWrapperRef.bind(this);
@@ -299,47 +305,84 @@ class TabList extends Component {
 
     const tab = tabs.filter(tab => tab.id === id)[0];
 
-    /* const tabIndex = tabs.indexOf(tab);
-
-    console.log('active tab', tab, tabIndex); */
-
     updateActiveTab(tab, tabIndex);
+  };
+
+  deleteHandler = tabIndex => {
+    const { tabs } = this.props;
+    const tabName = tabs[tabIndex].name || tabs[tabIndex].id.toFixed(4);
+
+    this.setState(
+      {
+        deleting: true,
+        deleteMsg: tabName + ' deleted!'
+      },
+      () => {
+        setTimeout(
+          // temp-solution
+          () =>
+            this.setState({
+              deleting: false,
+              deleteMsg: null
+            }),
+          1500
+        );
+      }
+    );
+
+    this.props.deleteTab(tabIndex);
   };
 
   render() {
     let { tabs, activeTab, tabListOpen, toggleTabList, deleteTab } = this.props;
+    const { deleting, deleteMsg } = this.state;
+
     const activeId = activeTab ? activeTab.id : null;
 
     return (
-      <TabListWrapper ref={this.setWrapperRef}>
-        <ToggleBtn
-          onClick={toggleTabList}
-          tabListOpen={tabListOpen}
-          tabsExist={tabs.length > 0}
-        >
-          <ToggleTxt tabListOpen={tabListOpen} tabsExist={tabs.length > 0}>
-            {'<<'}
-          </ToggleTxt>
-        </ToggleBtn>
+      <>
+        {deleting ? (
+          <PopupMsg
+            txt={deleteMsg || 'Deleted!'}
+            enter={true}
+            exit={false}
+            timeout={1000}
+          />
+        ) : null}
 
-        <List className="TabList" tabListOpen={tabListOpen ? true : false}>
-          {tabs.length > 0
-            ? tabs.map((tab, nth) => (
-                <Item key={'item' + nth}>
-                  <ItemBtn
-                    active={tab.id === activeId}
-                    onClick={e => this.clickHandler(tab.id, tab.name, nth)}
-                  >
-                    {tab.name || `(id-${tab.id.toFixed(4)})`}
-                  </ItemBtn>
-                  <ItemBtn onClick={() => deleteTab(nth)} type="delete">
-                    Del
-                  </ItemBtn>
-                </Item>
-              ))
-            : null}
-        </List>
-      </TabListWrapper>
+        <TabListWrapper ref={this.setWrapperRef}>
+          <ToggleBtn
+            onClick={toggleTabList}
+            tabListOpen={tabListOpen}
+            tabsExist={tabs.length > 0}
+          >
+            <ToggleTxt tabListOpen={tabListOpen} tabsExist={tabs.length > 0}>
+              {'<<'}
+            </ToggleTxt>
+          </ToggleBtn>
+
+          <List className="TabList" tabListOpen={tabListOpen ? true : false}>
+            {tabs.length > 0
+              ? tabs.map((tab, nth) => (
+                  <Item key={'item' + nth}>
+                    <ItemBtn
+                      active={tab.id === activeId}
+                      onClick={e => this.clickHandler(tab.id, tab.name, nth)}
+                    >
+                      {tab.name || `(id-${tab.id.toFixed(4)})`}
+                    </ItemBtn>
+                    <ItemBtn
+                      onClick={() => this.deleteHandler(nth)}
+                      type="delete"
+                    >
+                      Del
+                    </ItemBtn>
+                  </Item>
+                ))
+              : null}
+          </List>
+        </TabListWrapper>
+      </>
     );
   }
 }
