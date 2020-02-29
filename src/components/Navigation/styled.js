@@ -8,16 +8,21 @@ export const Grid = styled.div`
 `;
 
 export const Container = styled.nav`
-  width: 100%;
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 16px;
+  justify-content: space-between;
+  width: auto;
 `;
 
 export const UL = styled.ul``;
 
 export const LI = styled.div`
-  display: inline-block;
-  padding: 1em;
-
+  flex: 1;
   & > a {
+    padding: 1rem;
     text-decoration: none;
     color: black;
   }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-
+import { withTheme } from '../Theme';
 import Tab from './Tab';
 import PopupMsg from '../PopupMsg';
 
@@ -48,8 +48,7 @@ const NewTabBtn = styled.button`
   box-shadow: 0 0 20px #ddd;
   border: none;
   outline: none;
-
-  position: fixed;
+  position: absolute;
   right: 1rem;
   top: 8rem;
   z-index: 1;
@@ -229,7 +228,7 @@ const ToggleBtn = styled.button`
       : 'translate3d(10rem, 0,0)'};
   overflow-x: ${props => (props.tabListOpen ? 'hidden' : 'unset')};
   transition-duration: 0.4s;
-  background: #ffa6d2;
+  background: ${props => props.color};
 `;
 
 const ToggleTxt = styled.p`

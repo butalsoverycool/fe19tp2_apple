@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { withTheme } from '../Theme';
+import { compose } from 'recompose';
 import {
   CartesianGrid,
   XAxis,
@@ -21,6 +23,8 @@ const Wrapper = styled.div`
 `;
 
 const AreaChartTemplate = props => {
+  const { color } = props.theme.state;
+
   return (
     <Wrapper className="ChartTemplate">
       <ResponsiveContainer width={'99%'} height={'99%'}>
@@ -30,7 +34,7 @@ const AreaChartTemplate = props => {
             type="monotone"
             dataKey="value"
             stroke="#8884d8"
-            fill="hotpink"
+            fill={color.hex || 'hotpink'}
             strokeWidth={2}
           />
           <XAxis dataKey="year" strokeWidth={2} />
@@ -61,4 +65,5 @@ const ChartTemplate = props => {
   return <AreaChartTemplate data={data} />;
 };
 
-export default ChartTemplate;
+const condition = authUser => !!authUser;
+export default compose(withTheme)(AreaChartTemplate);

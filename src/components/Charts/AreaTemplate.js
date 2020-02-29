@@ -12,7 +12,14 @@ import {
 
 import CustomTooltip from './CustomTooltip';
 
-const AreaTemplate = ({ type, data, unit, addedSubstances, addedSectors }) => {
+const AreaTemplate = ({
+  type,
+  data,
+  unit,
+  addedSubstances,
+  addedSectors,
+  color
+}) => {
   const drawArea = () => {
     const colors = ['8884d8', 'red', 'orange', 'black'];
     const res = addedSubstances.map((item, nth) => {

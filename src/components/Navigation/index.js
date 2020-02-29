@@ -6,12 +6,17 @@ import * as ROUTES from '../../constants/routes';
 import * as ROLES from '../../constants/roles';
 import * as Styled from './styled';
 import { AuthUserContext } from '../Session';
-import { Theme } from '../GlobalStyles';
 import { withTheme } from '../Theme';
 import BirdAnimation from '../BirdAnimation';
 
-const Logo = styled.img`
-  max-width: 100px;
+const Logo = styled.div``;
+const Circle = styled.div`
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin: 0.5rem 0 0 0.5rem;
+  background-position: 50% 50%;
+  background-size: cover;
 `;
 
 const Navigation = props => (
@@ -31,18 +36,22 @@ const NavigationAuth = props => (
     <Styled.Grid>
       <Styled.Container>
         <Link to={ROUTES.DASHBOARD}>
-          <Logo
-            src={props.theme.state.dataUrl || props.theme.state.defaultLogoUrl}
+          <Circle
+            style={{
+              backgroundImage: `url(${props.theme.state.dataUrl ||
+                props.theme.state.defaultLogoUrl})`
+            }}
             alt="BEV logo"
-          />
+          >
+            <Logo />
+          </Circle>{' '}
         </Link>
         <Styled.LI>
           <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
-        </Styled.LI>
-        <Styled.LI>
+
           <Link to={ROUTES.ACCOUNT}>Account</Link>
         </Styled.LI>
-        <SignOutButton />
+        <SignOutButton />{' '}
       </Styled.Container>
     </Styled.Grid>
   </>
@@ -54,7 +63,15 @@ const NavigationNonAuth = props => (
     <Styled.Grid>
       <Styled.Container>
         <Link to={ROUTES.LANDING}>
-          <Logo src={props.theme.state.dataUrl} alt="BEV logo" />
+          <Circle
+            style={{
+              backgroundImage: `url(${props.theme.state.dataUrl ||
+                props.theme.state.defaultLogoUrl})`
+            }}
+            alt="BEV logo"
+          >
+            <Logo />
+          </Circle>
         </Link>
         <Styled.LI>
           <Link to={ROUTES.SIGN_IN}>Sign In</Link>
