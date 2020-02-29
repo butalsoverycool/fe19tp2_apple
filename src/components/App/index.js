@@ -63,23 +63,26 @@ class App extends Component {
                   classNames="page"
                   className="transition"
                 >
-                  {/*  <Styled.GridLayout> */}
-                  <Switch location={location}>
-                    <Route
-                      exact
-                      path={ROUTES.LANDING}
-                      component={LandingPage}
-                    />
-                    <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
-                    <Route path={ROUTES.SIGN_IN} component={SignInPage} />
-                    <Route
-                      path={ROUTES.PASSWORD_FORGET}
-                      component={PasswordForgetPage}
-                    />
-                    <Route path={ROUTES.ACCOUNT} component={AccountPage} />
-                    <Route path={ROUTES.DASHBOARD} component={DashboardPage} />
-                  </Switch>
-                  {/* </Styled.GridLayout> */}
+                  <Styled.GridLayout>
+                    <Switch location={location}>
+                      <Route
+                        exact
+                        path={ROUTES.LANDING}
+                        component={LandingPage}
+                      />
+                      <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
+                      <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+                      <Route
+                        path={ROUTES.PASSWORD_FORGET}
+                        component={PasswordForgetPage}
+                      />
+                      <Route path={ROUTES.ACCOUNT} component={AccountPage} />
+                      <Route
+                        path={ROUTES.DASHBOARD}
+                        component={DashboardPage}
+                      />
+                    </Switch>
+                  </Styled.GridLayout>
                 </CSSTransition>
               </TransitionGroup>
             )}

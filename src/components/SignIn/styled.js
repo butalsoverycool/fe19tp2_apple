@@ -2,35 +2,49 @@ import styled, { keyframes } from 'styled-components';
 import { device } from '../device';
 import { Theme } from '../GlobalStyles';
 import { SignUpLink } from '../SignUp';
-export const Grid = styled.div`
 
+export const Grid = styled.div`
 	@media ${device.mobileS} {
 		grid-column-start: 2;
 		grid-column-end: 10;
+		grid-row-start: 2;
+		grid-row-end: 8;
 	}
 	@media ${device.mobileM} {
 		grid-column-start: 2;
 		grid-column-end: 10;
+		grid-row-start: 2;
+		grid-row-end: 8;
 	}
 	@media ${device.mobileL} {
 		grid-column-start: 5;
 		grid-column-end: 7;
+		grid-row-start: 2;
+		grid-row-end: 8;
 	}
 	@media ${device.tablet} {
 		grid-column-start: 5;
 		grid-column-end: 7;
+		grid-row-start: 2;
+		grid-row-end: 8;
 	}
 	@media ${device.laptop} {
 		grid-column-start: 5;
 		grid-column-end: 7;
+		grid-row-start: 2;
+		grid-row-end: 8;
 	}
 	@media ${device.laptopL} {
 		grid-column-start: 5;
 		grid-column-end: 7;
+		grid-row-start: 3;
+		grid-row-end: 8;
 	}
 	@media ${device.desktop} {
 		grid-column-start: 5;
 		grid-column-end: 7;
+		grid-row-start: 3;
+		grid-row-end: 8;
 	}
 `;
 
@@ -55,9 +69,9 @@ export const textWrapper = styled.div`
 
 export const Wrapper = styled.div`
 	height: 400px;
+	display: flex;
 	max-width: 300px;
 	min-width: 300px;
-	display: flex;
 	flex-direction: column;
 	justify-content: space-around;
 	align-items: center;
@@ -67,5 +81,4 @@ export const Wrapper = styled.div`
 		max-width: none;
 		min-width: none;
 	}
-
 `;

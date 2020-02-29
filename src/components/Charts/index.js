@@ -42,8 +42,8 @@ const queryBakery = {
   response: { format: 'json' }
 };
 
-const groupData = function(arr, key1, key2) {
-  const obj = arr.reduce(function(res, item) {
+const groupData = function (arr, key1, key2) {
+  const obj = arr.reduce(function (res, item) {
     (res[item[key1][key2]] = res[item[key1][key2]] || []).push(item);
 
     return res;
@@ -70,9 +70,9 @@ class Charts extends Component {
       },
       data: null,
       dataRequest: null, // availableData.dataRequest, // [], // temp to skip reqs
-      substances: /* availableData.substances, // */ [],
-      sectors: /* availableData.sectors, // */ [],
-      years: /* availableData.years, // */ [],
+      substances: /* availableData.substances, // */[],
+      sectors: /* availableData.sectors, // */[],
+      years: /* availableData.years, // */[],
       limit: { from: 0, to: 28 },
       isLoading: false,
 
@@ -181,34 +181,34 @@ class Charts extends Component {
           newArr = [...prevState[array], item];
 
           const substancesAdded = newArr.map(item => item.code); */
+      /* const sectorsAdded = newArr.map(item => item.code); */
+
+      this.setState(prevState => {
+        newArr = prevState[array].filter(el => el !== item);
+        console.log(newArr);
+        const substancesAdded = newArr.map(item => item.code);
+        const sectorsAdded = newArr.map(item => item.code);
+
+        queryBakery.query[indicator].selection.values =
+          indicator === 0 ? substancesAdded : sectorsAdded;
+        this.postEmissionData(queryBakery);
+        return {
+          [array]: newArr
+        };
+      })
+      : this.setState(prevState => {
+        newArr = [...prevState[array], item];
+        console.log(newArr);
+        const substancesAdded = newArr.map(item => item.code);
         /* const sectorsAdded = newArr.map(item => item.code); */
 
-        this.setState(prevState => {
-          newArr = prevState[array].filter(el => el !== item);
-          console.log(newArr);
-          const substancesAdded = newArr.map(item => item.code);
-          const sectorsAdded = newArr.map(item => item.code);
+        queryBakery.query[indicator].selection.values = substancesAdded;
 
-          queryBakery.query[indicator].selection.values =
-            indicator === 0 ? substancesAdded : sectorsAdded;
-          this.postEmissionData(queryBakery);
-          return {
-            [array]: newArr
-          };
-        })
-      : this.setState(prevState => {
-          newArr = [...prevState[array], item];
-          console.log(newArr);
-          const substancesAdded = newArr.map(item => item.code);
-          /* const sectorsAdded = newArr.map(item => item.code); */
-
-          queryBakery.query[indicator].selection.values = substancesAdded;
-
-          this.postEmissionData(queryBakery);
-          return {
-            [array]: newArr
-          };
-        });
+        this.postEmissionData(queryBakery);
+        return {
+          [array]: newArr
+        };
+      });
     /* this.postEmissionData(queryBakery); */ //don't think we need another request here.
   };
 
@@ -352,8 +352,8 @@ class Charts extends Component {
             data
               ? sliceData()
               : console.log(
-                  'ChartHeader = need to select substance/sector to show header'
-                )
+                'ChartHeader = need to select substance/sector to show header'
+              )
           }
           sectors={this.state.sectors}
         />
@@ -377,8 +377,8 @@ class Charts extends Component {
               data
                 ? sliceData()
                 : console.log(
-                    'Preview = need to select substance, sector for preview to show'
-                  )
+                  'Preview = need to select substance, sector for preview to show'
+                )
             }
             sectors={this.state.sectors}
             limit={this.state.limit}
