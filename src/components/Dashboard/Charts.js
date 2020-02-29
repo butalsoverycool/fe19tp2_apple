@@ -21,7 +21,7 @@ const ChartContainer = styled.div`
 `;
 
 const ChartTitle = styled.h4`
-  font-size: 0.8rem;
+  font-size: 16px;
 `;
 
 export default class Charts extends Component {

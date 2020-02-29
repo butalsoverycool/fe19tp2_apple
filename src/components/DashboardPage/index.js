@@ -1,14 +1,10 @@
 import React from 'react';
 
-import Charts from '../Charts';
 import { ScreenBadge } from 'react-awesome-styled-grid';
 import DashBoard from '../Dashboard';
-
 import styled, { ThemeProvider } from 'styled-components';
 import { compose } from 'recompose';
 import { withAuthorization } from '../Session';
-import { Theme } from '../GlobalStyles';
-import { withTheme } from '../Theme';
 import * as Styled from './styled';
 
 import { device } from '../device';
@@ -21,11 +17,36 @@ const Wrapper = styled.div`
   padding: 0;
   display: flex;
 `;
+const Header = styled.div`
+  height: 90px;
+  width: auto;
+  position: absolute;
+  width: 100%;
+`;
+const Title = styled.div`
+  font-weight: bold;
+  font-size: 24px;
+  margin-left: 2rem;
+`;
+const P = styled.div`
+  margin: 0.3rem 2rem 0 2.5rem;
+  font-size: 14px;
+  float: right;
+`;
+
+let today = new Date();
+let date =
+  today.getFullYear() + '-0' + (today.getMonth() + 1) + '-' + today.getDate();
 
 const DashboardPage = props => {
-  const { color } = props.theme.state;
   return (
     <Wrapper>
+      {' '}
+      <Header>
+        {/* replace with auth display name */}
+        <Title></Title>
+        <P>{date}</P>
+      </Header>
       <DashBoard />
     </Wrapper>
   );
@@ -111,4 +132,4 @@ const DashboardPage = props => {
 }; */
 
 const condition = authUser => !!authUser;
-export default compose(withTheme, withAuthorization(condition))(DashboardPage);
+export default compose(withAuthorization(condition))(DashboardPage);
