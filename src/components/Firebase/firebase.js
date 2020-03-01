@@ -59,6 +59,14 @@ class Firebase {
     this.user(uid).set({ orgId, email, role });
   };
 
+  addUserToOrg = (orgId, uid) => {
+    console.log('ridId', orgId, 'newUserUID', uid);
+    return;
+    this.organization(orgId).update({
+      users: app.firestore.FieldValue.arrayUnion(uid)
+    });
+  };
+
   removeOrganizationUser = ({ uid, orgId }) => {
     this.organization(orgId).update({
       users: app.firestore.FieldValue.arrayRemove(uid)

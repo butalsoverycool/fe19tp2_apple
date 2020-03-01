@@ -3,6 +3,8 @@ import { withFirebase } from '../Firebase';
 import { AuthUserContext } from '../Session';
 import * as ROLES from '../../constants/roles';
 
+import fireGhost from '../Firebase/fireGhost';
+
 const UserManagement = ({ firebase }) => {
   const { uid, orgId } = useContext(AuthUserContext);
   const [users, setUsers] = useState([]);
@@ -29,9 +31,11 @@ const UserManagement = ({ firebase }) => {
     // currently we generate a fake uid..
     const uid = `nonAuthUser-${Date.now()}`;
 
-    firebase.addOrganizationUser({ uid, orgId, email, role });
+    //firebase.addOrganizationUser({ uid, orgId, email, role });
 
     e.target.email.value = '';
+
+    fireGhost(firebase).create(email, '123456', orgId);
   };
 
   const handleDeleteUser = e => {

@@ -25,8 +25,8 @@ const Navigation = props => (
       authUser ? (
         <NavigationAuth authUser={authUser} theme={props.theme} />
       ) : (
-          <NavigationNonAuth theme={props.theme} />
-        )
+        <NavigationNonAuth theme={props.theme} />
+      )
     }
   </AuthUserContext.Consumer>
 );
