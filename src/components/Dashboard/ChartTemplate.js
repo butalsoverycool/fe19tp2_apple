@@ -26,43 +26,61 @@ const AreaTemplate = props => {
   const { color } = props.theme.state;
 
   return (
-    <Wrapper className="ChartTemplate">
-      <ResponsiveContainer width={'99%'} height={'99%'}>
-        <AreaChart data={props.data}>
-          <CartesianGrid />
-          <Area
-            type="monotone"
-            dataKey="value"
-            stroke="#8884d8"
-            fill={color.hex || 'hotpink'}
-            strokeWidth={2}
-          />
-          <XAxis dataKey="year" strokeWidth={2} />
-          <YAxis
-            tickMargin={10}
-            strokeWidth={2}
-            domain={['auto', 'auto']}
-            dataKey="value"
-          />
+    <AreaChart data={props.data}>
+      <CartesianGrid />
+      <Area
+        type="monotone"
+        dataKey="value"
+        stroke="#8884d8"
+        fill={color.hex || 'hotpink'}
+        strokeWidth={2}
+      />
+      <XAxis dataKey="year" strokeWidth={2} />
+      <YAxis
+        tickMargin={10}
+        strokeWidth={2}
+        domain={['auto', 'auto']}
+        dataKey="value"
+      />
 
-          {/* <Tooltip content={<CustomTooltip unit={props.unit} />} /> */}
-          <Tooltip />
-        </AreaChart>
-      </ResponsiveContainer>
-    </Wrapper>
+      {/* <Tooltip content={<CustomTooltip unit={props.unit} />} /> */}
+      <Tooltip />
+    </AreaChart>
   );
+};
+
+const TemplateBakery = ({ data, theme, type }) => {
+  switch (type) {
+    case 'area':
+      return (
+        <ResponsiveContainer width={'99%'} height={'99%'}>
+          <AreaTemplate data={data} theme={theme} />
+        </ResponsiveContainer>
+      );
+    case 'bar':
+      return <div>Bar template</div>;
+    default:
+      return <div>default template</div>;
+  }
 };
 
 const ChartTemplate = props => {
   if (!props.data) return '';
 
-  let data = props.data;
+  let { data, type, theme } = props;
 
-  if (data.length === 1) {
+  // if areachart and only 1 data point, duplicate to create line
+  if (type === 'area' && data.length === 1) {
     data.push(data[0]);
   }
 
-  return <AreaTemplate data={data} theme={props.theme} />;
+  return (
+    <Wrapper className={`ChartTemplate ${type}`}>
+      <ResponsiveContainer width={'99%'} height={'99%'}>
+        <AreaTemplate data={data} theme={theme} />
+      </ResponsiveContainer>
+    </Wrapper>
+  );
 };
 
 /* const condition = authUser => !!authUser; */

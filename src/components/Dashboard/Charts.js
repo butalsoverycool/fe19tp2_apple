@@ -42,6 +42,9 @@ export default class Charts extends Component {
     return (
       <>
         {displayedData.map((data, nth) => {
+          // temp* autogenerate type
+          const type = nth % 2 === 0 ? 'area' : 'bar';
+
           // format title
           const titleKey =
             antiKey[0].toUpperCase() + antiKey.slice(1).slice(0, -1);
@@ -57,7 +60,12 @@ export default class Charts extends Component {
               <ChartTitle>
                 {titleKey}: {titleVal}
               </ChartTitle>
-              <ChartTemplate data={data} catVal={catVal} cutYear={cutYear} />
+              <ChartTemplate
+                data={data}
+                catVal={catVal}
+                cutYear={cutYear}
+                type={type}
+              />
             </ChartContainer>
           );
         })}
