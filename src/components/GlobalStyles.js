@@ -5,12 +5,11 @@ export const UserTheme = {
 };
 
 export const Theme = {
-
 	bgPrimary: 'whitesmoke',
 	bgSecondary: 'offwhite',
 	chartbuttonbg: 'offwhite',
 	navbuttonbg: 'lightgrey',
-	cardColor: '#5b53544d',
+	cardColor: '#fffffff7',
 	fontHeader: "'Krona One', sans-serif;",
 	fontsecondary: '',
 	fontSM: '18px',
@@ -19,5 +18,4 @@ export const Theme = {
 	fontXL: '42px',
 	fontColorPrimary: '#202020',
 	fontColorSecondary: '383838'
-
 };
