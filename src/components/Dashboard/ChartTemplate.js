@@ -26,30 +26,28 @@ const AreaChartTemplate = props => {
   const { color } = props.theme.state;
 
   return (
-    <Wrapper className="ChartTemplate">
-      <ResponsiveContainer width={'99%'} height={'99%'}>
-        <AreaChart data={props.data}>
-          <CartesianGrid />
-          <Area
-            type="monotone"
-            dataKey="value"
-            stroke="#8884d8"
-            fill={color.hex || 'hotpink'}
-            strokeWidth={2}
-          />
-          <XAxis dataKey="year" strokeWidth={2} />
-          <YAxis
-            tickMargin={10}
-            strokeWidth={2}
-            domain={['auto', 'auto']}
-            dataKey="value"
-          />
+    <ResponsiveContainer width="99%" height="75%">
+      <AreaChart data={props.data}>
+        <CartesianGrid />
+        <Area
+          type="monotone"
+          dataKey="value"
+          stroke="#8884d8"
+          fill={color.hex || 'hotpink'}
+          strokeWidth={2}
+        />
+        <XAxis dataKey="year" strokeWidth={2} />
+        <YAxis
+          tickMargin={10}
+          strokeWidth={2}
+          domain={['auto', 'auto']}
+          dataKey="value"
+        />
 
-          {/* <Tooltip content={<CustomTooltip unit={props.unit} />} /> */}
-          <Tooltip />
-        </AreaChart>
-      </ResponsiveContainer>
-    </Wrapper>
+        {/* <Tooltip content={<CustomTooltip unit={props.unit} />} /> */}
+        <Tooltip />
+      </AreaChart>
+    </ResponsiveContainer>
   );
 };
 

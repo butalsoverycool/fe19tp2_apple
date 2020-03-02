@@ -10,6 +10,9 @@ import PopupMsg from '../PopupMsg';
 import Timespan from './Timespan';
 import Charts from './Charts';
 
+import DbdGrid from './DndGrid';
+import DndGrid from './DndGrid';
+
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
@@ -192,6 +195,8 @@ export default class Tab extends Component {
 
     return (
       <Wrapper className={'Tab-' + tabIndex}>
+        <DndGrid />
+
         <ColumnWrapper>
           <DropDownWrapper
             className="DropdownWrapper"
