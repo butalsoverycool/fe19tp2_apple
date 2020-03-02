@@ -5,44 +5,44 @@ import { SignUpLink } from '../SignUp';
 
 export const Grid = styled.div`
 	@media ${device.mobileS} {
-		grid-column-start: 2;
-		grid-column-end: 10;
+		grid-column-start: 1;
+		grid-column-end: -1;
 		grid-row-start: 2;
 		grid-row-end: 8;
 	}
 	@media ${device.mobileM} {
-		grid-column-start: 2;
-		grid-column-end: 10;
+		grid-column-start: 1;
+		grid-column-end: -1;
 		grid-row-start: 2;
 		grid-row-end: 8;
 	}
 	@media ${device.mobileL} {
-		grid-column-start: 5;
-		grid-column-end: 7;
+		grid-column-start: 1;
+		grid-column-end: -1;
 		grid-row-start: 2;
 		grid-row-end: 8;
 	}
 	@media ${device.tablet} {
-		grid-column-start: 5;
-		grid-column-end: 7;
+		grid-column-start: 1;
+		grid-column-end: -1;
 		grid-row-start: 2;
 		grid-row-end: 8;
 	}
 	@media ${device.laptop} {
-		grid-column-start: 5;
-		grid-column-end: 7;
+		grid-column-start: 1;
+		grid-column-end: -1;
 		grid-row-start: 2;
 		grid-row-end: 8;
 	}
 	@media ${device.laptopL} {
-		grid-column-start: 5;
-		grid-column-end: 7;
+		grid-column-start: 1;
+		grid-column-end: -1;
 		grid-row-start: 3;
 		grid-row-end: 8;
 	}
 	@media ${device.desktop} {
-		grid-column-start: 5;
-		grid-column-end: 7;
+		grid-column-start: 1;
+		grid-column-end: -1;
 		grid-row-start: 3;
 		grid-row-end: 8;
 	}
@@ -57,9 +57,14 @@ export const Form = styled.input`
 	font-size: 14px;
 	border: none;
 	margin-top: 1em;
+	background: #eaeaea;
 `;
 
-export const Submit = styled.button`background: #e8f0fe;`;
+export const Submit = styled.button`
+	background: #e8f0fe;
+	border: none;
+	font-size: 12px;
+`;
 
 export const textWrapper = styled.div`
 	display: flex;
@@ -68,17 +73,14 @@ export const textWrapper = styled.div`
 `;
 
 export const Wrapper = styled.div`
+	margin: 0 auto;
+	max-width: 290px;
 	height: 400px;
 	display: flex;
-	max-width: 300px;
-	min-width: 300px;
 	flex-direction: column;
 	justify-content: space-around;
 	align-items: center;
 	background: ${(props) => props.theme.cardColor};
+	box-shadow: 0 0 20px #ddd;
 	border-radius: 10px;
-	@media ${device.mobileS} {
-		max-width: none;
-		min-width: none;
-	}
 `;
