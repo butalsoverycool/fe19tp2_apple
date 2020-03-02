@@ -22,7 +22,7 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const AreaChartTemplate = props => {
+const AreaTemplate = props => {
   const { color } = props.theme.state;
 
   return (
@@ -62,8 +62,9 @@ const ChartTemplate = props => {
     data.push(data[0]);
   }
 
-  return <AreaChartTemplate data={data} />;
+  return <AreaTemplate data={data} theme={props.theme} />;
 };
 
-const condition = authUser => !!authUser;
-export default compose(withTheme)(AreaChartTemplate);
+/* const condition = authUser => !!authUser; */
+
+export default compose(withTheme)(ChartTemplate);

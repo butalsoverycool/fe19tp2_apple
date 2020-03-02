@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { withTheme } from '../Theme';
 import Tab from './Tab';
 import PopupMsg from '../PopupMsg';
 
@@ -21,6 +20,7 @@ const RowWrapper = styled.div`
   justify-content: flex-start;
 `;
 
+/* 
 const buttonBgs = type => {
   switch (type) {
     case 'add':
@@ -30,9 +30,9 @@ const buttonBgs = type => {
     default:
       return 'none';
   }
-};
+}; */
 
-const Btn = styled.button`
+/* const Btn = styled.button`
   width: 10rem;
   height: 1.8rem;
   margin: 1rem 0.2rem;
@@ -40,7 +40,7 @@ const Btn = styled.button`
   background: #fff;
   border: none;
   outline: none;
-`;
+`; */
 
 const NewTabBtn = styled.button`
   width: 3rem;
@@ -132,7 +132,7 @@ export default class Dashboard extends Component {
   };
 
   deleteTab = tabIndex => {
-    const { tabs, activeTab } = this.state;
+    const { tabs } = this.state;
     tabs.splice(tabIndex, 1);
 
     const newActive =
@@ -333,7 +333,7 @@ class TabList extends Component {
   };
 
   render() {
-    let { tabs, activeTab, tabListOpen, toggleTabList, deleteTab } = this.props;
+    let { tabs, activeTab, tabListOpen, toggleTabList } = this.props;
     const { deleting, deleteMsg } = this.state;
 
     const activeId = activeTab ? activeTab.id : null;

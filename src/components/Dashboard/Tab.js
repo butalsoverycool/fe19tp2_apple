@@ -3,11 +3,9 @@ import styled from 'styled-components';
 import axios from 'axios';
 
 import { proxy, apiUrl, queryBakery } from './default';
-import { fetchDataTitles, fetchData } from './fetch';
 import allEmissionData from './allEmissionData';
 
 import PopupMsg from '../PopupMsg';
-import Timespan from './Timespan';
 import Charts from './Charts';
 
 const Wrapper = styled.div`
@@ -94,7 +92,6 @@ export default class Tab extends Component {
     }
     // if catVal is changed, update data
     else if (key === 'catVal') {
-      console.log('Updating data.');
       this.updateData(tabIndex);
     }
 
@@ -179,16 +176,14 @@ export default class Tab extends Component {
   };
 
   render() {
-    const { dataTitles, tabIndex, tabContent, updateTabs } = this.props;
+    const { dataTitles, tabIndex, tabContent } = this.props;
 
-    const { catKey, catVal, charts, data, id, name, timespan } = tabContent;
+    const { catKey, catVal, data, name, timespan } = tabContent;
     const antiKey = catKey === 'substances' ? 'sectors' : 'substances';
     const tabPlaceholder = '*Give this tab a name*';
 
     const loaderEnter = Boolean(catVal && !data);
     const loaderExit = Boolean(data);
-
-    console.log('enter', loaderEnter, 'exit', loaderExit);
 
     return (
       <Wrapper className={'Tab-' + tabIndex}>

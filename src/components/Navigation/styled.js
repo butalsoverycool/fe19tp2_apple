@@ -24,6 +24,5 @@ export const LI = styled.div`
   & > a {
     padding: 1rem;
     text-decoration: none;
-    color: black;
   }
 `;
