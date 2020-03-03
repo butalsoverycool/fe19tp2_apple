@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-
+import { withFirebase } from '../Firebase';
 import { proxy, apiUrl, queryBakery } from './default';
 import { fetchDataTitles, fetchData } from './fetch';
 import allEmissionData from './allEmissionData';
@@ -69,7 +69,7 @@ const Select = styled.select`
   margin: 0.1rem auto;
 `;
 
-export default class Tab extends Component {
+class Tab extends Component {
   constructor(props) {
     super(props);
 
@@ -322,3 +322,4 @@ export default class Tab extends Component {
     );
   }
 }
+export default withFirebase(Tab);

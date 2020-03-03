@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { withFirebase } from '../Firebase';
 import { withTheme } from '../Theme';
 import Tab from './Tab';
 import PopupMsg from '../PopupMsg';
@@ -56,7 +57,7 @@ const NewTabBtn = styled.button`
   font-size: 1.5rem;
 `;
 
-export default class Dashboard extends Component {
+class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -78,6 +79,7 @@ export default class Dashboard extends Component {
   componentDidMount() {
     if (!this.getStorage('dataTitles'))
       this.setStorage('dataTitles', this.state.dataTitles);
+    // Firebase auth save changes
   }
 
   getStorage = key => {
@@ -126,7 +128,6 @@ export default class Dashboard extends Component {
     tabs[tabIndex] = tab;
 
     this.setState({ tabs, activeTab: tab });
-
     this.setStorage('tabs', tabs);
     this.setStorage('activeTab', tab);
   };
@@ -156,9 +157,34 @@ export default class Dashboard extends Component {
 
   render() {
     const { tabs, activeTab, dataTitles, tabListOpen } = this.state;
-
     const tab = this.state.activeTab;
     const tabIndex = this.state.tabs.indexOf(tab);
+    const addTab = tabs.map(addTab => ({
+      id: addTab.id,
+      timespan: addTab.timespan,
+      catKey: addTab.catKey,
+      catVal: addTab.catVal
+    }));
+
+    //firebase  get user and set data
+    this.props.firebase.onAuthUserListener(authUser => {
+      if (authUser) {
+        this.props.firebase
+          .user(authUser.uid)
+          .set(
+            {
+              charts: addTab
+            },
+            { merge: true }
+          )
+          .then(function() {
+            console.log('Document successfully written!');
+          })
+          .catch(function(error) {
+            console.error('Error writing document: ', error);
+          });
+      }
+    });
 
     return (
       <>
@@ -385,3 +411,5 @@ class TabList extends Component {
     );
   }
 }
+
+export default withFirebase(Dashboard);

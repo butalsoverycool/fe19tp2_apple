@@ -11,11 +11,15 @@ import { device } from '../device';
 import { Container, Row, Col } from 'react-awesome-styled-grid';
 
 const Wrapper = styled.div`
-  width: 100vw;
-  height: auto;
-  margin: 0;
-  padding: 0;
-  display: flex;
+  // width: 100vw;
+  // height: auto;
+  // margin: 0;
+  // padding: 0;
+  // display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 4fr));
+  grid-gap: 10px;
+  background-color: ${props => props.themeBg || 'none'};
 `;
 const Header = styled.div`
   height: 90px;
