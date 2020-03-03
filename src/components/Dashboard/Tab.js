@@ -261,7 +261,11 @@ export default class Tab extends Component {
                     - view from year -
                   </Option>
                   {dataTitles.years.map(item => (
-                    <Option key={item} value={Number(item)}>
+                    <Option
+                      key={item}
+                      value={Number(item)}
+                      disabled={item > timespan.to}
+                    >
                       from {item}
                     </Option>
                   ))}
@@ -282,7 +286,11 @@ export default class Tab extends Component {
                     - view from year -
                   </Option>
                   {dataTitles.years.map(item => (
-                    <Option key={item} value={Number(item)}>
+                    <Option
+                      key={item}
+                      value={Number(item)}
+                      disabled={item < timespan.from}
+                    >
                       to {item}
                     </Option>
                   ))}

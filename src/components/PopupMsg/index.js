@@ -13,12 +13,30 @@ export default class PopupMsg extends Component {
     super(props);
 
     this.state = {
-      forceExit: false
+      forceExit: false,
+      _isMounted: false
     };
   }
 
+  componentDidMount() {
+    this.setState({ _isMounted: true });
+  }
+
+  componentWillUnmount() {
+    this.setState({ _isMounted: false });
+  }
+
   render() {
-    let { txt, enter, exit, enDelay, exDelay, timeout, loader } = this.props;
+    let {
+      txt,
+      enter,
+      exit,
+      enDelay,
+      exDelay,
+      timeout,
+      loader,
+      callback
+    } = this.props;
     let animName =
       (exit && !enter) || this.state.forceExit
         ? 'exit'
@@ -26,9 +44,14 @@ export default class PopupMsg extends Component {
         ? 'enter'
         : null;
 
-    if (timeout && timeout !== 0) {
-      setTimeout(() => this.setState({ forceExit: true }), timeout);
+    if (timeout && timeout !== 0 && animName !== 'exit') {
+      if (this.state._isMounted) {
+        setTimeout(() => this.setState({ forceExit: true }), timeout);
+      }
     }
+
+    if (animName === 'exit' && typeof callback === 'function')
+      setTimeout(callback, 500);
 
     return (
       <>

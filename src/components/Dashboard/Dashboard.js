@@ -20,40 +20,49 @@ const RowWrapper = styled.div`
   justify-content: flex-start;
 `;
 
-/* 
-const buttonBgs = type => {
-  switch (type) {
-    case 'add':
-      return '#e8ffe9';
-    case 'delete':
-      return '#fcf0f0';
-    default:
-      return 'none';
-  }
-}; */
-
-/* const Btn = styled.button`
-  width: 10rem;
-  height: 1.8rem;
-  margin: 1rem 0.2rem;
-  box-shadow: 0 0 20px #ddd;
-  background: #fff;
-  border: none;
-  outline: none;
-`; */
-
 const NewTabBtn = styled.button`
   width: 3rem;
   height: 3rem;
+  right: 1rem;
+  top: 8rem;
+  font-size: 1.2rem;
+
   box-shadow: 0 0 20px #ddd;
   border: none;
   outline: none;
   position: absolute;
-  right: 1rem;
-  top: 8rem;
   z-index: 1;
   border-radius: 50%;
-  font-size: 1.5rem;
+
+  ${props =>
+    props.tabsLen > 0
+      ? ''
+      : `
+      width: 6rem;
+      height: 6rem;
+      left: 50%;
+      top: 50%;
+      margin-left: -3rem;
+      margin-top: -3rem;
+      font-size: 2rem;
+  `};
+`;
+
+const SoftP = styled.p`
+  color: grey;
+  font-weight: 100;
+  font-style: italic;
+  opacity: 0.6;
+  font-size: 0.8rem;
+
+  text-align: center;
+  width: 6 rem;
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -3rem;
+  margin-top: 5rem;
 `;
 
 export default class Dashboard extends Component {
@@ -163,9 +172,10 @@ export default class Dashboard extends Component {
     return (
       <>
         <ColumnWrapper>
-          <NewTabBtn type="add" onClick={this.newTab}>
+          <NewTabBtn type="add" onClick={this.newTab} tabsLen={tabs.length}>
             +
           </NewTabBtn>
+          {tabs.length < 1 ? <SoftP>add some data</SoftP> : null}
 
           <RowWrapper>
             <TabList
@@ -292,10 +302,8 @@ class TabList extends Component {
    * Alert if clicked on outside of element
    */
   handleClickOutside(event) {
-    /* if (this.wrapperRef && !this.wrapperRef.contains(event.target)) { */
     if (this.props.tabListOpen) {
       this.props.toggleTabList();
-      /* } */
     }
   }
 
@@ -311,25 +319,19 @@ class TabList extends Component {
     const { tabs } = this.props;
     const tabName = tabs[tabIndex].name || tabs[tabIndex].id.toFixed(4);
 
-    this.setState(
-      {
-        deleting: true,
-        deleteMsg: tabName + ' deleted!'
-      },
-      () => {
-        setTimeout(
-          // temp-solution
-          () =>
-            this.setState({
-              deleting: false,
-              deleteMsg: null
-            }),
-          1500
-        );
-      }
-    );
+    this.setState({
+      deleting: true,
+      deleteMsg: tabName + ' deleted!'
+    });
 
     this.props.deleteTab(tabIndex);
+  };
+
+  afterDelete = () => {
+    this.setState({
+      deleting: false,
+      deleteMsg: null
+    });
   };
 
   render() {
@@ -346,41 +348,42 @@ class TabList extends Component {
             enter={true}
             exit={false}
             timeout={1000}
+            callback={this.afterDelete}
           />
-        ) : null}
+        ) : (
+          <TabListWrapper ref={this.setWrapperRef}>
+            <ToggleBtn
+              onClick={toggleTabList}
+              tabListOpen={tabListOpen}
+              tabsExist={tabs.length > 0}
+            >
+              <ToggleTxt tabListOpen={tabListOpen} tabsExist={tabs.length > 0}>
+                {'<<'}
+              </ToggleTxt>
+            </ToggleBtn>
 
-        <TabListWrapper ref={this.setWrapperRef}>
-          <ToggleBtn
-            onClick={toggleTabList}
-            tabListOpen={tabListOpen}
-            tabsExist={tabs.length > 0}
-          >
-            <ToggleTxt tabListOpen={tabListOpen} tabsExist={tabs.length > 0}>
-              {'<<'}
-            </ToggleTxt>
-          </ToggleBtn>
-
-          <List className="TabList" tabListOpen={tabListOpen ? true : false}>
-            {tabs.length > 0
-              ? tabs.map((tab, nth) => (
-                  <Item key={'item' + nth}>
-                    <ItemBtn
-                      active={tab.id === activeId}
-                      onClick={e => this.clickHandler(tab.id, tab.name, nth)}
-                    >
-                      {tab.name || `(id-${tab.id.toFixed(4)})`}
-                    </ItemBtn>
-                    <ItemBtn
-                      onClick={() => this.deleteHandler(nth)}
-                      type="delete"
-                    >
-                      Del
-                    </ItemBtn>
-                  </Item>
-                ))
-              : null}
-          </List>
-        </TabListWrapper>
+            <List className="TabList" tabListOpen={tabListOpen ? true : false}>
+              {tabs.length > 0
+                ? tabs.map((tab, nth) => (
+                    <Item key={'item' + nth}>
+                      <ItemBtn
+                        active={tab.id === activeId}
+                        onClick={e => this.clickHandler(tab.id, tab.name, nth)}
+                      >
+                        {tab.name || `(id-${tab.id.toFixed(4)})`}
+                      </ItemBtn>
+                      <ItemBtn
+                        onClick={() => this.deleteHandler(nth)}
+                        type="delete"
+                      >
+                        Del
+                      </ItemBtn>
+                    </Item>
+                  ))
+                : null}
+            </List>
+          </TabListWrapper>
+        )}
       </>
     );
   }

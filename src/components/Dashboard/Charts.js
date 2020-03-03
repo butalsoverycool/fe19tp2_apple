@@ -4,8 +4,10 @@ import styled from 'styled-components';
 import ChartTemplate from './ChartTemplate';
 
 const ChartContainer = styled.div`
+  ${props =>
+    props.type === 'pie' || props.type === 'radar' ? `max-width: 300px` : ''};
   min-width: 250px;
-  height: 40vh;
+  height: 300px;
   min-height: 300px;
   background: white;
   margin: 2rem;
@@ -43,7 +45,16 @@ export default class Charts extends Component {
       <>
         {displayedData.map((data, nth) => {
           // temp* autogenerate type
-          const type = nth % 2 === 0 ? 'area' : 'bar';
+          const type =
+            nth % 5 === 0
+              ? 'radar'
+              : nth % 4 === 0
+              ? 'scatter'
+              : nth > 1 && nth % 3 === 0
+              ? 'pie'
+              : nth % 2 === 0
+              ? 'area'
+              : 'bar';
 
           // format title
           const titleKey =
@@ -56,7 +67,12 @@ export default class Charts extends Component {
           const cutYear = titleVal.length > 30 ? false : true;
 
           return (
-            <ChartContainer key={nth} className="ChartContainer" flex={flex}>
+            <ChartContainer
+              key={nth}
+              className="ChartContainer"
+              flex={flex}
+              type={type}
+            >
               <ChartTitle>
                 {titleKey}: {titleVal}
               </ChartTitle>
