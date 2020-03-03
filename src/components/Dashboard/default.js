@@ -2,11 +2,11 @@ export const proxy = 'https://cors-anywhere.herokuapp.com/';
 export const apiUrl =
   'http://api.scb.se/OV0104/v1/doris/en/ssd/START/MI/MI0108/TotaltUtslapp';
 
-export const defaultChartTypes = ['bar', 'area'];
+export const defaultChartTypes = ['bar', 'area', 'scatter', 'radar', 'pie'];
 
-export const defaultTab = () => {
+export const defaultTab = newIndex => {
   return {
-    id: Math.random(),
+    id: 'tab-' + String((Math.random() * 100).toFixed(0)) + String(newIndex),
     name: '',
     data: null,
     catKey: null,
@@ -16,26 +16,17 @@ export const defaultTab = () => {
   };
 };
 
-export const defaultChart = (key, val) => {
+export const defaultChart = (data, index) => {
   const typeIndex = Math.floor(Math.random() * defaultChartTypes.length); // rand chartType
-  const randVal = Math.floor(Math.random() * 5) + 1; // rand 1-5
 
-  const res = {
+  return {
+    id: 'chart-' + String((Math.random() * 100).toFixed(0)) + String(index),
     type: defaultChartTypes[typeIndex],
-    substance: {
-      name: '',
-      code: ''
-    },
-    sector: {
-      name: '',
-      code: ''
-    },
-    value: randVal
+    year: data.year,
+    substance: data.substance,
+    sector: data.sector,
+    value: data.value
   };
-
-  res[key] = val;
-
-  return res;
 };
 
 export const queryBakery = (by, value) => {
