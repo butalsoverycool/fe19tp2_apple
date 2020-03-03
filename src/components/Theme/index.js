@@ -10,7 +10,7 @@ class Theme extends Component {
 
     this.state = {
       logo: null,
-      dataUrl: null,
+      logoUrl: null,
       defaultLogoUrl: defaultLogoUrl,
       color: defaultColor
     };
@@ -25,8 +25,10 @@ class Theme extends Component {
       if (authUser) {
         const { color, logoUrl } = authUser.organizationData;
 
+        console.log('in THEME color', color, 'logoUrl', logoUrl);
+
         if (logoUrl != null) {
-          this.setState({ dataUrl: logoUrl || this.state.defaultLogo });
+          this.setState({ logoUrl: logoUrl || this.state.defaultLogo });
         }
 
         if (color != null) {
@@ -65,7 +67,7 @@ class Theme extends Component {
     });
   };
 
-  saveChanges = () => {
+  saveChanges = callback => {
     this.listener = this.props.firebase.onAuthUserListener(authUser => {
       if (authUser) {
         if (this.state.logo) {
@@ -85,9 +87,10 @@ class Theme extends Component {
         this.props.firebase.organization(authUser.orgId).update({
           color: this.state.color
         });
+
+        if (typeof callback === 'function') callback();
       }
     });
-    alert('Saved');
   };
 
   render() {
@@ -96,6 +99,7 @@ class Theme extends Component {
       previewColor: this.previewColor,
       saveChanges: this.saveChanges
     };
+
     return (
       <ThemeContext.Provider
         value={{

@@ -25,12 +25,12 @@ const ChartTitle = styled.h4`
 `;
 
 export default class Charts extends Component {
-  constructor(props) {
+  /* constructor(props) {
     super(props);
-  }
+  } */
 
   render() {
-    let { allData, catKey, catVal, antiKey, timespan } = this.props;
+    let { allData, catVal, antiKey, timespan } = this.props;
     if (!allData) return null;
 
     const displayedData = allData.map(data =>

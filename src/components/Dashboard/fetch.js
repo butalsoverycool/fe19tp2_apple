@@ -1,4 +1,3 @@
-import React from 'react';
 import axios from 'axios';
 
 import { proxy, apiUrl, defaultChartTypes, queryBakery } from './default';
@@ -97,48 +96,6 @@ export const fetchData = (by, value, dataTitles) => {
       });
 
       return data;
-
-      //data = groupBy(data, 'substance')
-      console.log('data', data);
-
-      const sortedByYear = this.state.dataTitles.years.map(year => []);
-      console.log('sorted pre', sortedByYear);
-
-      const firstYear = this.state.dataTitles.years[0];
-
-      data.forEach(item => {
-        const yearIndex = item.year - firstYear;
-
-        sortedByYear[yearIndex].push(item);
-      });
-
-      console.log('sorted', sortedByYear);
-
-      /* const dataBySubstance = groupData(data, 'substance', 'code');
-        const dataBySector = groupData(data, 'sector', 'code');
-
-        console.log('data by substance', dataBySubstance);
-        console.log('data by sector', dataBySector); */
-
-      /* const group1 = groupedData[0];
-        const restGroups = groupedData.slice(1, groupedData.length - 1);
-
-        console.log('group1', group1, 'rest', restGroups); */
-
-      // => {3: ["one", "two"], 5: ["three"]}
-
-      /* // add data to cache
-          cache[queryHash] = {
-            data,
-            timeStamp: Date.now()
-          };
-          localStorage.setItem('cache', JSON.stringify(cache)); */
-
-      /* const charts = this.state.charts;
-
-        charts[chartIndex].data = groupedData;
-
-        this.setState({ charts }); */
     })
     .catch(error => {
       console.log('POST ERROR', error);
