@@ -1,9 +1,8 @@
 import React from 'react';
-import styled, { ThemeProvider } from 'styled-components';
+import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import SignOutButton from '../SignOut';
 import * as ROUTES from '../../constants/routes';
-import * as ROLES from '../../constants/roles';
 import * as Styled from './styled';
 import { AuthUserContext } from '../Session';
 import { withTheme } from '../Theme';
@@ -25,8 +24,8 @@ const Navigation = props => (
       authUser ? (
         <NavigationAuth authUser={authUser} theme={props.theme} />
       ) : (
-          <NavigationNonAuth theme={props.theme} />
-        )
+        <NavigationNonAuth theme={props.theme} />
+      )
     }
   </AuthUserContext.Consumer>
 );

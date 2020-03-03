@@ -93,7 +93,7 @@ class Firebase {
               });
           });
       } else {
-        fallback();
+        if (typeof fallback === 'function') fallback();
       }
     });
 }

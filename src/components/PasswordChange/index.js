@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import * as Styled from './styled';
 import { withFirebase } from '../Firebase';
 
 const INITIAL_STATE = {
@@ -38,6 +37,7 @@ class PasswordChangeForm extends Component {
           onChange={this.onChange}
           type="password"
           placeholder="New Password"
+          autoComplete="off"
         />
         <input
           name="passwordTwo"
@@ -45,6 +45,7 @@ class PasswordChangeForm extends Component {
           onChange={this.onChange}
           type="password"
           placeholder="Confirm New Password"
+          autoComplete="off"
         />
         <button disabled={isInvalid} type="submit">
           Reset My Password

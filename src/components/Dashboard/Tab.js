@@ -3,12 +3,11 @@ import styled from 'styled-components';
 import axios from 'axios';
 
 import { proxy, apiUrl, queryBakery } from './default';
-import { fetchDataTitles, fetchData } from './fetch';
 import allEmissionData from './allEmissionData';
 
 import PopupMsg from '../PopupMsg';
-import Timespan from './Timespan';
-import Charts from './Charts';
+import Chart from './Chart';
+import { withDashboard } from './context';
 
 import DbdGrid from './DndGrid';
 import DndGrid from './DndGrid';
@@ -71,20 +70,28 @@ const Select = styled.select`
   max-width: 200px;
   margin: 0.1rem auto;
 `;
-
-export default class Tab extends Component {
+class Tab extends Component {
   constructor(props) {
     super(props);
 
     this.updateCat = this.updateCat.bind(this);
     this.updateTab = this.updateTab.bind(this);
     this.updateData = this.updateData.bind(this);
+    this.hideChart = this.hideChart.bind(this);
   }
+
+  hideChart = id => {
+    const hiddenCharts = this.props.hiddenCharts;
+    const newVal = hiddenCharts.filter(chart => chart.id !== id);
+    this.props.updateHiddenCharts(newVal);
+  };
 
   updateTab = (key, val, tabIndex) => {
     const { tabContent, dataTitles } = this.props;
 
     tabContent[key] = val;
+
+    console.log('tabcontent updating to:', tabContent);
 
     // if catKey is changed, reset val (and data)
     if (key === 'catKey') {
@@ -97,7 +104,6 @@ export default class Tab extends Component {
     }
     // if catVal is changed, update data
     else if (key === 'catVal') {
-      console.log('Updating data.');
       this.updateData(tabIndex);
     }
 
@@ -120,7 +126,7 @@ export default class Tab extends Component {
     const query = queryBakery(catKey, catVal);
 
     const processData = input => {
-      const data = input.map(item => {
+      const data = input.map((item, nth) => {
         const year = parseInt(item.key[2]);
 
         const sector = {
@@ -156,8 +162,10 @@ export default class Tab extends Component {
         sortedObj[item.code] = [];
       });
 
-      data.forEach(item => {
+      data.forEach((item, nth) => {
         const itemKey = item[antiKeySingular].code || item[antiKeySingular];
+
+        sortedObj[itemKey].id = 'chart-' + nth;
         sortedObj[itemKey].push(item);
       });
 
@@ -182,16 +190,15 @@ export default class Tab extends Component {
   };
 
   render() {
-    const { dataTitles, tabIndex, tabContent, updateTabs } = this.props;
+    const { dataTitles, tabIndex, activeTab } = this.props.dashboard.state;
 
-    const { catKey, catVal, charts, data, id, name, timespan } = tabContent;
+    const { catKey, catVal, data, name, timespan } = activeTab;
+
     const antiKey = catKey === 'substances' ? 'sectors' : 'substances';
     const tabPlaceholder = '*Give this tab a name*';
 
     const loaderEnter = Boolean(catVal && !data);
     const loaderExit = Boolean(data);
-
-    console.log('enter', loaderEnter, 'exit', loaderExit);
 
     return (
       <Wrapper className={'Tab-' + tabIndex}>
@@ -271,7 +278,11 @@ export default class Tab extends Component {
                     - view from year -
                   </Option>
                   {dataTitles.years.map(item => (
-                    <Option key={item} value={Number(item)}>
+                    <Option
+                      key={item}
+                      value={Number(item)}
+                      disabled={item > timespan.to}
+                    >
                       from {item}
                     </Option>
                   ))}
@@ -292,7 +303,11 @@ export default class Tab extends Component {
                     - view from year -
                   </Option>
                   {dataTitles.years.map(item => (
-                    <Option key={item} value={Number(item)}>
+                    <Option
+                      key={item}
+                      value={Number(item)}
+                      disabled={item < timespan.from}
+                    >
                       to {item}
                     </Option>
                   ))}
@@ -310,13 +325,16 @@ export default class Tab extends Component {
 
           <RowWrapper>
             {catVal ? (
-              <Charts
+              <Chart
                 allData={data}
                 catKey={catKey}
                 catVal={catVal}
                 antiKey={antiKey}
                 dataTitles={dataTitles}
                 timespan={timespan}
+                tabIndex={tabIndex}
+                updateTab={this.updateTab}
+                hideChart={this.hideChart}
               />
             ) : null}
 
@@ -327,3 +345,5 @@ export default class Tab extends Component {
     );
   }
 }
+
+export default withDashboard(Tab);

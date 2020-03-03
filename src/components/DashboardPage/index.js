@@ -1,14 +1,8 @@
 import React from 'react';
-
-import { ScreenBadge } from 'react-awesome-styled-grid';
 import DashBoard from '../Dashboard';
-import styled, { ThemeProvider } from 'styled-components';
+import styled from 'styled-components';
 import { compose } from 'recompose';
 import { withAuthorization } from '../Session';
-import * as Styled from './styled';
-
-import { device } from '../device';
-import { Container, Row, Col } from 'react-awesome-styled-grid';
 
 const Wrapper = styled.div`
   width: 100vw;
