@@ -4,7 +4,7 @@ import DashboardContext from './context';
 import TabMenu from './TabMenu';
 import Tab from './Tab';
 
-import { defaultTab, defaultDataTitles } from './default';
+import { defaultState, defaultTab, defaultDataTitles } from './default';
 
 import { fetchDataTitles } from './fetch';
 
@@ -36,17 +36,16 @@ const NewTabBtn = styled.button`
   border-radius: 50%;
 
   ${props =>
-    props.tabsLen > 0
-      ? ''
-      : `
+    !props.tabsExist
+      ? `
       width: 6rem;
       height: 6rem;
       left: 50%;
       top: 50%;
       margin-left: -3rem;
       margin-top: -3rem;
-      font-size: 2rem;
-  `};
+      font-size: 2rem;`
+      : ''};
 `;
 
 const SoftP = styled.p`
@@ -69,28 +68,35 @@ const SoftP = styled.p`
 export default class Dashboard extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      dataTitles:
-        this.getStorage('dataTitles') || fetchDataTitles() || defaultDataTitles,
-      tabs: this.getStorage('tabs') || [],
-      activeTab: this.getStorage('activeTab') || null,
-      tabListOpen: this.getStorage('tabListOpen') || false,
-      hiddenCharts: [],
-      dashBoardData: null
+      defaultState
     };
 
     this.newTab = this.newTab.bind(this);
     this.getStorage = this.getStorage.bind(this);
     this.setStorage = this.setStorage.bind(this);
     this.loadTab = this.loadTab.bind(this);
-    this.updateTabs = this.updateTabs.bind(this);
+    this.updateTab = this.updateTab.bind(this);
     this.deleteTab = this.deleteTab.bind(this);
-    this.updateHiddenCharts = this.updateHiddenCharts.bind(this);
+    //this.updateHiddenCharts = this.updateHiddenCharts.bind(this);
   }
 
   componentDidMount() {
-    if (!this.getStorage('dataTitles'))
-      this.setStorage('dataTitles', this.state.dataTitles);
+    // spice up state
+    this.setState({
+      dataTitles:
+        this.getStorage('dataTitles') || fetchDataTitles() || defaultDataTitles,
+      tabs: this.getStorage('tabs') || [],
+      activeTab: this.getStorage('activeTab') || null,
+      menuIsOpen: this.getStorage('menuIsOpen') || false,
+      hiddenCharts: [],
+      dashBoardData: null
+    });
+
+    // set dataTitles
+    const dataTitles = this.getStorage('dataTitles');
+    if (!dataTitles) this.setStorage('dataTitles', this.state.dataTitles);
   }
 
   getStorage = key => {
@@ -114,7 +120,7 @@ export default class Dashboard extends Component {
     this.setState({
       tabs,
       activeTab: tabs[0],
-      tabListOpen: false,
+      menuIsOpen: false,
       hiddenCharts: []
     });
 
@@ -122,37 +128,25 @@ export default class Dashboard extends Component {
     this.setStorage('activeTab', tabs[0]);
   };
 
-  updateHiddenCharts = newVal => {
+  loadTab = tab => {
     this.setState({
-      hiddenCharts: newVal
+      activeTab: tab
     });
 
-    /* this.setStorage('tabs', tabs);
-    this.setStorage('activeTab', newActive); */
+    this.setStorage('activeTab', tab);
   };
 
-  loadTab = newActive => {
-    //const tabs = this.state.tabs;
-    //tabs[tabIndex] = newActive;
-
-    this.setState({
-      //tabs,
-      activeTab: newActive
-    });
-
-    //this.setStorage('tabs', tabs);
-    this.setStorage('activeTab', newActive);
-  };
-
-  updateTabs = (tab, tabIndex) => {
+  updateTab = (tab, callback) => {
     const tabs = this.state.tabs;
-    //const tabIndex = tabs.indexOf(tab);
+    const tabIndex = tabs.indexOf(tab);
     tabs[tabIndex] = tab;
-
-    this.setState({ tabs, activeTab: tab });
 
     this.setStorage('tabs', tabs);
     this.setStorage('activeTab', tab);
+
+    this.setState({ tabs, activeTab: tab }, () =>
+      typeof callback === 'function' ? callback() : null
+    );
   };
 
   deleteTab = (tab, callback) => {
@@ -166,35 +160,35 @@ export default class Dashboard extends Component {
         ? activeTab
         : tabs[tabIndex] || tabs[tabIndex - 1] || tabs[tabIndex + 1] || null;
 
-    this.setState({ tabs, activeTab: newActive }, () => callback());
-
     this.setStorage('tabs', tabs);
+
+    this.setState({ tabs, activeTab: newActive }, () =>
+      typeof callback === 'function' ? callback() : null
+    );
   };
 
-  toggleTabList = () => {
+  toggleTabMenu = () => {
     if (this.state.tabs.length < 1) return;
 
-    const tabListOpen = this.state.tabListOpen;
+    const { menuIsOpen } = this.state;
+
     this.setState({
-      tabListOpen: !tabListOpen
+      menuIsOpen: !menuIsOpen
     });
 
-    this.setStorage('tabListOpen', !tabListOpen);
+    this.setStorage('menuIsOpen', !menuIsOpen);
   };
 
+  /* updateHiddenCharts = newVal => {
+    this.setState({
+      hiddenCharts: newVal
+    });
+
+    this.setStorage('tabs', tabs);
+    this.setStorage('activeTab', newActive);
+  }; */
+
   render() {
-    const {
-      tabs,
-      activeTab,
-      dataTitles,
-      tabListOpen,
-      hiddenCharts,
-      dashBoardData
-    } = this.state;
-
-    const tab = this.state.activeTab;
-    const tabIndex = this.state.tabs.indexOf(tab);
-
     // ctx getters
     const state = this.state;
     // ctx setters
@@ -203,11 +197,14 @@ export default class Dashboard extends Component {
       setStorage: this.setStorage,
       newTab: this.newTab,
       loadTab: this.loadTab,
-      updateTabs: this.updateTabs,
+      updateTab: this.updateTab,
       deleteTab: this.deleteTab,
       updateHiddenCharts: this.updateHiddenCharts,
-      toggleTabList: this.toggleTabList
+      toggleTabMenu: this.toggleTabMenu
     };
+
+    const { tabs, activeTab } = this.state;
+    const tabsExist = tabs ? tabs.length > 0 : false;
 
     return (
       <>
@@ -217,35 +214,26 @@ export default class Dashboard extends Component {
             setters
           }}
         >
-          <Wrapper>
-            <NewTabBtn type="add" onClick={this.newTab} tabsLen={tabs.length}>
-              +
-            </NewTabBtn>
-            {tabs.length < 1 ? <SoftP>add some data</SoftP> : null}
+          {tabs ? (
+            <Wrapper>
+              <NewTabBtn type="add" onClick={this.newTab} tabsExist={tabsExist}>
+                +
+              </NewTabBtn>
 
-            <TabMenu
-              tabs={tabs}
-              activeTab={activeTab}
-              tabListOpen={tabListOpen}
-              updateActiveTab={this.updateActiveTab}
-              toggleTabList={this.toggleTabList}
-            />
+              {!tabsExist ? <SoftP>add your data</SoftP> : null}
 
-            <TabContainer>
-              {tabs.length > 0 && activeTab ? (
-                <Tab
-                  key={tabIndex}
-                  dataTitles={dataTitles}
-                  tabIndex={tabIndex}
-                  tabContent={tab}
-                  updateTabs={this.updateTabs}
-                  updateCat={this.updateCat}
-                  hiddenCharts={hiddenCharts}
-                  updateHiddenCharts={this.updateHiddenCharts}
-                ></Tab>
+              {tabsExist ? (
+                <>
+                  <TabMenu />
+                  {activeTab ? (
+                    <TabContainer>
+                      <Tab />
+                    </TabContainer>
+                  ) : null}
+                </>
               ) : null}
-            </TabContainer>
-          </Wrapper>
+            </Wrapper>
+          ) : null}
         </DashboardContext.Provider>
       </>
     );

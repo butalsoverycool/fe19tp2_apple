@@ -4,6 +4,14 @@ export const apiUrl =
 
 export const defaultChartTypes = ['bar', 'area', 'scatter', 'radar', 'pie'];
 
+export const defaultState = {
+  dataTitles: null,
+  tabs: [],
+  activeTab: null,
+  menuIsOpen: false,
+  hiddenCharts: []
+};
+
 export const defaultTab = newIndex => {
   return {
     id: 'tab-' + String((Math.random() * 100).toFixed(0)) + String(newIndex),
@@ -11,7 +19,8 @@ export const defaultTab = newIndex => {
     data: null,
     catKey: null,
     catVal: null,
-    timespan: { from: 0, to: 100 }, // from/to = number
+    antiCat: null,
+    timespan: { from: 0, to: null }, // from/to = number
     charts: []
   };
 };

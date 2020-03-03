@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   margin-top: 5rem;
 `;
 
-const ColumnWrapper = styled.div`
+const TabWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -32,7 +32,7 @@ const RowWrapper = styled.div`
   justify-content: flex-start;
 `;
 
-const DropDownWrapper = styled.div`
+const DropdownContainer = styled.div`
   width: 100%;
   margin: auto;
   display: flex;
@@ -74,8 +74,7 @@ class Tab extends Component {
   constructor(props) {
     super(props);
 
-    this.updateCat = this.updateCat.bind(this);
-    this.updateTab = this.updateTab.bind(this);
+    this.dropDownHandler = this.dropDownHandler.bind(this);
     this.updateData = this.updateData.bind(this);
     this.hideChart = this.hideChart.bind(this);
   }
@@ -86,42 +85,35 @@ class Tab extends Component {
     this.props.updateHiddenCharts(newVal);
   };
 
-  updateTab = (key, val, tabIndex) => {
-    const { tabContent, dataTitles } = this.props;
+  dropDownHandler = (key, val) => {
+    const { activeTab, dataTitles } = this.props.dashboard.state;
+    const { updateTab } = this.props.dashboard.setters;
 
-    tabContent[key] = val;
-
-    console.log('tabcontent updating to:', tabContent);
+    activeTab[key] = val;
 
     // if catKey is changed, reset val (and data)
     if (key === 'catKey') {
-      tabContent.catVal = null;
-      tabContent.data = null;
-      tabContent.timespan = {
+      const antiCat = val === 'substances' ? 'sector' : 'substances';
+      activeTab.catVal = null;
+      activeTab.antiCat = antiCat;
+      activeTab.data = null;
+      activeTab.timespan = {
         from: Number(dataTitles.years[0]),
         to: Number(dataTitles.years[dataTitles.years.length - 1])
       };
     }
     // if catVal is changed, update data
     else if (key === 'catVal') {
-      this.updateData(tabIndex);
+      this.updateData();
     }
 
-    this.props.updateTabs(tabContent, tabIndex);
+    updateTab(activeTab);
   };
 
-  updateCat = (tabIndex, propName, selected) => {
-    const tabContent = this.props.tabContent;
-
-    tabContent[propName] = selected;
-
-    this.props.updateTabs(tabContent, tabIndex);
-  };
-
-  updateData = tabIndex => {
-    const { tabContent, dataTitles } = this.props;
-
-    const { catKey, catVal } = tabContent;
+  updateData = () => {
+    const { activeTab, dataTitles } = this.props.dashboard.state;
+    const { updateTab } = this.props.dashboard.setters;
+    const { catKey, catVal, antiCat } = activeTab;
 
     const query = queryBakery(catKey, catVal);
 
@@ -154,16 +146,15 @@ class Tab extends Component {
       });
 
       // sort data based on category key/val
-      const antiKey = catKey === 'substances' ? 'sectors' : 'substances';
-      const antiKeySingular = antiKey.slice(0, -1);
+      const antiCatSingular = antiCat.slice(0, -1);
 
       const sortedObj = {};
-      dataTitles[antiKey].forEach(item => {
+      dataTitles[antiCat].forEach(item => {
         sortedObj[item.code] = [];
       });
 
       data.forEach((item, nth) => {
-        const itemKey = item[antiKeySingular].code || item[antiKeySingular];
+        const itemKey = item[antiCatSingular].code || item[antiCatSingular];
 
         sortedObj[itemKey].id = 'chart-' + nth;
         sortedObj[itemKey].push(item);
@@ -173,9 +164,9 @@ class Tab extends Component {
 
       //console.log('data sorted based on catKey/Val', sortedArr);
 
-      tabContent.data = sortedArr;
+      activeTab.data = sortedArr;
 
-      this.props.updateTabs(tabContent, tabIndex);
+      updateTab(activeTab);
     };
 
     axios
@@ -192,35 +183,32 @@ class Tab extends Component {
   render() {
     const { dataTitles, tabIndex, activeTab } = this.props.dashboard.state;
 
-    const { catKey, catVal, data, name, timespan } = activeTab;
+    const { catKey, catVal, antiCat, data, name, timespan } = activeTab;
 
-    const antiKey = catKey === 'substances' ? 'sectors' : 'substances';
-    const tabPlaceholder = '*Give this tab a name*';
+    const { updateTab } = this.props.dashboard.setters;
+
+    const tabPlaceholder = 'Give this tab a name';
 
     const loaderEnter = Boolean(catVal && !data);
     const loaderExit = Boolean(data);
 
     return (
       <Wrapper className={'Tab-' + tabIndex}>
-        <DndGrid />
+        {/* <DndGrid /> */}
 
-        <ColumnWrapper>
-          <DropDownWrapper
-            className="DropdownWrapper"
-            bg="orange"
-            justify="center"
-          >
+        <TabWrapper>
+          <DropdownContainer className="DropdownContainer">
             <TabName
               placeholder={tabPlaceholder}
               value={name}
-              onChange={e => this.updateTab('name', e.target.value, tabIndex)}
+              onChange={e => this.dropDownHandler('name', e.target.value)}
             ></TabName>
 
             {/*  <DropdownContainer className="dropdown-container-category"> */}
             <Select
               value={catKey || 'default'}
               selected={catKey}
-              onChange={e => this.updateTab('catKey', e.target.value, tabIndex)}
+              onChange={e => this.dropDownHandler('catKey', e.target.value)}
             >
               <Option disabled value="default">
                 - select category -
@@ -234,7 +222,7 @@ class Tab extends Component {
                 className="dropdown-content-substance"
                 selected={catVal}
                 onChange={e =>
-                  this.updateTab('catVal', e.target.value, tabIndex)
+                  this.dropDownHandler('catVal', e.target.value, tabIndex)
                 }
                 value={catVal || 'default'}
               >
@@ -266,7 +254,7 @@ class Tab extends Component {
                 <Select
                   className="dropdown-content-timespan-from"
                   onChange={e =>
-                    this.updateTab(
+                    this.dropDownHandler(
                       'timespan',
                       { from: e.target.value, to: timespan.to },
                       tabIndex
@@ -291,7 +279,7 @@ class Tab extends Component {
                 <Select
                   className="dropdown-content-timespan-to"
                   onChange={e =>
-                    this.updateTab(
+                    this.dropDownHandler(
                       'timespan',
                       { from: timespan.from, to: e.target.value },
                       tabIndex
@@ -321,7 +309,7 @@ class Tab extends Component {
               </>
             ) : null}
             {/* </DropdownContainer> */}
-          </DropDownWrapper>
+          </DropdownContainer>
 
           <RowWrapper>
             {catVal ? (
@@ -329,7 +317,7 @@ class Tab extends Component {
                 allData={data}
                 catKey={catKey}
                 catVal={catVal}
-                antiKey={antiKey}
+                antiCat={antiCat}
                 dataTitles={dataTitles}
                 timespan={timespan}
                 tabIndex={tabIndex}
@@ -340,7 +328,7 @@ class Tab extends Component {
 
             {this.props.children}
           </RowWrapper>
-        </ColumnWrapper>
+        </TabWrapper>
       </Wrapper>
     );
   }

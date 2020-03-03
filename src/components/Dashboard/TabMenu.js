@@ -99,59 +99,46 @@ class TabMenu extends Component {
     }
   }
 
-  loadHandler = id => {
-    const { tabs } = this.props.dashboard.state;
-    const { loadTab } = this.props.dashboard.setters;
-
-    const tab = tabs.filter(tab => tab.id === id)[0];
-
-    loadTab(tab);
-  };
-
-  deleteHandler = tabId => {
-    const { tabs } = this.props;
-    const tab = tabs.filter(tab => tab.id === tabId)[0];
+  deleteHandler = tab => {
+    const { setters } = this.props.dashboard;
     const tabName = tab.name || tab.id;
 
-    const callback = () => {
+    this.setState({
+      deleting: true,
+      deleteMsg: tabName + ' deleted'
+    });
+
+    const afterDelete = () => {
       this.setState({
-        deleting: true,
-        deleteMsg: tabName + ' deleted'
+        deleting: false,
+        deleteMsg: null
       });
     };
 
-    this.props.dashboard.setters.deleteTab(tab, callback);
-  };
-
-  afterDelete = () => {
-    this.setState({
-      deleting: false,
-      deleteMsg: null
-    });
+    setters.deleteTab(tab, afterDelete);
   };
 
   render() {
     //dashboard ctx
     let { tabs, activeTab, tabListOpen } = this.props.dashboard.state;
-    const { toggleTabList } = this.props.dashboard.setters;
+    const { setters } = this.props.dashboard;
 
     const { deleting, deleteMsg } = this.state;
     const activeId = activeTab ? activeTab.id : null;
 
     return (
       <>
-        {deleting ? (
-          <PopupMsg
-            txt={deleteMsg || 'Deleted!'}
-            enter={true}
-            exit={false}
-            timeout={1000}
-            callback={this.afterDelete}
-          />
-        ) : (
+        <PopupMsg
+          txt={deleteMsg || 'Deleted!'}
+          enter={deleting}
+          exit={!deleting}
+          /* timeout={1000} */
+        />
+
+        {!deleting ? (
           <TabMenuWrapper ref={this.setWrapperRef}>
             <ToggleBtn
-              onClick={toggleTabList}
+              onClick={setters.toggleTabList}
               tabListOpen={tabListOpen}
               tabsExist={tabs.length > 0}
             >
@@ -166,12 +153,12 @@ class TabMenu extends Component {
                     <Item key={'item' + nth}>
                       <ItemBtn
                         active={tab.id === activeId}
-                        onClick={e => this.loadHandler(tab.id)}
+                        onClick={e => setters.loadHandler(tab)}
                       >
                         {tab.name || `(id: ${tab.id})`}
                       </ItemBtn>
                       <ItemBtn
-                        onClick={() => this.deleteHandler(tab.id)}
+                        onClick={() => this.deleteHandler(tab)}
                         type="delete"
                       >
                         Del
@@ -181,7 +168,7 @@ class TabMenu extends Component {
                 : null}
             </List>
           </TabMenuWrapper>
-        )}
+        ) : null}
       </>
     );
   }
