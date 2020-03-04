@@ -63,7 +63,7 @@ class Dashboard extends Component {
     this.state = {
       dataTitles:
         this.getStorage('dataTitles') || fetchDataTitles() || defaultDataTitles,
-      tabs: this.getStorage('tabs') || [],
+      tabs: this.getStorage('tabs') || this.getTabs(),
       activeTab: this.getStorage('activeTab') || null,
       tabListOpen: this.getStorage('tabListOpen') || false
     };
@@ -79,7 +79,10 @@ class Dashboard extends Component {
   componentDidMount() {
     if (!this.getStorage('dataTitles'))
       this.setStorage('dataTitles', this.state.dataTitles);
-    // Firebase auth save changes
+  }
+
+  componentWillUnmount() {
+    this.listener();
   }
 
   getStorage = key => {
@@ -88,6 +91,17 @@ class Dashboard extends Component {
       console.log(`Got ${key} from storage.`);
     }
     return res;
+  };
+  getTabs = () => {
+    this.listener = this.props.firebase.onAuthUserListener(authUser => {
+      if (authUser) {
+        const dbTab = authUser.charts;
+
+        if (dbTab != null) {
+          this.setState({ tabs: dbTab || this.state });
+        }
+      }
+    });
   };
 
   setStorage = (key, val) => {
@@ -159,19 +173,20 @@ class Dashboard extends Component {
     const { tabs, activeTab, dataTitles, tabListOpen } = this.state;
     const tab = this.state.activeTab;
     const tabIndex = this.state.tabs.indexOf(tab);
+
     const addTab = tabs.map(addTab => ({
       id: addTab.id,
+      // data: addTab.data[0],
       timespan: addTab.timespan,
       catKey: addTab.catKey,
       catVal: addTab.catVal
     }));
 
-    //firebase  get user and set data
-    this.props.firebase.onAuthUserListener(authUser => {
+    //firebase get user and set data
+    this.lister = this.props.firebase.onAuthUserListener(authUser => {
       if (authUser) {
         this.props.firebase
-          .user(authUser.uid)
-          .set(
+          .user(authUser.uid)(
             {
               charts: addTab
             },
