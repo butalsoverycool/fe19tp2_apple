@@ -43,14 +43,14 @@ const NavigationAuth = props => (
             alt="BEV logo"
           >
             <Logo />
-          </Circle>{' '}
+          </Circle>
         </Link>
         <Styled.LI>
           <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
 
           <Link to={ROUTES.ACCOUNT}>Account</Link>
         </Styled.LI>
-        <SignOutButton />{' '}
+        <SignOutButton />
       </Styled.Container>
     </Styled.Grid>
   </>

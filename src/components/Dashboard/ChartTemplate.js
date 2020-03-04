@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { compose } from 'recompose';
+
+import { withDashboard } from './context';
 import { withTheme } from '../Theme';
 import {
   CartesianGrid,

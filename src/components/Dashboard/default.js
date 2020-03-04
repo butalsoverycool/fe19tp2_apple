@@ -9,14 +9,13 @@ export const defaultState = {
   tabs: [],
   activeTab: null,
   menuIsOpen: false,
-  hiddenCharts: []
+  newTab: false
 };
 
 export const defaultTab = newIndex => {
   return {
     id: 'tab-' + String((Math.random() * 100).toFixed(0)) + String(newIndex),
     name: '',
-    data: null,
     catKey: null,
     catVal: null,
     antiCat: null,
@@ -25,12 +24,21 @@ export const defaultTab = newIndex => {
   };
 };
 
-export const defaultChart = (data, index) => {
+export const defaultChart = (input, index) => {
   const typeIndex = Math.floor(Math.random() * defaultChartTypes.length); // rand chartType
+  const { year, substance, sector, value } = input;
 
   return {
     id: 'chart-' + String((Math.random() * 100).toFixed(0)) + String(index),
     type: defaultChartTypes[typeIndex],
+    disabled: false,
+    data: [...input]
+  };
+};
+
+export const defaultDataPoint = (data, index) => {
+  return {
+    id: 'dataPoint-' + String((Math.random() * 100).toFixed(0)) + String(index),
     year: data.year,
     substance: data.substance,
     sector: data.sector,

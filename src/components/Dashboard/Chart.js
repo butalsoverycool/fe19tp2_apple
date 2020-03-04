@@ -4,8 +4,10 @@ import { compose } from 'recompose';
 import { withTheme } from '../Theme/context';
 import { withDashboard } from './context';
 
-import { defaultChart } from './default';
+import { defaultChart, defaultDataPoint } from './default';
 import ChartTemplate from './ChartTemplate';
+
+import IconTemplate, { icons } from '../../media/icons';
 
 const ChartContainer = styled.div`
   ${props =>
@@ -53,36 +55,38 @@ class Chart extends Component {
   constructor(props) {
     super(props);
 
-    this.delChartHandler = this.delChartHandler.bind(this);
+    this.deleteHandler = this.deleteHandler.bind(this);
   }
 
-  delChartHandler = (tabIndex, chartIndex) => {
-    alert('del chart');
-    const allData = this.props.allData;
-    allData[chartIndex].forEach(data => (data.hidden = true));
+  deleteHandler(chart) {
+    const { updateTab } = this.props.dashboard.setters;
+    const { activeTab } = this.props.dashboard.state;
+    let { charts } = activeTab;
 
-    console.log('updating chartIndex', chartIndex, 'allData', allData);
-    this.props.updateTab('data', allData, tabIndex);
-  };
+    chart.disabled = true;
+    const newCharts = charts.map(item => (item.id === chart.id ? chart : item));
+    activeTab.charts = newCharts;
+
+    updateTab(activeTab);
+  }
 
   render() {
-    let { allData, catVal, antiKey, timespan, theme, hideChart } = this.props;
-    if (!allData) return null;
+    const { color } = this.props.theme.state;
+    const { activeTab } = this.props.dashboard.state;
+    const { antiCat } = activeTab;
+    const { charts, timespan } = activeTab;
 
-    const themeColor = theme.state.color.hex.slice(1);
-
-    //const filteredHidden = allData.filter(item => )
-
-    // filter by timespan and format chartObj
-    const filteredCharts = allData.map(data =>
-      data
-        .filter(item => item.year >= timespan.from && item.year <= timespan.to)
-        .map((item, nth) => defaultChart(item, nth))
-    );
+    if (!charts || charts.length < 1) return null;
 
     return (
       <>
-        {filteredCharts.map((data, nth) => {
+        {charts.map((chart, nth) => {
+          if (chart.disabled) return '';
+
+          const filtered = chart.data.filter(
+            entry => entry.year >= timespan.from && entry.year <= timespan.to
+          );
+
           // temp* autogenerate type
           const type =
             nth % 5 === 0
@@ -97,9 +101,9 @@ class Chart extends Component {
 
           // format title
           const titleKey =
-            antiKey[0].toUpperCase() + antiKey.slice(1).slice(0, -1);
+            antiCat[0].toUpperCase() + antiCat.slice(1).slice(0, -1);
 
-          const titleVal = data[0][antiKey.slice(0, -1)].name;
+          const titleVal = chart.data[0][antiCat.slice(0, -1)].name;
 
           //measure title
           const flex = titleVal.length > 30 ? 'auto' : '1';
@@ -107,29 +111,20 @@ class Chart extends Component {
 
           return (
             <ChartContainer
-              key={nth}
+              key={chart.id}
               chartIndex={nth}
               className="ChartContainer"
               flex={flex}
-              type={type}
+              type={chart.type}
             >
               <ChartTitle>
                 {titleKey}: {titleVal}
               </ChartTitle>
 
-              <ChartTemplate
-                data={data}
-                catVal={catVal}
-                cutYear={cutYear}
-                type={type}
-              />
+              <ChartTemplate data={filtered} type={chart.type} />
 
-              <DelChartBtn onClick={() => hideChart(nth)}>
-                <img
-                  src={`https://img.icons8.com/metro/26/${themeColor ||
-                    '333333'}/trash.png`}
-                  alt="trash_chart"
-                />
+              <DelChartBtn onClick={() => this.deleteHandler(chart)}>
+                <IconTemplate src={icons.deleteCross} />
               </DelChartBtn>
             </ChartContainer>
           );

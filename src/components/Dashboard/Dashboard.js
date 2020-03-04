@@ -22,30 +22,44 @@ const TabContainer = styled.div`
 `;
 
 const NewTabBtn = styled.button`
-  width: 3rem;
-  height: 3rem;
-  right: 1rem;
-  top: 8rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  /* right: 1rem;
+  top: 8rem; */
+  transform: ${props =>
+    props.newTab
+      ? 'translate3d(100vw, 45px, 0)'
+      : 'translate3d(100vw, 45px, 0) translateX(-2.5rem)'};
   font-size: 1.2rem;
+  padding: 0.5rem;
+  margin: auto;
 
   box-shadow: 0 0 20px #ddd;
   border: none;
+  border-radius: 5px 0 0 5px;
   outline: none;
   position: absolute;
   z-index: 1;
-  border-radius: 50%;
+  cursor: pointer;
+  transition-duration: 0.4s;
 
   ${props =>
     !props.tabsExist
       ? `
+      border-radius: 50%;
       width: 6rem;
       height: 6rem;
-      left: 50%;
-      top: 50%;
+      /* left: 50%;
+      top: 50%; */
+      transform: translate3d(50vw,40vh,0);
       margin-left: -3rem;
       margin-top: -3rem;
       font-size: 2rem;`
       : ''};
+
+  &:hover {
+    box-shadow: 0px 0px 10px #bbb;
+  }
 `;
 
 const SoftP = styled.p`
@@ -56,11 +70,16 @@ const SoftP = styled.p`
   font-size: 0.8rem;
 
   text-align: center;
-  width: 6 rem;
+  width: 6rem;
   display: block;
   position: absolute;
-  left: 50%;
-  top: 50%;
+  /* left: 50%;
+  top: 50%; */
+  transform: ${props =>
+    !props.tabsExist
+      ? 'translate3d(50vw, 40vh, 0)'
+      : 'translate3d(-50vw, 40vh, 0)'};
+  transition-duration: 0.4s;
   margin-left: -3rem;
   margin-top: 5rem;
 `;
@@ -70,7 +89,7 @@ export default class Dashboard extends Component {
     super(props);
 
     this.state = {
-      defaultState
+      ...defaultState
     };
 
     this.newTab = this.newTab.bind(this);
@@ -88,10 +107,8 @@ export default class Dashboard extends Component {
       dataTitles:
         this.getStorage('dataTitles') || fetchDataTitles() || defaultDataTitles,
       tabs: this.getStorage('tabs') || [],
-      activeTab: this.getStorage('activeTab') || null,
-      menuIsOpen: this.getStorage('menuIsOpen') || false,
-      hiddenCharts: [],
-      dashBoardData: null
+      activeTab: this.getStorage('activeTab') || this.state.tabs[0] || null,
+      tabMenuIsOpen: this.getStorage('tabMenuIsOpen') || false
     });
 
     // set dataTitles
@@ -108,8 +125,13 @@ export default class Dashboard extends Component {
   };
 
   setStorage = (key, val) => {
-    localStorage.setItem(key, JSON.stringify(val));
-    console.log('Stored ' + key);
+    let valStr = JSON.stringify(val);
+
+    localStorage.setItem(key, valStr);
+
+    if (valStr.length > 20) valStr = valStr.slice(0, 20) + '...';
+
+    console.log(`Stored ${key} (${valStr})`);
   };
 
   newTab = () => {
@@ -117,36 +139,54 @@ export default class Dashboard extends Component {
 
     tabs.unshift(defaultTab(tabs.length));
 
-    this.setState({
-      tabs,
-      activeTab: tabs[0],
-      menuIsOpen: false,
-      hiddenCharts: []
-    });
+    this.setState(
+      {
+        tabs,
+        activeTab: tabs[0],
+        tabMenuIsOpen: false,
+        newTab: true
+      },
+      () => {
+        if (tabs.length <= 1 && this.state.newTab) {
+          this.setState({
+            newTab: false
+          });
+        } else {
+          setTimeout(() => {
+            this.setState({
+              newTab: false
+            });
+          }, 200);
+        }
+      } // callback
+    );
 
     this.setStorage('tabs', tabs);
     this.setStorage('activeTab', tabs[0]);
   };
 
   loadTab = tab => {
-    this.setState({
-      activeTab: tab
-    });
+    const setActiveTab = () => {
+      this.setState({
+        activeTab: tab
+      });
+    };
 
+    this.toggleTabMenu(setActiveTab);
     this.setStorage('activeTab', tab);
   };
 
   updateTab = (tab, callback) => {
-    const tabs = this.state.tabs;
-    const tabIndex = tabs.indexOf(tab);
-    tabs[tabIndex] = tab;
+    const { activeTab, tabs } = this.state;
 
-    this.setStorage('tabs', tabs);
-    this.setStorage('activeTab', tab);
+    const newTabs = tabs.map(item => (item.id === tab.id ? tab : item));
 
-    this.setState({ tabs, activeTab: tab }, () =>
+    this.setState({ tabs: newTabs, activeTab: tab }, () =>
       typeof callback === 'function' ? callback() : null
     );
+
+    this.setStorage('activeTab', tab);
+    this.setStorage('tabs', newTabs);
   };
 
   deleteTab = (tab, callback) => {
@@ -160,23 +200,26 @@ export default class Dashboard extends Component {
         ? activeTab
         : tabs[tabIndex] || tabs[tabIndex - 1] || tabs[tabIndex + 1] || null;
 
-    this.setStorage('tabs', tabs);
-
     this.setState({ tabs, activeTab: newActive }, () =>
       typeof callback === 'function' ? callback() : null
     );
+
+    this.setStorage('tabs', tabs);
   };
 
-  toggleTabMenu = () => {
+  toggleTabMenu = callback => {
     if (this.state.tabs.length < 1) return;
 
-    const { menuIsOpen } = this.state;
+    const { tabMenuIsOpen } = this.state;
 
-    this.setState({
-      menuIsOpen: !menuIsOpen
-    });
+    this.setState(
+      {
+        tabMenuIsOpen: !tabMenuIsOpen
+      },
+      typeof callback === 'function' ? callback : null
+    );
 
-    this.setStorage('menuIsOpen', !menuIsOpen);
+    this.setStorage('tabMenuIsOpen', !tabMenuIsOpen);
   };
 
   /* updateHiddenCharts = newVal => {
@@ -189,8 +232,6 @@ export default class Dashboard extends Component {
   }; */
 
   render() {
-    // ctx getters
-    const state = this.state;
     // ctx setters
     const setters = {
       getStorage: this.getStorage,
@@ -203,33 +244,35 @@ export default class Dashboard extends Component {
       toggleTabMenu: this.toggleTabMenu
     };
 
-    const { tabs, activeTab } = this.state;
+    const { tabs, activeTab, newTab } = this.state;
     const tabsExist = tabs ? tabs.length > 0 : false;
 
     return (
       <>
         <DashboardContext.Provider
           value={{
-            state,
+            state: this.state,
             setters
           }}
         >
           {tabs ? (
             <Wrapper>
-              <NewTabBtn type="add" onClick={this.newTab} tabsExist={tabsExist}>
+              <NewTabBtn
+                type="add"
+                onClick={this.newTab}
+                tabsExist={tabsExist}
+                newTab={newTab}
+              >
                 +
               </NewTabBtn>
 
-              {!tabsExist ? <SoftP>add your data</SoftP> : null}
+              <SoftP tabsExist={tabsExist}>add your data</SoftP>
 
               {tabsExist ? (
                 <>
                   <TabMenu />
-                  {activeTab ? (
-                    <TabContainer>
-                      <Tab />
-                    </TabContainer>
-                  ) : null}
+
+                  {activeTab ? <Tab /> : null}
                 </>
               ) : null}
             </Wrapper>

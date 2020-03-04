@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
-import { proxy, apiUrl, queryBakery } from './default';
+import { proxy, apiUrl, queryBakery, defaultChart } from './default';
 import allEmissionData from './allEmissionData';
 
 import PopupMsg from '../PopupMsg';
@@ -69,6 +69,8 @@ const Select = styled.select`
   width: 80%;
   max-width: 200px;
   margin: 0.1rem auto;
+
+  cursor: pointer;
 `;
 class Tab extends Component {
   constructor(props) {
@@ -86,25 +88,27 @@ class Tab extends Component {
   };
 
   dropDownHandler = (key, val) => {
-    const { activeTab, dataTitles } = this.props.dashboard.state;
+    const { dataTitles, activeTab } = this.props.dashboard.state;
     const { updateTab } = this.props.dashboard.setters;
 
     activeTab[key] = val;
 
+    // if catVal is changed, update data
+    if (key === 'catVal') {
+      this.updateData();
+      return;
+    }
+
     // if catKey is changed, reset val (and data)
     if (key === 'catKey') {
-      const antiCat = val === 'substances' ? 'sector' : 'substances';
+      const antiCat = val === 'substances' ? 'sectors' : 'substances';
       activeTab.catVal = null;
       activeTab.antiCat = antiCat;
-      activeTab.data = null;
+      activeTab.charts = [];
       activeTab.timespan = {
         from: Number(dataTitles.years[0]),
         to: Number(dataTitles.years[dataTitles.years.length - 1])
       };
-    }
-    // if catVal is changed, update data
-    else if (key === 'catVal') {
-      this.updateData();
     }
 
     updateTab(activeTab);
@@ -112,7 +116,7 @@ class Tab extends Component {
 
   updateData = () => {
     const { activeTab, dataTitles } = this.props.dashboard.state;
-    const { updateTab } = this.props.dashboard.setters;
+    const { updateTab, setStorage } = this.props.dashboard.setters;
     const { catKey, catVal, antiCat } = activeTab;
 
     const query = queryBakery(catKey, catVal);
@@ -137,6 +141,7 @@ class Tab extends Component {
 
         const value = parseInt(item.values[0]) || 0;
 
+        /* return defaultChart({ year, sector, substance, value }, nth); */
         return {
           year,
           sector,
@@ -146,12 +151,13 @@ class Tab extends Component {
       });
 
       // sort data based on category key/val
-      const antiCatSingular = antiCat.slice(0, -1);
-
       const sortedObj = {};
+
       dataTitles[antiCat].forEach(item => {
         sortedObj[item.code] = [];
       });
+
+      const antiCatSingular = antiCat.slice(0, -1);
 
       data.forEach((item, nth) => {
         const itemKey = item[antiCatSingular].code || item[antiCatSingular];
@@ -162,10 +168,12 @@ class Tab extends Component {
 
       const sortedArr = Object.values(sortedObj);
 
+      const charts = sortedArr.map((item, nth) => defaultChart(item, nth));
       //console.log('data sorted based on catKey/Val', sortedArr);
 
-      activeTab.data = sortedArr;
+      activeTab.charts = charts;
 
+      setStorage('activeTab', activeTab);
       updateTab(activeTab);
     };
 
@@ -182,15 +190,14 @@ class Tab extends Component {
 
   render() {
     const { dataTitles, tabIndex, activeTab } = this.props.dashboard.state;
+    const { updateTab } = this.props.dashboard.setters;
 
     const { catKey, catVal, antiCat, data, name, timespan } = activeTab;
 
-    const { updateTab } = this.props.dashboard.setters;
-
     const tabPlaceholder = 'Give this tab a name';
 
-    const loaderEnter = Boolean(catVal && !data);
-    const loaderExit = Boolean(data);
+    const loaderEnter = Boolean(catVal && activeTab.charts.length < 1);
+    const loaderExit = Boolean(activeTab.charts);
 
     return (
       <Wrapper className={'Tab-' + tabIndex}>
@@ -225,6 +232,7 @@ class Tab extends Component {
                   this.dropDownHandler('catVal', e.target.value, tabIndex)
                 }
                 value={catVal || 'default'}
+                hidden={!catKey}
               >
                 <Option disabled value="default">
                   - select a {catKey.slice(0, -1)} -
@@ -236,9 +244,7 @@ class Tab extends Component {
                 ))}
               </Select>
             ) : null}
-            {/*  </DropdownContainer>
 
-            <DropdownContainer> */}
             {catVal ? (
               <>
                 {/* PopupMsg */}
@@ -250,13 +256,13 @@ class Tab extends Component {
                   loader={true}
                 />
 
-                {/* Timespan arrows */}
+                {/* Timespan dropdowns */}
                 <Select
                   className="dropdown-content-timespan-from"
                   onChange={e =>
                     this.dropDownHandler(
                       'timespan',
-                      { from: e.target.value, to: timespan.to },
+                      { from: Number(e.target.value), to: timespan.to },
                       tabIndex
                     )
                   }
@@ -281,7 +287,7 @@ class Tab extends Component {
                   onChange={e =>
                     this.dropDownHandler(
                       'timespan',
-                      { from: timespan.from, to: e.target.value },
+                      { from: timespan.from, to: Number(e.target.value) },
                       tabIndex
                     )
                   }
@@ -300,6 +306,7 @@ class Tab extends Component {
                     </Option>
                   ))}
                 </Select>
+
                 {/* <Timespan
                     timespan={timespan}
                     updateTab={this.updateTab}
@@ -312,19 +319,7 @@ class Tab extends Component {
           </DropdownContainer>
 
           <RowWrapper>
-            {catVal ? (
-              <Chart
-                allData={data}
-                catKey={catKey}
-                catVal={catVal}
-                antiCat={antiCat}
-                dataTitles={dataTitles}
-                timespan={timespan}
-                tabIndex={tabIndex}
-                updateTab={this.updateTab}
-                hideChart={this.hideChart}
-              />
-            ) : null}
+            {catVal ? <Chart /> : null}
 
             {this.props.children}
           </RowWrapper>
