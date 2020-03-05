@@ -4,9 +4,7 @@ import { withFirebase } from '../Firebase';
 import { withTheme } from '../Theme';
 import Tab from './Tab';
 import PopupMsg from '../PopupMsg';
-
 import { defaultTab, defaultDataTitles } from './default';
-
 import { fetchDataTitles } from './fetch';
 
 //temp styles
@@ -63,7 +61,9 @@ class Dashboard extends Component {
     this.state = {
       dataTitles:
         this.getStorage('dataTitles') || fetchDataTitles() || defaultDataTitles,
-      tabs: this.getStorage('tabs') || this.getTabs(),
+      tabs: this.getStorage('tabs')
+        ? JSON.parse(localStorage.getItem('tabs'))
+        : [],
       activeTab: this.getStorage('activeTab') || null,
       tabListOpen: this.getStorage('tabListOpen') || false
     };
@@ -79,29 +79,29 @@ class Dashboard extends Component {
   componentDidMount() {
     if (!this.getStorage('dataTitles'))
       this.setStorage('dataTitles', this.state.dataTitles);
-  }
 
+    this.listener = this.props.firebase.onAuthUserListener(authUser => {
+      if (authUser) {
+        const dbTab = authUser.charts;
+
+        if (dbTab != null) {
+          localStorage.setItem('tabs', JSON.stringify(dbTab));
+          console.log('db', dbTab);
+          this.setState({ tabs: dbTab || this.state });
+        }
+      }
+    });
+  }
   componentWillUnmount() {
     this.listener();
   }
-
+  // clear localstorge on logout
   getStorage = key => {
     const res = JSON.parse(localStorage.getItem(key));
     if (res !== undefined && res !== null) {
       console.log(`Got ${key} from storage.`);
     }
     return res;
-  };
-  getTabs = () => {
-    this.listener = this.props.firebase.onAuthUserListener(authUser => {
-      if (authUser) {
-        const dbTab = authUser.charts;
-
-        if (dbTab != null) {
-          this.setState({ tabs: dbTab || this.state });
-        }
-      }
-    });
   };
 
   setStorage = (key, val) => {
@@ -174,31 +174,28 @@ class Dashboard extends Component {
     const tab = this.state.activeTab;
     const tabIndex = this.state.tabs.indexOf(tab);
 
-    const addTab = tabs.map(addTab => ({
-      id: addTab.id,
-      // data: addTab.data[0],
-      timespan: addTab.timespan,
-      catKey: addTab.catKey,
-      catVal: addTab.catVal
-    }));
-
-    //firebase get user and set data
-    this.lister = this.props.firebase.onAuthUserListener(authUser => {
-      if (authUser) {
-        this.props.firebase
-          .user(authUser.uid)(
-            {
-              charts: addTab
-            },
-            { merge: true }
-          )
-          .then(function() {
-            console.log('Document successfully written!');
-          })
-          .catch(function(error) {
-            console.error('Error writing document: ', error);
-          });
-      }
+    this.listener = this.props.firebase.onAuthUserListener(authUser => {
+      const addTab = tabs.map(addTab => ({
+        id: addTab.id,
+        data: addTab.data ? addTab.data[0] : null,
+        timespan: addTab.timespan,
+        catKey: addTab.catKey,
+        catVal: addTab.catVal
+      }));
+      this.props.firebase
+        .user(authUser.uid)
+        .set(
+          {
+            charts: addTab
+          },
+          { merge: true }
+        )
+        .then(function() {
+          console.log('Document successfully written!');
+        })
+        .catch(function(error) {
+          console.error('Error writing document: ', error);
+        });
     });
 
     return (

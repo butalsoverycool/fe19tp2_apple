@@ -34,7 +34,7 @@ const AreaChartTemplate = props => {
             type="monotone"
             dataKey="value"
             stroke="#8884d8"
-            fill={color.hex || 'hotpink'}
+            fill={color.hex || 'yellow'}
             strokeWidth={2}
           />
           <XAxis dataKey="year" strokeWidth={2} />
