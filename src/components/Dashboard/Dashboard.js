@@ -6,7 +6,11 @@ import Tab from './Tab';
 
 import { defaultState, defaultTab, defaultDataTitles } from './default';
 
+import { withFirebase } from '../Firebase';
+import { withTheme } from '../Theme';
+import PopupMsg from '../PopupMsg';
 import { fetchDataTitles } from './fetch';
+import { auth } from 'firebase';
 
 //temp styles
 const Wrapper = styled.div`
@@ -84,7 +88,7 @@ const SoftP = styled.p`
   margin-top: 5rem;
 `;
 
-export default class Dashboard extends Component {
+class Dashboard extends Component {
   constructor(props) {
     super(props);
 
@@ -98,7 +102,35 @@ export default class Dashboard extends Component {
     this.loadTab = this.loadTab.bind(this);
     this.updateTab = this.updateTab.bind(this);
     this.deleteTab = this.deleteTab.bind(this);
+    this.loadFirebaseTabs = this.loadFirebaseTabs.bind(this);
     //this.updateHiddenCharts = this.updateHiddenCharts.bind(this);
+  }
+
+  loadFirebaseTabs() {
+    this.listener = this.props.firebase.onAuthUserListener(authUser => {
+      if (authUser) {
+        const dbTabs = authUser.tabs;
+
+        if (dbTabs != null) {
+          localStorage.setItem('tabs', JSON.stringify(dbTabs));
+          console.log('db', dbTabs);
+          this.setState({
+            tabs: dbTabs,
+            activeTab: dbTabs[0] || this.state
+          });
+        }
+      }
+    });
+  }
+
+  // update user (tabs) in db
+  updateFirebaseTabs(newTabs) {
+    this.listener = this.props.firebase.onAuthUserListener(authUser => {
+      if (authUser) {
+        authUser.tabs = newTabs;
+        this.props.firebase.updateUser(authUser.uid, authUser);
+      }
+    });
   }
 
   componentDidMount() {
@@ -106,7 +138,7 @@ export default class Dashboard extends Component {
     this.setState({
       dataTitles:
         this.getStorage('dataTitles') || fetchDataTitles() || defaultDataTitles,
-      tabs: this.getStorage('tabs') || [],
+      tabs: this.loadFirebaseTabs() || this.getStorage('tabs') || [],
       activeTab: this.getStorage('activeTab') || this.state.tabs[0] || null,
       tabMenuIsOpen: this.getStorage('tabMenuIsOpen') || false
     });
@@ -116,6 +148,11 @@ export default class Dashboard extends Component {
     if (!dataTitles) this.setStorage('dataTitles', this.state.dataTitles);
   }
 
+  componentWillUnmount() {
+    this.listener();
+  }
+
+  // clear localstorge on logout
   getStorage = key => {
     const res = JSON.parse(localStorage.getItem(key));
     if (res !== undefined && res !== null) {
@@ -136,13 +173,14 @@ export default class Dashboard extends Component {
 
   newTab = () => {
     const tabs = this.state.tabs;
+    const newTab = defaultTab(tabs.length);
 
-    tabs.unshift(defaultTab(tabs.length));
+    tabs.unshift(newTab);
 
     this.setState(
       {
         tabs,
-        activeTab: tabs[0],
+        activeTab: newTab,
         tabMenuIsOpen: false,
         newTab: true
       },
@@ -161,8 +199,10 @@ export default class Dashboard extends Component {
       } // callback
     );
 
+    this.updateFirebaseTabs(tabs);
+
     this.setStorage('tabs', tabs);
-    this.setStorage('activeTab', tabs[0]);
+    this.setStorage('activeTab', newTab);
   };
 
   loadTab = tab => {
@@ -177,13 +217,15 @@ export default class Dashboard extends Component {
   };
 
   updateTab = (tab, callback) => {
-    const { activeTab, tabs } = this.state;
+    const { tabs } = this.state;
 
     const newTabs = tabs.map(item => (item.id === tab.id ? tab : item));
 
     this.setState({ tabs: newTabs, activeTab: tab }, () =>
       typeof callback === 'function' ? callback() : null
     );
+
+    this.updateFirebaseTabs(newTabs);
 
     this.setStorage('activeTab', tab);
     this.setStorage('tabs', newTabs);
@@ -203,6 +245,8 @@ export default class Dashboard extends Component {
     this.setState({ tabs, activeTab: newActive }, () =>
       typeof callback === 'function' ? callback() : null
     );
+
+    this.updateFirebaseTabs(tabs);
 
     this.setStorage('tabs', tabs);
   };
@@ -282,3 +326,5 @@ export default class Dashboard extends Component {
     );
   }
 }
+
+export default withFirebase(Dashboard);

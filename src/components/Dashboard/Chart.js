@@ -73,62 +73,43 @@ class Chart extends Component {
   render() {
     const { color } = this.props.theme.state;
     const { activeTab } = this.props.dashboard.state;
-    const { antiCat } = activeTab;
+    const { catRes } = activeTab;
     const { charts, timespan } = activeTab;
 
-    if (!charts || charts.length < 1) return null;
+    const chart = this.props.chart;
+
+    /* if (!charts || charts.length < 1) return null; */
+    const filtered = chart.data.filter(
+      entry => entry.year >= timespan.from && entry.year <= timespan.to
+    );
+
+    // format title
+    const titleKey = catRes[0].toUpperCase() + catRes.slice(1).slice(0, -1);
+
+    const titleVal = chart.data[0][catRes.slice(0, -1)].name;
+
+    //measure title
+    const flex = titleVal.length > 30 ? 'auto' : '1';
+    const cutYear = titleVal.length > 30 ? false : true;
 
     return (
       <>
-        {charts.map((chart, nth) => {
-          if (chart.disabled) return '';
+        <ChartContainer
+          key={chart.id}
+          className="ChartContainer"
+          flex={flex}
+          type={chart.type}
+        >
+          <ChartTitle>
+            {titleKey}: {titleVal}
+          </ChartTitle>
 
-          const filtered = chart.data.filter(
-            entry => entry.year >= timespan.from && entry.year <= timespan.to
-          );
+          <ChartTemplate data={filtered} type={chart.type} />
 
-          // temp* autogenerate type
-          const type =
-            nth % 5 === 0
-              ? 'radar'
-              : nth % 4 === 0
-              ? 'scatter'
-              : nth > 1 && nth % 3 === 0
-              ? 'pie'
-              : nth % 2 === 0
-              ? 'area'
-              : 'bar';
-
-          // format title
-          const titleKey =
-            antiCat[0].toUpperCase() + antiCat.slice(1).slice(0, -1);
-
-          const titleVal = chart.data[0][antiCat.slice(0, -1)].name;
-
-          //measure title
-          const flex = titleVal.length > 30 ? 'auto' : '1';
-          const cutYear = titleVal.length > 30 ? false : true;
-
-          return (
-            <ChartContainer
-              key={chart.id}
-              chartIndex={nth}
-              className="ChartContainer"
-              flex={flex}
-              type={chart.type}
-            >
-              <ChartTitle>
-                {titleKey}: {titleVal}
-              </ChartTitle>
-
-              <ChartTemplate data={filtered} type={chart.type} />
-
-              <DelChartBtn onClick={() => this.deleteHandler(chart)}>
-                <IconTemplate src={icons.deleteCross} />
-              </DelChartBtn>
-            </ChartContainer>
-          );
-        })}
+          <DelChartBtn onClick={() => this.deleteHandler(chart)}>
+            <IconTemplate src={icons.deleteCross} />
+          </DelChartBtn>
+        </ChartContainer>
       </>
     );
   }

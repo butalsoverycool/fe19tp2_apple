@@ -18,7 +18,7 @@ export const defaultTab = newIndex => {
     name: '',
     catKey: null,
     catVal: null,
-    antiCat: null,
+    catRes: null,
     timespan: { from: 0, to: null }, // from/to = number
     charts: []
   };

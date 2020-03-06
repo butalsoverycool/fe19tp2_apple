@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
+import { compose } from 'recompose';
+
 import { proxy, apiUrl, queryBakery, defaultChart } from './default';
+import { withFirebase } from '../Firebase';
+import { fetchDataTitles, fetchData } from './fetch';
 import allEmissionData from './allEmissionData';
 
 import PopupMsg from '../PopupMsg';
-import Chart from './Chart';
+import Charts from './Charts';
 import { withDashboard } from './context';
 
 import DbdGrid from './DndGrid';
@@ -101,9 +105,9 @@ class Tab extends Component {
 
     // if catKey is changed, reset val (and data)
     if (key === 'catKey') {
-      const antiCat = val === 'substances' ? 'sectors' : 'substances';
+      const catRes = val === 'substances' ? 'sectors' : 'substances';
       activeTab.catVal = null;
-      activeTab.antiCat = antiCat;
+      activeTab.catRes = catRes;
       activeTab.charts = [];
       activeTab.timespan = {
         from: Number(dataTitles.years[0]),
@@ -117,7 +121,7 @@ class Tab extends Component {
   updateData = () => {
     const { activeTab, dataTitles } = this.props.dashboard.state;
     const { updateTab, setStorage } = this.props.dashboard.setters;
-    const { catKey, catVal, antiCat } = activeTab;
+    const { catKey, catVal, catRes } = activeTab;
 
     const query = queryBakery(catKey, catVal);
 
@@ -153,14 +157,14 @@ class Tab extends Component {
       // sort data based on category key/val
       const sortedObj = {};
 
-      dataTitles[antiCat].forEach(item => {
+      dataTitles[catRes].forEach(item => {
         sortedObj[item.code] = [];
       });
 
-      const antiCatSingular = antiCat.slice(0, -1);
+      const catResSingular = catRes.slice(0, -1);
 
       data.forEach((item, nth) => {
-        const itemKey = item[antiCatSingular].code || item[antiCatSingular];
+        const itemKey = item[catResSingular].code || item[catResSingular];
 
         sortedObj[itemKey].id = 'chart-' + nth;
         sortedObj[itemKey].push(item);
@@ -192,7 +196,7 @@ class Tab extends Component {
     const { dataTitles, tabIndex, activeTab } = this.props.dashboard.state;
     const { updateTab } = this.props.dashboard.setters;
 
-    const { catKey, catVal, antiCat, data, name, timespan } = activeTab;
+    const { catKey, catVal, catRes, data, name, timespan } = activeTab;
 
     const tabPlaceholder = 'Give this tab a name';
 
@@ -207,8 +211,13 @@ class Tab extends Component {
           <DropdownContainer className="DropdownContainer">
             <TabName
               placeholder={tabPlaceholder}
-              value={name}
-              onChange={e => this.dropDownHandler('name', e.target.value)}
+              defaultValue={name}
+              onBlur={e => this.dropDownHandler('name', e.target.value)}
+              onKeyUp={e => {
+                if (e.keyCode === 13) {
+                  this.dropDownHandler('name', e.target.value);
+                }
+              }}
             ></TabName>
 
             {/*  <DropdownContainer className="dropdown-container-category"> */}
@@ -319,7 +328,7 @@ class Tab extends Component {
           </DropdownContainer>
 
           <RowWrapper>
-            {catVal ? <Chart /> : null}
+            {catVal ? <Charts /> : null}
 
             {this.props.children}
           </RowWrapper>
@@ -329,4 +338,4 @@ class Tab extends Component {
   }
 }
 
-export default withDashboard(Tab);
+export default compose(withFirebase, withDashboard)(Tab);

@@ -47,8 +47,8 @@ const AreaTemplate = ({ data, theme }) => {
         <Area
           type="monotone"
           dataKey="value"
-          stroke="#333"
-          fill={theme.color.hex || 'hotpink'}
+          stroke="#8884d8"
+          fill={theme.color.hex || 'yellow'}
           strokeWidth={2}
         />
         <XAxis dataKey="year" strokeWidth={2} />

@@ -46,6 +46,18 @@ class Firebase {
   users = () => this.firestore.collection('users');
   user = uid => this.firestore.doc(`users/${uid}`);
 
+  updateUser = (uid, newUser, callback) =>
+    this.user(uid)
+      .update(newUser)
+      .then(res => {
+        console.log(`Update user (${JSON.stringify(newUser)})`);
+
+        typeof callback === 'function' && callback();
+      })
+      .catch(err => {
+        console.log(`Error when trying to update user (${err})`);
+      });
+
   organizations = () => this.firestore.collection('organizations');
   organization = orgId => this.firestore.doc(`organizations/${orgId}`);
 
