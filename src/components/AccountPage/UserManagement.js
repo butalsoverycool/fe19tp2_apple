@@ -17,6 +17,7 @@ const UserManagement = ({ firebase }) => {
         users.forEach(user => orgUsers.push({ id: user.id, ...user.data() }));
         setUsers(orgUsers);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleAddUser = e => {

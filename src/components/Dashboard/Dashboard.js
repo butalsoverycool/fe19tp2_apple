@@ -20,6 +20,7 @@ const RowWrapper = styled.div`
   justify-content: flex-start;
 `;
 
+/* 
 const buttonBgs = type => {
   switch (type) {
     case 'add':
@@ -29,9 +30,9 @@ const buttonBgs = type => {
     default:
       return 'none';
   }
-};
+}; */
 
-const Btn = styled.button`
+/* const Btn = styled.button`
   width: 10rem;
   height: 1.8rem;
   margin: 1rem 0.2rem;
@@ -39,7 +40,7 @@ const Btn = styled.button`
   background: #fff;
   border: none;
   outline: none;
-`;
+`; */
 
 const NewTabBtn = styled.button`
   width: 3rem;
@@ -147,7 +148,7 @@ class Dashboard extends Component {
   };
 
   deleteTab = tabIndex => {
-    const { tabs, activeTab } = this.state;
+    const { tabs } = this.state;
     tabs.splice(tabIndex, 1);
 
     const newActive =
@@ -177,6 +178,7 @@ class Dashboard extends Component {
     this.listener = this.props.firebase.onAuthUserListener(authUser => {
       const addTab = tabs.map(addTab => ({
         id: addTab.id,
+        name: addTab.name,
         data: addTab.data ? addTab.data[0] : null,
         timespan: addTab.timespan,
         catKey: addTab.catKey,
@@ -371,7 +373,7 @@ class TabList extends Component {
   };
 
   render() {
-    let { tabs, activeTab, tabListOpen, toggleTabList, deleteTab } = this.props;
+    let { tabs, activeTab, tabListOpen, toggleTabList } = this.props;
     const { deleting, deleteMsg } = this.state;
 
     const activeId = activeTab ? activeTab.id : null;
