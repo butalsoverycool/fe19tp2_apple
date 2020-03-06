@@ -60,16 +60,18 @@ export const Form = styled.input`
   border: none;
   margin-top: 1em;
   border: 1px solid #000;
+  border-radius: 0.3rem;
 `;
 
 export const Button = styled.button`
-background-color: white;
+background-color: ddd;
 padding: 0.5rem;
 border-style: none;
 cursor: pointer;
 color: #000;
 margin-top: 1rem;
 border: 1px solid #000;
+border-radius: .3rem;
 
 &:hover {
 	transform: scale(1.1);

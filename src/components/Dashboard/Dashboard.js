@@ -96,7 +96,6 @@ class Dashboard extends Component {
   componentWillUnmount() {
     this.listener();
   }
-  // clear localstorge on logout
   getStorage = key => {
     const res = JSON.parse(localStorage.getItem(key));
     if (res !== undefined && res !== null) {
@@ -176,28 +175,32 @@ class Dashboard extends Component {
     const tabIndex = this.state.tabs.indexOf(tab);
 
     this.listener = this.props.firebase.onAuthUserListener(authUser => {
-      const addTab = tabs.map(addTab => ({
-        id: addTab.id,
-        name: addTab.name,
-        data: addTab.data ? addTab.data[0] : null,
-        timespan: addTab.timespan,
-        catKey: addTab.catKey,
-        catVal: addTab.catVal
-      }));
-      this.props.firebase
-        .user(authUser.uid)
-        .set(
-          {
-            charts: addTab
-          },
-          { merge: true }
-        )
-        .then(function() {
-          console.log('Document successfully written!');
-        })
-        .catch(function(error) {
-          console.error('Error writing document: ', error);
-        });
+      if (!tabs != null) {
+        const addTab = tabs.map(addTab => ({
+          id: addTab.id,
+          name: addTab.name,
+          data: addTab.data ? addTab.data[0] : null,
+          timespan: addTab.timespan,
+          catKey: addTab.catKey,
+          catVal: addTab.catVal,
+          charts: addTab.charts
+        }));
+
+        this.props.firebase
+          .user(authUser.uid)
+          .set(
+            {
+              charts: addTab
+            },
+            { merge: true }
+          )
+          .then(function() {
+            console.log('Document successfully written!');
+          })
+          .catch(function(error) {
+            console.error('Error writing document: ', error);
+          });
+      }
     });
 
     return (
