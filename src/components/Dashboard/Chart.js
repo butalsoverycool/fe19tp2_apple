@@ -4,18 +4,20 @@ import { compose } from 'recompose';
 import { withTheme } from '../Theme/context';
 import { withDashboard } from './context';
 
+import { ResponsiveContainer } from 'recharts';
+
 import { defaultChart, defaultDataPoint } from './default';
-import ChartTemplate from './ChartTemplate';
+
+import ChartSettings from './ChartSettings';
+
+import * as Template from './ChartTemplate';
 
 import IconTemplate, { icons } from '../../media/icons';
 
 const ChartContainer = styled.div`
-  ${props =>
-    props.type === 'pie' || props.type === 'radar' ? `max-width: 350px;` : ''};
-
+  ${props => (props.type === 'Radar' ? `max-width: 300px;` : '')};
   min-width: 300px;
   height: 300px;
-  min-height: 300px;
   background: white;
   margin: 2rem;
   padding: 1rem;
@@ -35,7 +37,7 @@ const ChartTitle = styled.h4`
   font-size: 16px;
 `;
 
-const DelChartBtn = styled.button`
+const FlipBtn = styled.button`
   position: absolute;
   right: 0.5rem;
   bottom: 0.5rem;
@@ -49,13 +51,65 @@ const DelChartBtn = styled.button`
   & > img {
     max-width: 1.5rem;
   }
+
+  backface-visibility: hidden;
+`;
+
+const FlipOuter = styled.div`
+  background-color: transparent;
+  flex: 1;
+  perspective: 1000px;
+`;
+
+const FlipInner = styled.div`
+  position: relative;
+  width: 100%;
+  height: 90%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  ${props => props.flipped && 'transform: rotateY(180deg);'};
+`;
+
+const FlipFront = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  background-color: #fff;
+`;
+
+const FlipBack = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+
+  background-color: #fff;
+  box-shadow: 0 0 10px #eee;
+  transform: rotateY(180deg);
 `;
 
 class Chart extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      flipped: false
+    };
+
+    this.toggleFlip = this.toggleFlip.bind(this);
     this.deleteHandler = this.deleteHandler.bind(this);
+  }
+
+  toggleFlip() {
+    const isFlipped = this.state.flipped;
+
+    this.setState({
+      flipped: !isFlipped
+    });
   }
 
   deleteHandler(chart) {
@@ -71,7 +125,7 @@ class Chart extends Component {
   }
 
   render() {
-    const { color } = this.props.theme.state;
+    const theme = this.props.theme.state;
     const { activeTab } = this.props.dashboard.state;
     const { catRes } = activeTab;
     const { charts, timespan } = activeTab;
@@ -89,8 +143,11 @@ class Chart extends Component {
     const titleVal = chart.data[0][catRes.slice(0, -1)].name;
 
     //measure title
-    const flex = titleVal.length > 30 ? 'auto' : '1';
+    let flex = titleVal.length > 30 ? 'auto' : '1';
+    flex = chart.type === 'radar' ? 'auto' : '1';
     const cutYear = titleVal.length > 30 ? false : true;
+
+    const ChartTemplate = Template[chart.type + 'Template'];
 
     return (
       <>
@@ -104,11 +161,25 @@ class Chart extends Component {
             {titleKey}: {titleVal}
           </ChartTitle>
 
-          <ChartTemplate data={filtered} type={chart.type} />
+          {/* <ChartTemplate data={filtered} theme={theme} flex={flex} /> */}
 
-          <DelChartBtn onClick={() => this.deleteHandler(chart)}>
-            <IconTemplate src={icons.deleteCross} />
-          </DelChartBtn>
+          <FlipOuter className="FlipOuter">
+            <FlipInner className="FlipInner" flipped={this.state.flipped}>
+              <FlipFront className="FlipFront">
+                <ChartTemplate data={filtered} theme={theme} flex={flex} />
+              </FlipFront>
+
+              <FlipBack className="FlipBack" bg={theme.color.hex}>
+                <ChartSettings chart={chart} />
+              </FlipBack>
+            </FlipInner>
+          </FlipOuter>
+
+          <FlipBtn onClick={this.toggleFlip}>
+            <IconTemplate
+              src={this.state.flipped ? icons.check : icons.settings}
+            />
+          </FlipBtn>
         </ChartContainer>
       </>
     );

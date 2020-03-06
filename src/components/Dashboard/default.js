@@ -2,14 +2,18 @@ export const proxy = 'https://cors-anywhere.herokuapp.com/';
 export const apiUrl =
   'http://api.scb.se/OV0104/v1/doris/en/ssd/START/MI/MI0108/TotaltUtslapp';
 
-export const defaultChartTypes = ['bar', 'area', 'scatter', 'radar', 'pie'];
+export const defaultChartTypes = [
+  'Bar',
+  'Area',
+  'Radar' /*, 'scatter', 'pie' */
+];
 
 export const defaultState = {
   dataTitles: null,
   tabs: [],
   activeTab: null,
   menuIsOpen: false,
-  newTab: false
+  creatingTab: false
 };
 
 export const defaultTab = newIndex => {

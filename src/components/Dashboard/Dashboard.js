@@ -31,7 +31,7 @@ const NewTabBtn = styled.button`
   /* right: 1rem;
   top: 8rem; */
   transform: ${props =>
-    props.newTab
+    props.creatingTab
       ? 'translate3d(100vw, 45px, 0)'
       : 'translate3d(100vw, 45px, 0) translateX(-2.5rem)'};
   font-size: 1.2rem;
@@ -93,7 +93,12 @@ class Dashboard extends Component {
     super(props);
 
     this.state = {
-      ...defaultState
+      dataTitles: this.getStorage('dataTitles') || null,
+      tabs: this.getStorage('tabs') || [],
+      activeTab: this.getStorage('activeTab') || null,
+      menuIsOpen: this.getStorage('tabMenuIsOpen') || false,
+      creatingTab: false
+      /* ...defaultState */
     };
 
     this.newTab = this.newTab.bind(this);
@@ -101,55 +106,58 @@ class Dashboard extends Component {
     this.setStorage = this.setStorage.bind(this);
     this.loadTab = this.loadTab.bind(this);
     this.updateTab = this.updateTab.bind(this);
+    this.updateChart = this.updateChart.bind(this);
     this.deleteTab = this.deleteTab.bind(this);
-    this.loadFirebaseTabs = this.loadFirebaseTabs.bind(this);
+    this.loadTabs = this.loadTabs.bind(this);
     //this.updateHiddenCharts = this.updateHiddenCharts.bind(this);
   }
 
-  loadFirebaseTabs() {
-    this.listener = this.props.firebase.onAuthUserListener(authUser => {
-      if (authUser) {
-        const dbTabs = authUser.tabs;
+  componentDidMount() {
+    // if no dataTitles, fetch from API
+    if (!this.state.dataTitles) fetchDataTitles();
 
-        if (dbTabs != null) {
-          localStorage.setItem('tabs', JSON.stringify(dbTabs));
-          console.log('db', dbTabs);
-          this.setState({
-            tabs: dbTabs,
-            activeTab: dbTabs[0] || this.state
-          });
-        }
-      }
+    // if tabs in db, load (+ activeTab)
+    this.state.tabs.length < 1 && this.loadTabs();
+  }
+
+  componentWillUnmount() {
+    //this.listener(); bugging right now...
+  }
+
+  // load tabs from db, else localstorage, else set empty arr
+  loadTabs() {
+    const { firebase } = this.props;
+    //const backupTabs = () => this.getStorage('tabs') || [];
+
+    firebase.onAuthUserListener(authUser => {
+      //const tabs = authUser ? authUser.tabs || backupTabs() : backupTabs();
+
+      const tabs = authUser ? authUser.tabs : null;
+      if (!tabs) return;
+
+      console.log('Found saved tabs in db. Loading...');
+
+      const activeTab = tabs.length > 0 ? tabs[0] : null;
+
+      this.setState({
+        tabs,
+        activeTab
+      });
+
+      localStorage.setItem('tabs', JSON.stringify(tabs));
+      localStorage.setItem('activeTab', JSON.stringify(activeTab));
     });
   }
 
   // update user (tabs) in db
   updateFirebaseTabs(newTabs) {
-    this.listener = this.props.firebase.onAuthUserListener(authUser => {
+    const { firebase } = this.props;
+    firebase.onAuthUserListener(authUser => {
       if (authUser) {
         authUser.tabs = newTabs;
-        this.props.firebase.updateUser(authUser.uid, authUser);
+        firebase.updateUser(authUser.uid, authUser);
       }
     });
-  }
-
-  componentDidMount() {
-    // spice up state
-    this.setState({
-      dataTitles:
-        this.getStorage('dataTitles') || fetchDataTitles() || defaultDataTitles,
-      tabs: this.loadFirebaseTabs() || this.getStorage('tabs') || [],
-      activeTab: this.getStorage('activeTab') || this.state.tabs[0] || null,
-      tabMenuIsOpen: this.getStorage('tabMenuIsOpen') || false
-    });
-
-    // set dataTitles
-    const dataTitles = this.getStorage('dataTitles');
-    if (!dataTitles) this.setStorage('dataTitles', this.state.dataTitles);
-  }
-
-  componentWillUnmount() {
-    this.listener();
   }
 
   // clear localstorge on logout
@@ -182,17 +190,17 @@ class Dashboard extends Component {
         tabs,
         activeTab: newTab,
         tabMenuIsOpen: false,
-        newTab: true
+        creatingTab: true
       },
       () => {
-        if (tabs.length <= 1 && this.state.newTab) {
+        if (tabs.length <= 1 && this.state.creatingTab) {
           this.setState({
-            newTab: false
+            creatingTab: false
           });
         } else {
           setTimeout(() => {
             this.setState({
-              newTab: false
+              creatingTab: false
             });
           }, 200);
         }
@@ -251,6 +259,19 @@ class Dashboard extends Component {
     this.setStorage('tabs', tabs);
   };
 
+  updateChart(newChart) {
+    alert('WIP :P');
+    return;
+
+    const { activeTab } = this.state;
+
+    activeTab.charts.map(chart =>
+      chart.id === newChart.id ? newChart : chart
+    );
+
+    this.updateTab(activeTab);
+  }
+
   toggleTabMenu = callback => {
     if (this.state.tabs.length < 1) return;
 
@@ -266,15 +287,6 @@ class Dashboard extends Component {
     this.setStorage('tabMenuIsOpen', !tabMenuIsOpen);
   };
 
-  /* updateHiddenCharts = newVal => {
-    this.setState({
-      hiddenCharts: newVal
-    });
-
-    this.setStorage('tabs', tabs);
-    this.setStorage('activeTab', newActive);
-  }; */
-
   render() {
     // ctx setters
     const setters = {
@@ -284,11 +296,12 @@ class Dashboard extends Component {
       loadTab: this.loadTab,
       updateTab: this.updateTab,
       deleteTab: this.deleteTab,
+      updateChart: this.updateChart,
       updateHiddenCharts: this.updateHiddenCharts,
       toggleTabMenu: this.toggleTabMenu
     };
 
-    const { tabs, activeTab, newTab } = this.state;
+    const { tabs, activeTab, creatingTab } = this.state;
     const tabsExist = tabs ? tabs.length > 0 : false;
 
     return (
@@ -305,7 +318,7 @@ class Dashboard extends Component {
                 type="add"
                 onClick={this.newTab}
                 tabsExist={tabsExist}
-                newTab={newTab}
+                creatingTab={creatingTab}
               >
                 +
               </NewTabBtn>

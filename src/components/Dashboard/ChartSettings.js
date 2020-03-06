@@ -27,7 +27,7 @@ const ChartConfig = props => {
 
   return (
     <div>
-      <p>Chart config</p>
+      <h3>Settings</h3>
       <p>Id {chart.id}</p>
       <p>Type {chart.type}</p>
       <Select
