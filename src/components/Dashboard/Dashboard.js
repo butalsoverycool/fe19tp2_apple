@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import DashboardContext from './context';
-import TabMenu from './TabMenu';
-import Tab from './Tab';
+
+import ActiveTab from './ActiveTab';
+import FloatMenu from './FloatMenu';
 
 import { defaultState, defaultTab, defaultDataTitles } from './default';
 
@@ -11,17 +12,13 @@ import { withTheme } from '../Theme';
 import PopupMsg from '../PopupMsg';
 import { fetchDataTitles } from './fetch';
 import { auth } from 'firebase';
+import { act } from 'react-dom/test-utils';
 
 //temp styles
 const Wrapper = styled.div`
   width: 100vw;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-`;
-
-const TabContainer = styled.div`
-  display: flex;
   justify-content: flex-start;
 `;
 
@@ -107,9 +104,9 @@ class Dashboard extends Component {
     this.loadTab = this.loadTab.bind(this);
     this.updateTab = this.updateTab.bind(this);
     this.updateChart = this.updateChart.bind(this);
+    this.setDisabledChart = this.setDisabledChart.bind(this);
     this.deleteTab = this.deleteTab.bind(this);
     this.loadTabs = this.loadTabs.bind(this);
-    //this.updateHiddenCharts = this.updateHiddenCharts.bind(this);
   }
 
   componentDidMount() {
@@ -188,7 +185,6 @@ class Dashboard extends Component {
     this.setState(
       {
         tabs,
-        activeTab: newTab,
         tabMenuIsOpen: false,
         creatingTab: true
       },
@@ -210,17 +206,14 @@ class Dashboard extends Component {
     this.updateFirebaseTabs(tabs);
 
     this.setStorage('tabs', tabs);
-    this.setStorage('activeTab', newTab);
+    this.loadTab(newTab);
   };
 
   loadTab = tab => {
-    const setActiveTab = () => {
-      this.setState({
-        activeTab: tab
-      });
-    };
+    this.setState({
+      activeTab: tab
+    });
 
-    this.toggleTabMenu(setActiveTab);
     this.setStorage('activeTab', tab);
   };
 
@@ -259,33 +252,31 @@ class Dashboard extends Component {
     this.setStorage('tabs', tabs);
   };
 
-  updateChart(newChart) {
-    alert('WIP :P');
-    return;
+  updateChart(chart, key, newVal) {
+    // updated chart-instance
+    const newChart = {
+      ...chart,
+      [key]: newVal
+    };
 
+    // updated tab-instance
     const { activeTab } = this.state;
-
-    activeTab.charts.map(chart =>
+    activeTab.charts = activeTab.charts.map(chart =>
       chart.id === newChart.id ? newChart : chart
     );
-
     this.updateTab(activeTab);
   }
 
-  toggleTabMenu = callback => {
-    if (this.state.tabs.length < 1) return;
+  setDisabledChart(chartId, currentState) {
+    const { activeTab } = this.state;
 
-    const { tabMenuIsOpen } = this.state;
+    activeTab.charts = activeTab.charts.map(chart => {
+      if (chart.id === chartId) chart.disabled = !currentState;
+      return chart;
+    });
 
-    this.setState(
-      {
-        tabMenuIsOpen: !tabMenuIsOpen
-      },
-      typeof callback === 'function' ? callback : null
-    );
-
-    this.setStorage('tabMenuIsOpen', !tabMenuIsOpen);
-  };
+    this.updateTab(activeTab);
+  }
 
   render() {
     // ctx setters
@@ -297,12 +288,20 @@ class Dashboard extends Component {
       updateTab: this.updateTab,
       deleteTab: this.deleteTab,
       updateChart: this.updateChart,
-      updateHiddenCharts: this.updateHiddenCharts,
-      toggleTabMenu: this.toggleTabMenu
+      setDisabledChart: this.setDisabledChart,
+      updateHiddenCharts: this.updateHiddenCharts
     };
 
     const { tabs, activeTab, creatingTab } = this.state;
-    const tabsExist = tabs ? tabs.length > 0 : false;
+
+    const tabLen = tabs ? tabs.length : 0;
+    const chartLen = activeTab
+      ? activeTab.charts
+        ? activeTab.charts.length
+        : 0
+      : 0;
+    const disabledCharts =
+      activeTab && activeTab.charts.some(chart => chart.disabled);
 
     return (
       <>
@@ -312,28 +311,29 @@ class Dashboard extends Component {
             setters
           }}
         >
-          {tabs ? (
-            <Wrapper>
-              <NewTabBtn
-                type="add"
-                onClick={this.newTab}
-                tabsExist={tabsExist}
-                creatingTab={creatingTab}
-              >
-                +
-              </NewTabBtn>
+          <Wrapper>
+            <NewTabBtn
+              type="add"
+              onClick={this.newTab}
+              tabsExist={tabLen > 0}
+              creatingTab={creatingTab}
+            >
+              +
+            </NewTabBtn>
 
-              <SoftP tabsExist={tabsExist}>add your data</SoftP>
+            <SoftP tabsExist={tabLen > 0}>add your data</SoftP>
 
-              {tabsExist ? (
-                <>
-                  <TabMenu />
+            {tabLen > 0 && (
+              <>
+                <FloatMenu
+                  chartLen={chartLen}
+                  disabledCharts={disabledCharts}
+                />
 
-                  {activeTab ? <Tab /> : null}
-                </>
-              ) : null}
-            </Wrapper>
-          ) : null}
+                {activeTab && <ActiveTab />}
+              </>
+            )}
+          </Wrapper>
         </DashboardContext.Provider>
       </>
     );

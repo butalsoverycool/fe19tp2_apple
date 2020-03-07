@@ -50,12 +50,12 @@ class Firebase {
     this.user(uid)
       .update(newUser)
       .then(res => {
-        console.log(`Update user (${JSON.stringify(newUser)})`);
+        //console.log(`Updated user (${JSON.stringify(newUser)})`);
 
         typeof callback === 'function' && callback();
       })
       .catch(err => {
-        console.log(`Error when trying to update user (${err})`);
+        console.log(`Error when trying to update user in DB (${err})`);
       });
 
   organizations = () => this.firestore.collection('organizations');

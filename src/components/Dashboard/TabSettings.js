@@ -1,25 +1,16 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-
-import { compose } from 'recompose';
-
 import { proxy, apiUrl, queryBakery, defaultChart } from './default';
-import { withFirebase } from '../Firebase';
-import { fetchDataTitles, fetchData } from './fetch';
 import allEmissionData from './allEmissionData';
 
 import PopupMsg from '../PopupMsg';
 import Charts from './Charts';
 import { withDashboard } from './context';
 
-import DbdGrid from './DndGrid';
-import DndGrid from './DndGrid';
-
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
-  margin-top: 5rem;
 `;
 
 const TabWrapper = styled.div`
@@ -29,11 +20,15 @@ const TabWrapper = styled.div`
   justify-content: flex-start;
 `;
 
-const RowWrapper = styled.div`
+const ChartsWrapper = styled.div`
   margin: auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+
+  @media print {
+    display: block !important;
+  }
 `;
 
 const DropdownContainer = styled.div`
@@ -76,24 +71,16 @@ const Select = styled.select`
 
   cursor: pointer;
 `;
-class Tab extends Component {
+
+class TabSettings extends Component {
   constructor(props) {
     super(props);
 
     this.dropDownHandler = this.dropDownHandler.bind(this);
-    this.updateData = this.updateData.bind(this);
-    this.hideChart = this.hideChart.bind(this);
   }
-
-  hideChart = id => {
-    const hiddenCharts = this.props.hiddenCharts;
-    const newVal = hiddenCharts.filter(chart => chart.id !== id);
-    this.props.updateHiddenCharts(newVal);
-  };
-
   dropDownHandler = (key, val) => {
     const { dataTitles, activeTab } = this.props.dashboard.state;
-    const { updateTab } = this.props.dashboard.setters;
+    const { updateTab, updateData } = this.props.dashboard.setters;
 
     activeTab[key] = val;
 
@@ -193,25 +180,23 @@ class Tab extends Component {
   };
 
   render() {
-    const { dataTitles, tabIndex, activeTab } = this.props.dashboard.state;
+    const { dataTitles, tabIndex, activeTab: tab } = this.props.dashboard.state;
     const { updateTab } = this.props.dashboard.setters;
 
-    const { catKey, catVal, catRes, data, name, timespan } = activeTab;
+    const { catKey, catVal, catRes, data, name, timespan } = tab;
 
     const tabPlaceholder = 'Give this tab a name';
 
-    const loaderEnter = Boolean(catVal && activeTab.charts.length < 1);
-    const loaderExit = Boolean(activeTab.charts);
-
+    const loaderEnter = Boolean(catVal && tab.charts.length < 1);
+    const loaderExit = Boolean(tab.charts);
     return (
-      <Wrapper className={'Tab-' + tabIndex}>
-        {/* <DndGrid /> */}
-
+      <Wrapper className="TabSettingsWrapper">
         <TabWrapper>
           <DropdownContainer className="DropdownContainer">
             <TabName
               placeholder={tabPlaceholder}
-              defaultValue={name}
+              value={name}
+              onChange={e => this.dropDownHandler('name', e.target.value)}
               onBlur={e => this.dropDownHandler('name', e.target.value)}
               onKeyUp={e => {
                 if (e.keyCode === 13) {
@@ -315,27 +300,14 @@ class Tab extends Component {
                     </Option>
                   ))}
                 </Select>
-
-                {/* <Timespan
-                    timespan={timespan}
-                    updateTab={this.updateTab}
-                    tabIndex={tabIndex}
-                    dataTitles={dataTitles}
-                  /> */}
               </>
             ) : null}
             {/* </DropdownContainer> */}
           </DropdownContainer>
-
-          <RowWrapper>
-            {catVal ? <Charts /> : null}
-
-            {this.props.children}
-          </RowWrapper>
         </TabWrapper>
       </Wrapper>
     );
   }
 }
 
-export default compose(withFirebase, withDashboard)(Tab);
+export default withDashboard(TabSettings);

@@ -31,10 +31,26 @@ const ChartContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+
+  @media print {
+    page-break-after: ${props => props.pageBreak} !important;
+
+    float: none !important;
+    position: static !important;
+    display: block;
+    box-sizing: content-box !important;
+  }
 `;
 
 const ChartTitle = styled.h4`
   font-size: 16px;
+
+  & > span {
+    opacity: 0.6;
+    color: #666;
+    font-weight: 100;
+    font-style: italic;
+  }
 `;
 
 const FlipBtn = styled.button`
@@ -75,6 +91,7 @@ const FlipFront = styled.div`
   position: absolute;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   background-color: #fff;
@@ -90,6 +107,10 @@ const FlipBack = styled.div`
   background-color: #fff;
   box-shadow: 0 0 10px #eee;
   transform: rotateY(180deg);
+
+  @media print {
+    display: none !important;
+  }
 `;
 
 class Chart extends Component {
@@ -138,16 +159,19 @@ class Chart extends Component {
     );
 
     // format title
-    const titleKey = catRes[0].toUpperCase() + catRes.slice(1).slice(0, -1);
-
-    const titleVal = chart.data[0][catRes.slice(0, -1)].name;
+    const titleLabel = catRes[0].toUpperCase() + catRes.slice(1).slice(0, -1);
+    const titleName = chart.data[0][catRes.slice(0, -1)].name;
+    const titleCode = chart.data[0][catRes.slice(0, -1)].code;
 
     //measure title
-    let flex = titleVal.length > 30 ? 'auto' : '1';
+    let flex = titleName.length > 30 ? 'auto' : '1';
     flex = chart.type === 'radar' ? 'auto' : '1';
-    const cutYear = titleVal.length > 30 ? false : true;
+    const cutYear = titleName.length > 30 ? false : true;
 
     const ChartTemplate = Template[chart.type + 'Template'];
+
+    const nth = this.props.chartIndex;
+    const pageBreak = nth === 1 || (nth - 1) % 3 === 0 ? 'always' : 'avoid';
 
     return (
       <>
@@ -156,16 +180,20 @@ class Chart extends Component {
           className="ChartContainer"
           flex={flex}
           type={chart.type}
+          pageBreak={pageBreak}
         >
           <ChartTitle>
-            {titleKey}: {titleVal}
+            <span>
+              {titleLabel} {titleCode} -{' '}
+            </span>{' '}
+            {titleName}
           </ChartTitle>
 
           {/* <ChartTemplate data={filtered} theme={theme} flex={flex} /> */}
 
           <FlipOuter className="FlipOuter">
             <FlipInner className="FlipInner" flipped={this.state.flipped}>
-              <FlipFront className="FlipFront">
+              <FlipFront className="FlipFront" flipped={this.state.flipped}>
                 <ChartTemplate data={filtered} theme={theme} flex={flex} />
               </FlipFront>
 
