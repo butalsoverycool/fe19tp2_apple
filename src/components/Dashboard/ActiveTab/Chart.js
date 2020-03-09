@@ -1,25 +1,26 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { compose } from 'recompose';
-import { withTheme } from '../Theme/context';
-import { withDashboard } from './context';
+import { withTheme } from '../../Theme/context';
+import { withDashboard } from '../context';
 
 import { ResponsiveContainer } from 'recharts';
 
-import { defaultChart, defaultDataPoint } from './default';
+import { defaultChart, defaultDataPoint } from '../default';
 
 import ChartSettings from './ChartSettings';
 
 import * as Template from './ChartTemplate';
 
-import IconTemplate, { icons } from '../../media/icons';
+import IconTemplate, { icons } from '../../../media/icons';
 
 const FlipContainer = styled.div`
   background: none;
   flex: 1;
   perspective: 1000px;
 
-  ${props => (props.type === 'Radar' ? `max-width: 300px;` : '')};
+  ${props =>
+    props.type === 'Radar' ? `max-width: 300px;` : 'max-width: 500px'};
   min-width: 300px;
   height: 300px;
   margin: 2rem;
@@ -89,7 +90,7 @@ const FlipBack = styled.div`
 
 const Content = styled.div`
   width: 95%;
-  height: 95%;
+  height: ${props => (props.type === 'Area' ? '90%' : '95%')};
   margin: auto;
   display: flex;
   flex-direction: column;
@@ -207,7 +208,7 @@ class Chart extends Component {
 
           <FlipCard className="FlipCard" flipped={this.state.flipped}>
             <FlipFront className="FlipFront" flipped={this.state.flipped}>
-              <Content className="Content">
+              <Content className="Content" type={chart.type}>
                 <Section className="Section">
                   <ChartTitle>
                     <span>

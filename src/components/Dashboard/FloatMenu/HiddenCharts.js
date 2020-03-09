@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
 import { withDashboard } from '../context';
 import IconTemplate, { icons } from '../../../media/icons';
 
 import { Wrapper, ToggleBtn, List, Item, Label, Btn } from './styledElems';
 
-class HiddenChartsMenu extends Component {
+class HiddenCharts extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -92,4 +91,4 @@ class HiddenChartsMenu extends Component {
   }
 }
 
-export default withDashboard(HiddenChartsMenu);
+export default withDashboard(HiddenCharts);

@@ -4,24 +4,13 @@ import axios from 'axios';
 
 import { compose } from 'recompose';
 
-import { proxy, apiUrl, queryBakery, defaultChart } from './default';
-import { withFirebase } from '../Firebase';
-import { fetchDataTitles, fetchData } from './fetch';
-import allEmissionData from './allEmissionData';
+import { proxy, apiUrl, queryBakery, defaultChart } from '../default';
+import { withFirebase } from '../../Firebase';
+import allEmissionData from '../allEmissionData';
 
 import TabSettings from './TabSettings';
-import PopupMsg from '../PopupMsg';
 import Charts from './Charts';
-import { withDashboard } from './context';
-
-import DbdGrid from './DndGrid';
-import DndGrid from './DndGrid';
-
-/* const Wrapper = styled.div`
-  position: relative;
-  width: 100%;
-  margin-top: 5rem;
-`; */
+import { withDashboard } from '../context';
 
 const TabWrapper = styled.div`
   width: 100%;
@@ -41,46 +30,6 @@ const ChartsWrapper = styled.div`
   }
 `;
 
-const DropdownContainer = styled.div`
-  width: 100%;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  justify-content: center;
-`;
-
-const TabName = styled.input`
-  height: 1.8rem;
-  box-shadow: 0 0 20px #eee;
-  background: none;
-  border: none;
-  outline: none;
-  text-align: center;
-  font-size: 1rem;
-
-  width: 80%;
-  max-width: 400px;
-  margin: 0.5rem auto;
-`;
-
-const Option = styled.option``;
-
-const Select = styled.select`
-  height: 1.8rem;
-  text-align: center;
-  margin: 0 1rem 1rem 0;
-  box-shadow: 0 0 20px #ddd;
-  outline: none;
-  border: none;
-  font-weight: ${props => (props.selected ? '700' : '100')};
-
-  width: 80%;
-  max-width: 200px;
-  margin: 0.1rem auto;
-
-  cursor: pointer;
-`;
 class ActiveTab extends Component {
   constructor(props) {
     super(props);
@@ -131,7 +80,7 @@ class ActiveTab extends Component {
   updateData = () => {
     const { activeTab, dataTitles } = this.props.dashboard.state;
     const { updateTab, setStorage } = this.props.dashboard.setters;
-    const { catKey, catVal, catRes } = activeTab;
+    const { catKey, catVal, catRes, chartType } = activeTab;
 
     const query = queryBakery(catKey, catVal);
 
@@ -182,7 +131,9 @@ class ActiveTab extends Component {
 
       const sortedArr = Object.values(sortedObj);
 
-      const charts = sortedArr.map((item, nth) => defaultChart(item, nth));
+      const charts = sortedArr.map((item, nth) =>
+        defaultChart(item, nth, chartType)
+      );
       //console.log('data sorted based on catKey/Val', sortedArr);
 
       activeTab.charts = charts;
@@ -209,15 +160,9 @@ class ActiveTab extends Component {
   }
 
   render() {
-    const { dataTitles, tabIndex, activeTab: tab } = this.props.dashboard.state;
-    const { updateTab } = this.props.dashboard.setters;
+    const { tabIndex, activeTab: tab } = this.props.dashboard.state;
 
-    const { catKey, catVal, catRes, data, name, timespan } = tab;
-
-    const tabPlaceholder = 'Give this tab a name';
-
-    const loaderEnter = Boolean(catVal && tab.charts.length < 1);
-    const loaderExit = Boolean(tab.charts);
+    const { catVal } = tab;
 
     return (
       <TabWrapper lassName={'Tab-' + tabIndex}>

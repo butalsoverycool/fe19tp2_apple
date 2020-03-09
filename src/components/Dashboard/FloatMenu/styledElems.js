@@ -57,6 +57,9 @@ export const Btn = styled.button`
   cursor: pointer;
   height: 1.5rem;
   line-height: 100%;
+  ${props => props.pos && 'position: ' + props.pos.type};
+  ${props => props.pos && props.pos.x};
+  ${props => props.pos && props.pos.y};
 
   margin: ${props => props.margin || 'auto'};
   flex: ${props => props.flex || ''};

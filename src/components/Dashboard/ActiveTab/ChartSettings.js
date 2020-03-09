@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { withDashboard } from './context';
-import { defaultChartTypes } from './default';
-import IconTemplate, { icons } from '../../media/icons';
+import { withDashboard } from '../context';
+import { defaultChartTypes } from '../default';
+import IconTemplate, { icons } from '../../../media/icons';
 
 const Container = styled.div`
   & * {

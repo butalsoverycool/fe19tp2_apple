@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { compose } from 'recompose';
 import { withTheme } from '../../Theme/context';
 import { withDashboard } from '../context';
+import AddTabBtn from './AddTabBtn';
 
 import { Wrapper, ToggleBtn, List, Item, Label, Btn } from './styledElems';
 
@@ -82,7 +83,7 @@ class AllTabs extends Component {
 
     //dashboard ctx
     let { tabs, activeTab } = this.props.dashboard.state;
-    const { setters } = this.props.dashboard;
+    const { setActiveTab } = this.props.dashboard.setters;
 
     const activeId = activeTab ? activeTab.id : null;
 
@@ -104,13 +105,13 @@ class AllTabs extends Component {
 
           <List className="TabList" isOpen={isOpen} ref={this.setListRef}>
             <Item>
-              <Label fat>Tabs</Label>
+              <Label fat>Tabs</Label> <AddTabBtn />
             </Item>
             {tabs.map(tab => (
               <Item key={tab.id}>
                 <Btn
                   weight={tab.id === activeId && '700'}
-                  onClick={() => setters.loadTab(tab)}
+                  onClick={() => setActiveTab(tab)}
                   margin="auto 0.4rem auto 0"
                   flex="1"
                   align="left"

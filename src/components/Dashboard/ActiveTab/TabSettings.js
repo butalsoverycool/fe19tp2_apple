@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import { proxy, apiUrl, queryBakery, defaultChart } from './default';
-import allEmissionData from './allEmissionData';
+import {
+  proxy,
+  apiUrl,
+  queryBakery,
+  defaultChart,
+  defaultChartTypes
+} from '../default';
+import allEmissionData from '../allEmissionData';
 
-import PopupMsg from '../PopupMsg';
-import Charts from './Charts';
-import { withDashboard } from './context';
+import PopupMsg from '../../PopupMsg';
+import { withDashboard } from '../context';
 
 const Wrapper = styled.div`
   position: relative;
@@ -18,17 +23,6 @@ const TabWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-`;
-
-const ChartsWrapper = styled.div`
-  margin: auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-
-  @media print {
-    display: block !important;
-  }
 `;
 
 const DropdownContainer = styled.div`
@@ -100,6 +94,14 @@ class TabSettings extends Component {
         from: Number(dataTitles.years[0]),
         to: Number(dataTitles.years[dataTitles.years.length - 1])
       };
+      activeTab.chartType = 'random';
+    }
+
+    if (key === 'chartType') {
+      activeTab.charts = activeTab.charts.map(chart => {
+        chart.type = val;
+        return chart;
+      });
     }
 
     updateTab(activeTab);
@@ -183,7 +185,7 @@ class TabSettings extends Component {
     const { dataTitles, tabIndex, activeTab: tab } = this.props.dashboard.state;
     const { updateTab } = this.props.dashboard.setters;
 
-    const { catKey, catVal, catRes, data, name, timespan } = tab;
+    const { catKey, catVal, catRes, data, name, timespan, chartType } = tab;
 
     const tabPlaceholder = 'Give this tab a name';
 
@@ -222,9 +224,7 @@ class TabSettings extends Component {
               <Select
                 className="dropdown-content-substance"
                 selected={catVal}
-                onChange={e =>
-                  this.dropDownHandler('catVal', e.target.value, tabIndex)
-                }
+                onChange={e => this.dropDownHandler('catVal', e.target.value)}
                 value={catVal || 'default'}
                 hidden={!catKey}
               >
@@ -254,11 +254,10 @@ class TabSettings extends Component {
                 <Select
                   className="dropdown-content-timespan-from"
                   onChange={e =>
-                    this.dropDownHandler(
-                      'timespan',
-                      { from: Number(e.target.value), to: timespan.to },
-                      tabIndex
-                    )
+                    this.dropDownHandler('timespan', {
+                      from: Number(e.target.value),
+                      to: timespan.to
+                    })
                   }
                   value={timespan.from || 'default'}
                 >
@@ -279,11 +278,10 @@ class TabSettings extends Component {
                 <Select
                   className="dropdown-content-timespan-to"
                   onChange={e =>
-                    this.dropDownHandler(
-                      'timespan',
-                      { from: timespan.from, to: Number(e.target.value) },
-                      tabIndex
-                    )
+                    this.dropDownHandler('timespan', {
+                      from: timespan.from,
+                      to: Number(e.target.value)
+                    })
                   }
                   value={timespan.to || 'default'}
                 >
@@ -297,6 +295,27 @@ class TabSettings extends Component {
                       disabled={item < timespan.from}
                     >
                       to {item}
+                    </Option>
+                  ))}
+                </Select>
+
+                <Select
+                  className="dropdown-content-chart-type"
+                  onChange={e =>
+                    this.dropDownHandler('chartType', e.target.value)
+                  }
+                  value={chartType}
+                >
+                  <Option disabled value="random">
+                    - select chart type -
+                  </Option>
+                  {defaultChartTypes.map(type => (
+                    <Option
+                      key={type}
+                      value={type}
+                      disabled={type === chartType}
+                    >
+                      {type}
                     </Option>
                   ))}
                 </Select>
