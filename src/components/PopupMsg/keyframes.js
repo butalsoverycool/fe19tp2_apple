@@ -20,8 +20,12 @@ const anim = {
             transform: translate3d(0, 0, 0);
             opacity: 1;
             display: block;
-        }100%{
+        }99%{
             transform: translate3d(8vw,0,0);
+            opacity: 0;
+        }100%{
+            position: absolute;
+            z-index: -1;
             opacity: 0;
             display: none;
         }`,

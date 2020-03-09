@@ -5,11 +5,16 @@ import { compose } from 'recompose';
 import { withAuthorization } from '../Session';
 
 const Wrapper = styled.div`
-  width: 100vw;
+  /* width: 100vw;
   height: auto;
   margin: 0;
   padding: 0;
-  display: flex;
+  display: flex; */
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 4fr));
+  grid-gap: 10px;
+  background-color: ${props => props.themeBg || 'none'};
 `;
 const Header = styled.div`
   height: 90px;

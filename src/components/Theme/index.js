@@ -25,8 +25,6 @@ class Theme extends Component {
       if (authUser) {
         const { color, logoUrl } = authUser.organizationData;
 
-        console.log('in THEME color', color, 'logoUrl', logoUrl);
-
         if (logoUrl != null) {
           this.setState({ logoUrl: logoUrl || this.state.defaultLogo });
         }
