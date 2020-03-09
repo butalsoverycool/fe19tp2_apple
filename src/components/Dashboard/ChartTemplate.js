@@ -37,15 +37,28 @@ const labelSize = dataLen => {
 const Container = styled(ResponsiveContainer)`
   backface-visibility: hidden;
   margin: auto;
+  flex: 1;
 
   & * {
     backface-visibility: hidden;
   }
 `;
 
+const ChartTitle = styled.h4`
+  font-size: 16px;
+  margin: 0;
+
+  & > span {
+    opacity: 0.6;
+    color: #666;
+    font-weight: 100;
+    font-style: italic;
+  }
+`;
+
 export const AreaTemplate = ({ data, theme }) => {
   return (
-    <Container width={'95%'} height={'99%'}>
+    <Container width={'99%'} height={'99%'}>
       <AreaChart data={data}>
         <CartesianGrid />
         <Area
@@ -93,17 +106,10 @@ export const RadarTemplate = props => {
 
   return (
     <Container width={'99%'} height={'99%'}>
-      <RadarChart
-        cx={'50%'}
-        cy={'50%'}
-        outerRadius={80}
-        width={200}
-        height={200}
-        data={data}
-      >
+      <RadarChart cx={'50%'} cy={'50%'} outerRadius={70} data={data}>
         <PolarGrid stroke="#333" />
         <PolarAngleAxis dataKey="year" fontSize={labelSize(data.length)} />
-        <PolarRadiusAxis angle={30} domain={[0, 150]} />
+        <PolarRadiusAxis angle={30} domain={[0, 100]} />
         <Radar
           name="Emission"
           dataKey="value"

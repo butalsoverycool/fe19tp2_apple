@@ -17,11 +17,11 @@ import { withDashboard } from './context';
 import DbdGrid from './DndGrid';
 import DndGrid from './DndGrid';
 
-const Wrapper = styled.div`
+/* const Wrapper = styled.div`
   position: relative;
   width: 100%;
   margin-top: 5rem;
-`;
+`; */
 
 const TabWrapper = styled.div`
   width: 100%;
@@ -220,19 +220,15 @@ class ActiveTab extends Component {
     const loaderExit = Boolean(tab.charts);
 
     return (
-      <Wrapper className={'Tab-' + tabIndex}>
-        {/* <DndGrid /> */}
+      <TabWrapper lassName={'Tab-' + tabIndex}>
+        {tab.charts.length < 1 && <TabSettings />}
 
-        <TabWrapper>
-          {tab.charts.length < 1 && <TabSettings />}
+        <ChartsWrapper>
+          {catVal ? <Charts /> : null}
 
-          <ChartsWrapper>
-            {catVal ? <Charts /> : null}
-
-            {this.props.children}
-          </ChartsWrapper>
-        </TabWrapper>
-      </Wrapper>
+          {this.props.children}
+        </ChartsWrapper>
+      </TabWrapper>
     );
   }
 }

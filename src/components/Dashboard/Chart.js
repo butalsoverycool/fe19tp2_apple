@@ -14,23 +14,16 @@ import * as Template from './ChartTemplate';
 
 import IconTemplate, { icons } from '../../media/icons';
 
-const ChartContainer = styled.div`
+const FlipContainer = styled.div`
+  background: none;
+  flex: 1;
+  perspective: 1000px;
+
   ${props => (props.type === 'Radar' ? `max-width: 300px;` : '')};
   min-width: 300px;
   height: 300px;
-  background: white;
   margin: 2rem;
-  padding: 1rem;
-  border-radius: 20px;
-  border: none;
-  box-shadow: 0 0 20px #ddd;
   position: relative;
-
-  flex: ${props => props.flex || 1};
-
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
 
   @media print {
     page-break-after: ${props => props.pageBreak} !important;
@@ -42,8 +35,74 @@ const ChartContainer = styled.div`
   }
 `;
 
+const FlipCard = styled.div`
+  background-color: transparent;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  border-radius: 20px;
+  box-shadow: 0 0 20px #ddd;
+  border: none;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  ${props => props.flipped && 'transform: rotateY(180deg)'};
+
+  & * {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+`;
+
+const FlipFront = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 0 20px #ddd;
+`;
+
+const FlipBack = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  box-shadow: 0 0 20px #ddd;
+  background-color: #fff;
+  box-shadow: 0 0 10px #eee;
+
+  transform: rotateY(180deg);
+
+  @media print {
+    display: none !important;
+  }
+`;
+
+const Content = styled.div`
+  width: 95%;
+  height: 95%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+`;
+
+const Section = styled.div`
+  ${props => props.flex && 'flex: ' + props.flex};
+`;
+
 const ChartTitle = styled.h4`
   font-size: 16px;
+  margin: 0;
 
   & > span {
     opacity: 0.6;
@@ -55,8 +114,8 @@ const ChartTitle = styled.h4`
 
 const FlipBtn = styled.button`
   position: absolute;
-  right: 0.5rem;
-  bottom: 0.5rem;
+  right: 0;
+  bottom: 0;
   color: white;
   cursor: pointer;
 
@@ -69,48 +128,6 @@ const FlipBtn = styled.button`
   }
 
   backface-visibility: hidden;
-`;
-
-const FlipOuter = styled.div`
-  background-color: transparent;
-  flex: 1;
-  perspective: 1000px;
-`;
-
-const FlipInner = styled.div`
-  position: relative;
-  width: 100%;
-  height: 90%;
-  text-align: center;
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
-  ${props => props.flipped && 'transform: rotateY(180deg);'};
-`;
-
-const FlipFront = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  background-color: #fff;
-`;
-
-const FlipBack = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-
-  background-color: #fff;
-  box-shadow: 0 0 10px #eee;
-  transform: rotateY(180deg);
-
-  @media print {
-    display: none !important;
-  }
 `;
 
 class Chart extends Component {
@@ -175,40 +192,51 @@ class Chart extends Component {
 
     return (
       <>
-        <ChartContainer
-          key={chart.id}
-          className="ChartContainer"
-          flex={flex}
+        <FlipContainer
+          className="FlipContainer ChartContainer"
           type={chart.type}
           pageBreak={pageBreak}
+          data={filtered}
+          theme={theme}
+          flex={flex}
         >
-          <ChartTitle>
-            <span>
-              {titleLabel} {titleCode} -{' '}
-            </span>{' '}
-            {titleName}
-          </ChartTitle>
-
+          {/* <ChartContainer
+            
+          > */}
           {/* <ChartTemplate data={filtered} theme={theme} flex={flex} /> */}
 
-          <FlipOuter className="FlipOuter">
-            <FlipInner className="FlipInner" flipped={this.state.flipped}>
-              <FlipFront className="FlipFront" flipped={this.state.flipped}>
-                <ChartTemplate data={filtered} theme={theme} flex={flex} />
-              </FlipFront>
+          <FlipCard className="FlipCard" flipped={this.state.flipped}>
+            <FlipFront className="FlipFront" flipped={this.state.flipped}>
+              <Content className="Content">
+                <Section className="Section">
+                  <ChartTitle>
+                    <span>
+                      {titleLabel} {titleCode} -{' '}
+                    </span>{' '}
+                    {titleName}
+                  </ChartTitle>
+                </Section>
+                <Section className="Section" flex="1">
+                  <ChartTemplate data={filtered} theme={theme} flex={flex} />
+                </Section>
+              </Content>
+              <FlipBtn onClick={this.toggleFlip} className="FlipBtn Front">
+                <IconTemplate src={icons.settings} />
+              </FlipBtn>
+            </FlipFront>
 
-              <FlipBack className="FlipBack" bg={theme.color.hex}>
+            <FlipBack className="FlipBack" bg={theme.color.hex}>
+              <Content>
                 <ChartSettings chart={chart} />
-              </FlipBack>
-            </FlipInner>
-          </FlipOuter>
+              </Content>
+              <FlipBtn onClick={this.toggleFlip} className="FlipBtn Back">
+                <IconTemplate src={icons.check} />
+              </FlipBtn>
+            </FlipBack>
+          </FlipCard>
 
-          <FlipBtn onClick={this.toggleFlip}>
-            <IconTemplate
-              src={this.state.flipped ? icons.check : icons.settings}
-            />
-          </FlipBtn>
-        </ChartContainer>
+          {/* </ChartContainer> */}
+        </FlipContainer>
       </>
     );
   }

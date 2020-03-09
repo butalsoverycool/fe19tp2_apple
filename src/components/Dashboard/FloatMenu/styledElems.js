@@ -26,6 +26,7 @@ export const List = styled.div`
   flex-direction: column;
   width: 15rem;
   max-height: ${props => (props.isOpen ? '10rem' : '0')};
+  min-height: ${props => (props.isOpen ? '6rem' : '0')};
   overflow-y: scroll;
   background: #fff;
 
