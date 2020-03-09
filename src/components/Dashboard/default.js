@@ -2,40 +2,55 @@ export const proxy = 'https://cors-anywhere.herokuapp.com/';
 export const apiUrl =
   'http://api.scb.se/OV0104/v1/doris/en/ssd/START/MI/MI0108/TotaltUtslapp';
 
-export const defaultChartTypes = ['bar', 'area'];
+export const defaultChartTypes = [
+  'Bar',
+  'Area',
+  'Radar' /*, 'scatter', 'pie' */
+];
 
-export const defaultTab = () => {
+export const defaultState = {
+  dataTitles: null,
+  tabs: [],
+  activeTab: null,
+  menuIsOpen: false,
+  creatingTab: false
+};
+
+export const defaultTab = newIndex => {
   return {
-    id: Math.random(),
+    id: 'tab-' + String((Math.random() * 100).toFixed(0)) + String(newIndex),
     name: '',
-    data: null,
     catKey: null,
     catVal: null,
-    timespan: { from: 0, to: 100 }, // from/to = number
-    charts: []
+    catRes: null,
+    timespan: { from: 0, to: null }, // from/to = number
+    charts: [],
+    chartType: 'random'
   };
 };
 
-export const defaultChart = (key, val) => {
-  const typeIndex = Math.floor(Math.random() * defaultChartTypes.length); // rand chartType
-  const randVal = Math.floor(Math.random() * 5) + 1; // rand 1-5
+export const defaultChart = (input, index, chartType) => {
+  const randType = Math.floor(Math.random() * defaultChartTypes.length); // rand chartType
 
-  const res = {
-    type: defaultChartTypes[typeIndex],
-    substance: {
-      name: '',
-      code: ''
-    },
-    sector: {
-      name: '',
-      code: ''
-    },
-    value: randVal
+  return {
+    id: 'chart-' + String((Math.random() * 100).toFixed(0)) + String(index),
+    type:
+      chartType === 'random' || !chartType
+        ? defaultChartTypes[randType]
+        : defaultChartTypes[chartType],
+    disabled: false,
+    data: [...input]
   };
+};
 
-  res[key] = val;
-
-  return res;
+export const defaultDataPoint = (data, index) => {
+  return {
+    id: 'dataPoint-' + String((Math.random() * 100).toFixed(0)) + String(index),
+    year: data.year,
+    substance: data.substance,
+    sector: data.sector,
+    value: data.value
+  };
 };
 
 export const queryBakery = (by, value) => {

@@ -47,7 +47,7 @@ const NavigationAuth = props => (
             alt="BEV logo"
           >
             <Logo />
-          </Circle>{' '}
+          </Circle>
         </Link>
         <Styled.LI>
           <Link to={ROUTES.DASHBOARD}>
@@ -58,7 +58,7 @@ const NavigationAuth = props => (
           <img className="SVG" src={AccountLogo}></img>
           </Link>
         </Styled.LI>
-        <SignOutButton />{' '}
+        <SignOutButton />
       </Styled.Container>
     </Styled.Grid>
   </>

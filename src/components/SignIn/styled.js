@@ -64,6 +64,21 @@ export const Submit = styled.button`
 	font-size: 12px;
 `;
 
+export const Button = styled.button`
+	background-color: white;
+	padding: 0.3rem;
+	border-style: none;
+	border-radius: 0.3rem;
+	cursor: pointer;
+	color: #000;
+	margin-top: 1rem;
+
+	&:hover {
+		transform: scale(1.1);
+		transition: all 0.5s ease-in-out;
+	}
+`;
+
 export const textWrapper = styled.div`
 	display: flex;
 	flex-direction: column;
