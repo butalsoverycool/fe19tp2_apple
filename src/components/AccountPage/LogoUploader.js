@@ -7,6 +7,10 @@ const Logo = styled.img`
   max-height: 200px;
 `;
 
+const H2 = styled.h2`
+font-weight: lighter
+`;
+
 class LogoUploader extends Component {
   constructor(props) {
     super(props);
@@ -40,7 +44,7 @@ class LogoUploader extends Component {
     }
   };
 
-  changeHandler = e => {};
+  changeHandler = e => { };
 
   render() {
     const { logo, logoUrl, defaultLogoUrl } = this.state;
@@ -51,16 +55,16 @@ class LogoUploader extends Component {
     const uploadInfo = !this.props.theme.state.logo ? (
       ''
     ) : (
-      <>
-        <p>Name: {this.props.theme.state.logo.name}</p>
-        <p>Size: {this.props.theme.state.logo.size}</p>
-        <p>Type: {this.props.theme.state.logo.type}</p>
-      </>
-    );
+        <>
+          <p>Name: {this.props.theme.state.logo.name}</p>
+          <p>Size: {this.props.theme.state.logo.size}</p>
+          <p>Type: {this.props.theme.state.logo.type}</p>
+        </>
+      );
 
     return (
       <div className="logoContainer">
-        <p>Upload company logo</p>
+        <H2>Upload company logo</H2>
         {logoUrl ? (
           <Logo
             className="logoPreview"
