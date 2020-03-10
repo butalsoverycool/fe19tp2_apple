@@ -4,10 +4,6 @@ import { compose } from 'recompose';
 import { withTheme } from '../../Theme/context';
 import { withDashboard } from '../context';
 
-import { ResponsiveContainer } from 'recharts';
-
-import { defaultChart, defaultDataPoint } from '../default';
-
 import ChartSettings from './ChartSettings';
 
 import * as Template from './ChartTemplate';
@@ -20,7 +16,9 @@ const FlipContainer = styled.div`
   perspective: 1000px;
 
   ${props =>
-    props.type === 'Radar' ? `max-width: 300px;` : 'max-width: 500px'};
+
+  props.type === 'Radar' ? `max-width: 300px;` : 'max-width: auto'};
+
   min-width: 300px;
   height: 300px;
   margin: 2rem;
@@ -167,7 +165,9 @@ class Chart extends Component {
     const theme = this.props.theme.state;
     const { activeTab } = this.props.dashboard.state;
     const { catRes } = activeTab;
+
     const { charts, timespan } = activeTab;
+
 
     const chart = this.props.chart;
 
@@ -184,7 +184,9 @@ class Chart extends Component {
     //measure title
     let flex = titleName.length > 30 ? 'auto' : '1';
     flex = chart.type === 'radar' ? 'auto' : '1';
+
     const cutYear = titleName.length > 30 ? false : true;
+
 
     const ChartTemplate = Template[chart.type + 'Template'];
 

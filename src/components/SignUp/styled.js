@@ -81,3 +81,8 @@ export const Wrapper = styled.div`
   box-shadow: 0 0 20px #ddd;
   border-radius: 10px;
 `;
+
+export const Error = styled.p`
+  font-size: 10px;
+  max-width: 175px;
+`;
