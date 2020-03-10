@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { withDashboard } from '../context';
 import IconTemplate, { icons } from '../../../media/icons';
-import TabSettings from '../TabSettings';
+import TabSettings from '../ActiveTab/TabSettings';
 import { Wrapper, ToggleBtn, List, Label } from './styledElems';
 
 class TabSettingsMenu extends Component {
@@ -66,6 +66,8 @@ class TabSettingsMenu extends Component {
           isOpen={isOpen}
           onClick={this.toggleOpen}
           className="sideMenuToggleBtn"
+          chartsLen={charts.length}
+          radius={hiddenCharts.length < 1 ? '0 0 10px 0' : ''}
         >
           <IconTemplate src={icons.settings} />
         </ToggleBtn>

@@ -24,17 +24,20 @@ export const defaultTab = newIndex => {
     catVal: null,
     catRes: null,
     timespan: { from: 0, to: null }, // from/to = number
-    charts: []
+    charts: [],
+    chartType: 'random'
   };
 };
 
-export const defaultChart = (input, index) => {
-  const typeIndex = Math.floor(Math.random() * defaultChartTypes.length); // rand chartType
-  const { year, substance, sector, value } = input;
+export const defaultChart = (input, index, chartType) => {
+  const randType = Math.floor(Math.random() * defaultChartTypes.length); // rand chartType
 
   return {
     id: 'chart-' + String((Math.random() * 100).toFixed(0)) + String(index),
-    type: defaultChartTypes[typeIndex],
+    type:
+      chartType === 'random' || !chartType
+        ? defaultChartTypes[randType]
+        : defaultChartTypes[chartType],
     disabled: false,
     data: [...input]
   };

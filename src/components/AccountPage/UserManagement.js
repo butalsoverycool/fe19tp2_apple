@@ -120,11 +120,11 @@ const UserManagement = ({ firebase }) => {
 	return (
 		<Wrapper>
 			<H2>Add User</H2>
-			<Select name="role" defaultValue={ROLES.USER}>
-				<option value={ROLES.ADMIN}>Admin</option>
-				<option value={ROLES.USER}>User</option>
-			</Select>
 			<form onSubmit={handleAddUser}>
+				<Select name="role" defaultValue={ROLES.USER}>
+					<option value={ROLES.ADMIN}>Admin</option>
+					<option value={ROLES.USER}>User</option>
+				</Select>
 				<Input
 					name="email"
 					type="email"

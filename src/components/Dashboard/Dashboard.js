@@ -2,17 +2,14 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import DashboardContext from './context';
 
-import ActiveTab from './ActiveTab';
+import ActiveTab from './ActiveTab/index.js';
 import FloatMenu from './FloatMenu';
+import NewTabFirst from './NewTabFirst';
 
-import { defaultState, defaultTab, defaultDataTitles } from './default';
+import { defaultTab } from './default';
 
 import { withFirebase } from '../Firebase';
-import { withTheme } from '../Theme';
-import PopupMsg from '../PopupMsg';
 import { fetchDataTitles } from './fetch';
-import { auth } from 'firebase';
-import { act } from 'react-dom/test-utils';
 
 //temp styles
 const Wrapper = styled.div`
@@ -20,69 +17,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-`;
-
-const NewTabBtn = styled.button`
-  width: 2.5rem;
-  height: 2.5rem;
-  /* right: 1rem;
-  top: 8rem; */
-  transform: ${props =>
-    props.creatingTab
-      ? 'translate3d(100vw, 45px, 0)'
-      : 'translate3d(100vw, 45px, 0) translateX(-2.5rem)'};
-  font-size: 1.2rem;
-  padding: 0.5rem;
-  margin: auto;
-
-  box-shadow: 0 0 20px #ddd;
-  border: none;
-  border-radius: 5px 0 0 5px;
-  outline: none;
-  position: absolute;
-  z-index: 1;
-  cursor: pointer;
-  transition-duration: 0.4s;
-
-  ${props =>
-    !props.tabsExist
-      ? `
-      border-radius: 50%;
-      width: 6rem;
-      height: 6rem;
-      /* left: 50%;
-      top: 50%; */
-      transform: translate3d(50vw,40vh,0);
-      margin-left: -3rem;
-      margin-top: -3rem;
-      font-size: 2rem;`
-      : ''};
-
-  &:hover {
-    box-shadow: 0px 0px 10px #bbb;
-  }
-`;
-
-const SoftP = styled.p`
-  color: grey;
-  font-weight: 100;
-  font-style: italic;
-  opacity: 0.6;
-  font-size: 0.8rem;
-
-  text-align: center;
-  width: 6rem;
-  display: block;
-  position: absolute;
-  /* left: 50%;
-  top: 50%; */
-  transform: ${props =>
-    !props.tabsExist
-      ? 'translate3d(50vw, 40vh, 0)'
-      : 'translate3d(-50vw, 40vh, 0)'};
-  transition-duration: 0.4s;
-  margin-left: -3rem;
-  margin-top: 5rem;
 `;
 
 class Dashboard extends Component {
@@ -95,14 +29,15 @@ class Dashboard extends Component {
       activeTab: this.getStorage('activeTab') || null,
       menuIsOpen: this.getStorage('tabMenuIsOpen') || false,
       creatingTab: false
-      /* ...defaultState */
     };
 
-    this.newTab = this.newTab.bind(this);
     this.getStorage = this.getStorage.bind(this);
     this.setStorage = this.setStorage.bind(this);
-    this.loadTab = this.loadTab.bind(this);
+    this.updateFirebaseTabs = this.updateFirebaseTabs.bind(this);
+    this.newTab = this.newTab.bind(this);
+    this.updateAllTabs = this.updateAllTabs.bind(this);
     this.updateTab = this.updateTab.bind(this);
+    this.setActiveTab = this.setActiveTab.bind(this);
     this.updateChart = this.updateChart.bind(this);
     this.setDisabledChart = this.setDisabledChart.bind(this);
     this.deleteTab = this.deleteTab.bind(this);
@@ -176,61 +111,47 @@ class Dashboard extends Component {
     console.log(`Stored ${key} (${valStr})`);
   };
 
-  newTab = () => {
-    const tabs = this.state.tabs;
+  newTab() {
+    const { tabs } = this.state;
+
     const newTab = defaultTab(tabs.length);
 
     tabs.unshift(newTab);
 
-    this.setState(
-      {
-        tabs,
-        tabMenuIsOpen: false,
-        creatingTab: true
-      },
-      () => {
-        if (tabs.length <= 1 && this.state.creatingTab) {
-          this.setState({
-            creatingTab: false
-          });
-        } else {
-          setTimeout(() => {
-            this.setState({
-              creatingTab: false
-            });
-          }, 200);
-        }
-      } // callback
-    );
+    this.updateAllTabs(tabs);
+
+    this.setActiveTab(newTab);
 
     this.updateFirebaseTabs(tabs);
+  }
+
+  updateAllTabs(tabs, callback) {
+    this.setState({ tabs }, () =>
+      typeof callback === 'function' ? callback() : null
+    );
 
     this.setStorage('tabs', tabs);
-    this.loadTab(newTab);
-  };
-
-  loadTab = tab => {
-    this.setState({
-      activeTab: tab
-    });
-
-    this.setStorage('activeTab', tab);
-  };
+  }
 
   updateTab = (tab, callback) => {
     const { tabs } = this.state;
 
     const newTabs = tabs.map(item => (item.id === tab.id ? tab : item));
 
-    this.setState({ tabs: newTabs, activeTab: tab }, () =>
-      typeof callback === 'function' ? callback() : null
-    );
+    this.updateAllTabs(newTabs, callback);
 
     this.updateFirebaseTabs(newTabs);
 
-    this.setStorage('activeTab', tab);
-    this.setStorage('tabs', newTabs);
+    this.setActiveTab(tab);
   };
+
+  setActiveTab(activeTab) {
+    this.setState({
+      activeTab
+    });
+
+    this.setStorage('activeTab', activeTab);
+  }
 
   deleteTab = (tab, callback) => {
     const { tabs, activeTab } = this.state;
@@ -264,6 +185,11 @@ class Dashboard extends Component {
     activeTab.charts = activeTab.charts.map(chart =>
       chart.id === newChart.id ? newChart : chart
     );
+
+    if (key === 'type') {
+      activeTab.chartType = 'random';
+    }
+
     this.updateTab(activeTab);
   }
 
@@ -283,16 +209,18 @@ class Dashboard extends Component {
     const setters = {
       getStorage: this.getStorage,
       setStorage: this.setStorage,
+      updateFirebaseTabs: this.updateFirebaseTabs,
       newTab: this.newTab,
-      loadTab: this.loadTab,
+      updateAllTabs: this.updateAllTabs,
       updateTab: this.updateTab,
+      setActiveTab: this.setActiveTab,
       deleteTab: this.deleteTab,
       updateChart: this.updateChart,
       setDisabledChart: this.setDisabledChart,
       updateHiddenCharts: this.updateHiddenCharts
     };
 
-    const { tabs, activeTab, creatingTab } = this.state;
+    const { tabs, activeTab } = this.state;
 
     const tabLen = tabs ? tabs.length : 0;
     const chartLen = activeTab
@@ -312,16 +240,13 @@ class Dashboard extends Component {
           }}
         >
           <Wrapper>
-            <NewTabBtn
+            <NewTabFirst
               type="add"
               onClick={this.newTab}
-              tabsExist={tabLen > 0}
-              creatingTab={creatingTab}
+              siblingTxt="add your data"
             >
               +
-            </NewTabBtn>
-
-            <SoftP tabsExist={tabLen > 0}>add your data</SoftP>
+            </NewTabFirst>
 
             {tabLen > 0 && (
               <>

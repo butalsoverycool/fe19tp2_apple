@@ -44,7 +44,7 @@ class AccountPage extends Component {
           < AuthUserContext.Consumer >
             {authUser => (
               <AdminWrapper>
-                <h1>Admin: {authUser.email}</h1>
+              
               </AdminWrapper>
             )}
           </AuthUserContext.Consumer>

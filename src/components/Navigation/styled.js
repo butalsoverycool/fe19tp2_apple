@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 export const Grid = styled.div`
   grid-column-start: 1;
@@ -17,12 +18,17 @@ export const Container = styled.nav`
   width: auto;
 `;
 
+export const Button = styled.div`
+  float: right;
+  padding-right: 1rem;
+  text-decoration: none;
+`;
 export const UL = styled.ul``;
 
 export const LI = styled.div`
   flex: 1;
   & > a {
-    padding: 1rem;
+    margin-left: 3rem;
     text-decoration: none;
   }
 `;

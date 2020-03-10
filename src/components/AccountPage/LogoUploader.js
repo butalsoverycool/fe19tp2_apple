@@ -65,8 +65,8 @@ class LogoUploader extends Component {
     ) : (
         <>
           <p>Name: {this.props.theme.state.logo.name}</p>
-          <p>Size: {this.props.theme.state.logo.size}</p>
-          <p>Type: {this.props.theme.state.logo.type}</p>
+          {/* <p>Size: {this.props.theme.state.logo.size}</p>
+          <p>Type: {this.props.theme.state.logo.type}</p> */}
         </>
       );
 

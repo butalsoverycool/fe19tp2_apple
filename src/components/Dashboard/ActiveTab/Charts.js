@@ -1,5 +1,5 @@
 import React from 'react';
-import { withDashboard } from './context';
+import { withDashboard } from '../context';
 import Chart from './Chart';
 
 const Charts = props => {

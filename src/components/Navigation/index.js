@@ -1,19 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import SignOutButton from '../SignOut';
 import * as ROUTES from '../../constants/routes';
 import * as Styled from './styled';
 import { AuthUserContext } from '../Session';
 import { withTheme } from '../Theme';
 import BirdAnimation from '../BirdAnimation';
+import DashLogo from '../images/Asset1.svg';
+import AccountLogo from '../images/Asset2.svg';
 
 const Logo = styled.div``;
 const Circle = styled.div`
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  margin: 0.5rem 0 0 0.5rem;
+  margin: 0 0 0 0.5rem;
   background-position: 50% 50%;
   background-size: cover;
 `;
@@ -34,21 +36,25 @@ const NavigationAuth = props => (
   <>
     <Styled.Grid>
       <Styled.Container>
-        <Link to={ROUTES.DASHBOARD}>
+        <NavLink to={ROUTES.DASHBOARD}>
           <Circle
             style={{
-              backgroundImage: `url(${props.theme.state.dataUrl ||
+              backgroundImage: `url(${props.theme.state.logoUrl ||
                 props.theme.state.defaultLogoUrl})`
             }}
             alt="BEV logo"
           >
             <Logo />
           </Circle>
-        </Link>
+        </NavLink>
         <Styled.LI>
-          <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
+          <NavLink to={ROUTES.DASHBOARD} activeClassName="is-active">
+            <img className="SVG" src={DashLogo}></img>
+          </NavLink>
 
-          <Link to={ROUTES.ACCOUNT}>Account</Link>
+          <NavLink to={ROUTES.ACCOUNT} activeClassName="is-active">
+            <img className="SVG" src={AccountLogo}></img>
+          </NavLink>
         </Styled.LI>
         <SignOutButton />
       </Styled.Container>
@@ -61,7 +67,7 @@ const NavigationNonAuth = props => (
     <BirdAnimation />
     <Styled.Grid>
       <Styled.Container>
-        <Link to={ROUTES.LANDING}>
+        <NavLink to={ROUTES.LANDING}>
           <Circle
             style={{
               backgroundImage: `url(${props.theme.state.dataUrl ||
@@ -71,10 +77,10 @@ const NavigationNonAuth = props => (
           >
             <Logo />
           </Circle>
-        </Link>
-        <Styled.LI>
-          <Link to={ROUTES.SIGN_IN}>Sign In</Link>
-        </Styled.LI>
+        </NavLink>
+        <Styled.Button>
+          <NavLink to={ROUTES.SIGN_IN}>Sign In</NavLink>
+        </Styled.Button>
       </Styled.Container>
     </Styled.Grid>
   </>
