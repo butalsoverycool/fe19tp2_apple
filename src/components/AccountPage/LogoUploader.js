@@ -9,14 +9,16 @@ const Logo = styled.img`
 
 const H2 = styled.h2`
 font-weight: lighter;
-align-self: flex-start;
 margin-bottom: 2em;
 `;
 
 const FileInput = styled.input`
-display: flex;
-justify-content:center;
-align-items: center;
+margin-left: 7em;
+margin-top: 3em;
+`;
+
+const Logotext = styled.p`
+margin: 0;
 `;
 
 class LogoUploader extends Component {
@@ -64,7 +66,7 @@ class LogoUploader extends Component {
       ''
     ) : (
         <>
-          <p>Name: {this.props.theme.state.logo.name}</p>
+          <Logotext>Name: {this.props.theme.state.logo.name}</Logotext>
           {/* <p>Size: {this.props.theme.state.logo.size}</p>
           <p>Type: {this.props.theme.state.logo.type}</p> */}
         </>

@@ -17,7 +17,7 @@ export const Form = styled.input`
 	border-radius: 0.2rem;
 `;
 
-export const FormWrapper = styled.form`margin-top: 10em;`;
+export const FormWrapper = styled.form`margin-top: 2em;`;
 
 export const Wrapper = styled.div`
 	flex: 1;
