@@ -49,6 +49,8 @@ export const Grid = styled.div`
 export const Header = styled.h1`
   font-weight: lighter;
   margin: 0;
+  position: relative;
+  padding-top: 1rem;
 `;
 
 export const Text = styled.p`
@@ -56,9 +58,18 @@ export const Text = styled.p`
 `;
 
 export const Submit = styled.button`
-  background: #e8f0fe;
   border: none;
-  font-size: 12px;
+  background: #eaeaea;
+  padding: 0.5rem;
+  border-style: none;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  color: #000;
+  margin-top: 1rem;
+  &:hover {
+    transform: scale(1.1);
+    transition: all 0.5s ease-in-out;
+  }
 `;
 
 export const Form = styled.input`
@@ -67,6 +78,11 @@ export const Form = styled.input`
   border: none;
   margin-top: 1em;
   background: #eaeaea;
+  border-radius: 0.2rem;
+`;
+
+export const FormWrapper = styled.div`
+  margin: auto;
 `;
 
 export const Wrapper = styled.div`

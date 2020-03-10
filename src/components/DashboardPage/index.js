@@ -31,7 +31,7 @@ const P = styled.div`
   margin: 0.3rem 1rem 0 1rem;
   font-size: 14px;
   float: right;
-  opacity: 0.3;
+  color: #aaaaaa;
 `;
 
 let today = new Date();
