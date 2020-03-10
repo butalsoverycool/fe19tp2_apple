@@ -4,10 +4,6 @@ import { compose } from 'recompose';
 import { withTheme } from '../../Theme/context';
 import { withDashboard } from '../context';
 
-import { ResponsiveContainer } from 'recharts';
-
-import { defaultChart, defaultDataPoint } from '../default';
-
 import ChartSettings from './ChartSettings';
 
 import * as Template from './ChartTemplate';

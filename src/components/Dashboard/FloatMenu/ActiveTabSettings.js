@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
 import { withDashboard } from '../context';
 import IconTemplate, { icons } from '../../../media/icons';
 import TabSettings from '../ActiveTab/TabSettings';
@@ -55,8 +54,7 @@ class TabSettingsMenu extends Component {
   render() {
     const { isOpen } = this.state;
 
-    const { charts, catRes } = this.props.dashboard.state.activeTab;
-    const { setDisabledChart } = this.props.dashboard.setters;
+    const { charts } = this.props.dashboard.state.activeTab;
 
     const hiddenCharts = charts.filter(chart => chart.disabled);
 

@@ -182,10 +182,9 @@ class TabSettings extends Component {
   };
 
   render() {
-    const { dataTitles, tabIndex, activeTab: tab } = this.props.dashboard.state;
-    const { updateTab } = this.props.dashboard.setters;
+    const { dataTitles, activeTab: tab } = this.props.dashboard.state;
 
-    const { catKey, catVal, catRes, data, name, timespan, chartType } = tab;
+    const { catKey, catVal, name, timespan, chartType } = tab;
 
     const tabPlaceholder = 'Give this tab a name';
 
