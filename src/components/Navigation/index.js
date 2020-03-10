@@ -39,7 +39,7 @@ const NavigationAuth = props => (
         <NavLink to={ROUTES.DASHBOARD}>
           <Circle
             style={{
-              backgroundImage: `url(${props.theme.state.dataUrl ||
+              backgroundImage: `url(${props.theme.state.logoUrl ||
                 props.theme.state.defaultLogoUrl})`
             }}
             alt="BEV logo"
