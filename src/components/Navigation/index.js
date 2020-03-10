@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import SignOutButton from '../SignOut';
 import * as ROUTES from '../../constants/routes';
 import * as Styled from './styled';
@@ -36,7 +36,7 @@ const NavigationAuth = props => (
   <>
     <Styled.Grid>
       <Styled.Container>
-        <Link to={ROUTES.DASHBOARD}>
+        <NavLink to={ROUTES.DASHBOARD}>
           <Circle
             style={{
               backgroundImage: `url(${props.theme.state.dataUrl ||
@@ -46,15 +46,15 @@ const NavigationAuth = props => (
           >
             <Logo />
           </Circle>
-        </Link>
+        </NavLink>
         <Styled.LI>
-          <Link to={ROUTES.DASHBOARD}>
+          <NavLink to={ROUTES.DASHBOARD} activeClassName="is-active">
             <img className="SVG" src={DashLogo}></img>
-          </Link>
+          </NavLink>
 
-          <Link to={ROUTES.ACCOUNT}>
+          <NavLink to={ROUTES.ACCOUNT} activeClassName="is-active">
             <img className="SVG" src={AccountLogo}></img>
-          </Link>
+          </NavLink>
         </Styled.LI>
         <SignOutButton />
       </Styled.Container>
@@ -67,7 +67,7 @@ const NavigationNonAuth = props => (
     <BirdAnimation />
     <Styled.Grid>
       <Styled.Container>
-        <Link to={ROUTES.LANDING}>
+        <NavLink to={ROUTES.LANDING}>
           <Circle
             style={{
               backgroundImage: `url(${props.theme.state.dataUrl ||
@@ -77,9 +77,9 @@ const NavigationNonAuth = props => (
           >
             <Logo />
           </Circle>
-        </Link>
+        </NavLink>
         <Styled.Button>
-          <Link to={ROUTES.SIGN_IN}>Sign In</Link>
+          <NavLink to={ROUTES.SIGN_IN}>Sign In</NavLink>
         </Styled.Button>
       </Styled.Container>
     </Styled.Grid>

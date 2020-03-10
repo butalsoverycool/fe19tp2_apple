@@ -28,8 +28,7 @@ export const UL = styled.ul``;
 export const LI = styled.div`
   flex: 1;
   & > a {
-    padding: 1rem;
-    margin-left: 2rem;
+    margin-left: 3rem;
     text-decoration: none;
   }
 `;
