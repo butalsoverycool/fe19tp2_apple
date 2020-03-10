@@ -163,7 +163,7 @@ class Chart extends Component {
     const theme = this.props.theme.state;
     const { activeTab } = this.props.dashboard.state;
     const { catRes } = activeTab;
-    const { charts, timespan } = activeTab;
+    const { timespan } = activeTab;
 
     const chart = this.props.chart;
 
@@ -180,7 +180,6 @@ class Chart extends Component {
     //measure title
     let flex = titleName.length > 30 ? 'auto' : '1';
     flex = chart.type === 'radar' ? 'auto' : '1';
-    const cutYear = titleName.length > 30 ? false : true;
 
     const ChartTemplate = Template[chart.type + 'Template'];
 

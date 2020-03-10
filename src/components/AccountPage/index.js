@@ -22,6 +22,7 @@ class AccountPage extends Component {
     super(props);
 
     this.state = {
+      saving: false,
       newSave: false
     };
   }
@@ -67,7 +68,11 @@ class AccountPage extends Component {
         <LogoUploader />
 
         <Colorpicker />
-        <button type="button" onClick={() => saveChanges(this.saveCallback)}>
+        <button
+          disabled={newSave}
+          type="button"
+          onClick={() => saveChanges(this.saveCallback)}
+        >
           Save Changes
         </button>
         <UserManagement />

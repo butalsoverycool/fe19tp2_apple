@@ -44,10 +44,16 @@ export default class PopupMsg extends Component {
         ? 'enter'
         : null;
 
-    if (timeout && timeout !== 0 && animName !== 'exit') {
-      if (this.state._isMounted) {
-        setTimeout(() => this.setState({ forceExit: true }), timeout);
-      }
+    if (
+      timeout &&
+      timeout !== 0 &&
+      animName !== 'exit' &&
+      this.state._isMounted
+    ) {
+      setTimeout(() => {
+        if (!this.state._isMounted) return;
+        this.setState({ forceExit: true });
+      }, timeout);
     }
 
     if (animName === 'exit' && typeof callback === 'function')

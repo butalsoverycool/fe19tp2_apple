@@ -37,13 +37,15 @@ class ActiveTab extends Component {
     super(props);
 
     this.state = {
-      name: null
+      name: null,
+      chartsLoaded: false
     };
 
     this.dropDownHandler = this.dropDownHandler.bind(this);
     this.updateData = this.updateData.bind(this);
     this.hideChart = this.hideChart.bind(this);
     this.updateName = this.updateName.bind(this);
+    this.chartsLoaded = this.chartsLoaded.bind(this);
   }
 
   hideChart = id => {
@@ -80,6 +82,9 @@ class ActiveTab extends Component {
   };
 
   updateData = () => {
+    //const { setFetchingCharts } = this.props.dashboard.setters;
+    //setFetchingCharts({ started: true, ended: false });
+
     const { activeTab, dataTitles } = this.props.dashboard.state;
     const { updateTab, setStorage } = this.props.dashboard.setters;
     const { catKey, catVal, catRes, chartType } = activeTab;
@@ -161,13 +166,26 @@ class ActiveTab extends Component {
     });
   }
 
+  chartsLoaded() {
+    if (this.state.chartsLoded) return;
+
+    this.setState({ chartsLoaded: true });
+
+    const { fetchingCharts } = this.props.dashboard.state;
+    const { setFetchingCharts } = this.props.dashboard.setters;
+
+    if (fetchingCharts.started) {
+      setFetchingCharts({ started: true, ended: true });
+    }
+  }
+
   render() {
-    const { tabIndex, activeTab: tab } = this.props.dashboard.state;
+    const { activeTab: tab } = this.props.dashboard.state;
 
     const { catVal } = tab;
 
     return (
-      <TabWrapper lassName={'Tab-' + tabIndex}>
+      <TabWrapper className={'Tab-' + tab.name}>
         {tab.charts.length < 1 && <TabSettings />}
 
         <ChartsWrapper>

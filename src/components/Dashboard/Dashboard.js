@@ -28,7 +28,12 @@ class Dashboard extends Component {
       tabs: this.getStorage('tabs') || [],
       activeTab: this.getStorage('activeTab') || null,
       menuIsOpen: this.getStorage('tabMenuIsOpen') || false,
-      creatingTab: false
+      creatingTab: false,
+      fetchingCharts: {
+        started: false,
+        ended: false,
+        count: 0
+      }
     };
 
     this.getStorage = this.getStorage.bind(this);

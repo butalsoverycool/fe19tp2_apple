@@ -43,10 +43,10 @@ class LogoUploader extends Component {
   changeHandler = e => {};
 
   render() {
-    const { logo, logoUrl, defaultLogoUrl } = this.state;
+    const { logo, logoUrl } = this.state;
     const { previewLogo } = this.props.theme.setters;
 
-    console.log('in LOGOUPLOADER logo', logo, 'logoUrl', logoUrl);
+    //console.log('in LOGOUPLOADER logo', logo, 'logoUrl', logoUrl);
 
     const uploadInfo = !this.props.theme.state.logo ? (
       ''

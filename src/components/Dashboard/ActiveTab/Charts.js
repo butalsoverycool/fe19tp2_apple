@@ -3,15 +3,20 @@ import { withDashboard } from '../context';
 import Chart from './Chart';
 
 const Charts = props => {
-  const { charts } = props.dashboard.state.activeTab;
-  const { toggleDisabledChart } = props.dashboard.setters;
+  const { activeTab } = props.dashboard.state;
+  const { charts } = activeTab;
+
   return (
     <>
-      {charts.map((chart, nth) =>
-        !chart.disabled ? (
-          <Chart key={chart.id} chartIndex={nth} chart={chart} />
-        ) : null
-      )}
+      {charts.map((chart, nth) => {
+        return !chart.disabled ? (
+          <Chart
+            key={`chart-id-${chart.id}_index-${nth}`}
+            chartIndex={nth}
+            chart={chart}
+          />
+        ) : null;
+      })}
     </>
   );
 };

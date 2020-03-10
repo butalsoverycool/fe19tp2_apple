@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { withDashboard } from './context';
 
 const Btn = styled.button`
@@ -24,6 +24,8 @@ const Btn = styled.button`
       ? 'translate3d(50vw,40vh,0) translateX(-3rem) translateY(-3rem)'
       : 'translate3d(50vw, -20vh, 0) translateX(-3rem) translateY(-3rem);'};
 
+  opacity: ${props => (props.tabLen < 1 ? '1' : '0')};
+
   &:hover {
     box-shadow: 0px 0px 10px #bbb;
   }
@@ -44,9 +46,11 @@ const Txt = styled.p`
   transform: ${props =>
     props.tabLen < 1
       ? 'translate3d(50vw,40vh,0) translateX(-3rem) translateY(0)'
-      : 'translate3d(50vw, 120vh, 0) translateX(-3rem) translateY(-3rem);'};
+      : 'translate3d(50vw, 3000px, 0) translateX(-3rem) translateY(-3rem);'};
   transition-duration: 0.4s;
   margin-top: 5rem;
+
+  display: ${props => (props.tabLen < 1 ? 'block' : 'none')};
 `;
 
 const NewFirstTab = props => {
