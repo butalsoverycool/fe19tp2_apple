@@ -117,7 +117,7 @@ class SignUpFormBase extends Component {
         <Styled.Submit disabled={isInvalid} type="submit">
           Sign Up
 				</Styled.Submit>
-        {error && <p>{error.message}</p>}
+        {error && <Styled.Error>{error.message}</Styled.Error>}
       </form>
     );
   }
