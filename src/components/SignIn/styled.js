@@ -63,7 +63,7 @@ export const Form = styled.input`
   background: #eaeaea;
 `;
 
-export const Button = styled.button`
+export const Submit = styled.button`
   border: none;
   background: #eaeaea;
   padding: 0.5rem;
