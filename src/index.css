@@ -44,3 +44,19 @@ code {
   opacity: 0;
   transition: opacity 450ms ease-out;
 }
+
+.SVG {
+  width: 20px;
+}
+.SVG:hover {
+  opacity: 60%;
+  transform: translateY(-1px);
+  transition: all 0.2s;
+}
+.SVG:active {
+  transform: translateY(1px);
+}
+
+.is-active {
+  border-bottom: 1px solid #000;
+}

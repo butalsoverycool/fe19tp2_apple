@@ -12,7 +12,7 @@ const Wrapper = styled.div`
   display: flex; */
 
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 4fr));
+  // grid-template-columns: repeat(auto-fit, minmax(350px, 4fr));
   grid-gap: 10px;
   background-color: ${props => props.themeBg || 'none'};
 `;

@@ -3,44 +3,44 @@ import { device } from '../device';
 
 export const Grid = styled.div`
   @media ${device.mobileS} {
-    grid-column-start: 2;
-    grid-column-end: 10;
+    grid-column-start: 1;
+    grid-column-end: -1;
     grid-row-start: 2;
     grid-row-end: 8;
   }
   @media ${device.mobileM} {
-    grid-column-start: 2;
-    grid-column-end: 10;
+    grid-column-start: 1;
+    grid-column-end: -1;
     grid-row-start: 2;
     grid-row-end: 8;
   }
   @media ${device.mobileL} {
-    grid-column-start: 5;
-    grid-column-end: 7;
+    grid-column-start: 1;
+    grid-column-end: -1;
     grid-row-start: 2;
     grid-row-end: 8;
   }
   @media ${device.tablet} {
-    grid-column-start: 5;
-    grid-column-end: 7;
+    grid-column-start: 1;
+    grid-column-end: -1;
     grid-row-start: 2;
     grid-row-end: 8;
   }
   @media ${device.laptop} {
-    grid-column-start: 5;
-    grid-column-end: 7;
+    grid-column-start: 1;
+    grid-column-end: -1;
     grid-row-start: 2;
     grid-row-end: 8;
   }
   @media ${device.laptopL} {
-    grid-column-start: 5;
-    grid-column-end: 7;
+    grid-column-start: 1;
+    grid-column-end: -1;
     grid-row-start: 3;
     grid-row-end: 8;
   }
   @media ${device.desktop} {
-    grid-column-start: 5;
-    grid-column-end: 7;
+    grid-column-start: 1;
+    grid-column-end: -1;
     grid-row-start: 3;
     grid-row-end: 8;
   }
@@ -59,24 +59,19 @@ export const Form = styled.input`
   font-size: 14px;
   border: none;
   margin-top: 1em;
+  border-radius: 0.2rem;
   background: #eaeaea;
 `;
 
 export const Submit = styled.button`
-  background: #e8f0fe;
   border: none;
-  font-size: 12px;
-`;
-
-export const Button = styled.button`
-  background-color: white;
-  padding: 0.3rem;
+  background: #eaeaea;
+  padding: 0.5rem;
   border-style: none;
-  border-radius: 0.3rem;
+  border-radius: 0.2rem;
   cursor: pointer;
   color: #000;
   margin-top: 1rem;
-
   &:hover {
     transform: scale(1.1);
     transition: all 0.5s ease-in-out;
@@ -89,18 +84,21 @@ export const textWrapper = styled.div`
   align-items: center;
 `;
 
+export const Error = styled.p`
+  font-size: 10px;
+  max-width: 175px;
+`;
+
 export const Wrapper = styled.div`
+  margin: 0 auto;
+  max-width: 290px;
   height: 400px;
   display: flex;
-  max-width: 300px;
-  min-width: 300px;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
   background: ${props => props.theme.cardColor};
+  box-shadow: 0 0 20px #ddd;
   border-radius: 10px;
-  @media ${device.mobileS} {
-    max-width: none;
-    min-width: none;
-  }
+  text-align: left;
 `;
