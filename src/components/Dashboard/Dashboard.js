@@ -11,6 +11,9 @@ import { defaultTab } from './default';
 import { withFirebase } from '../Firebase';
 import { fetchDataTitles } from './fetch';
 
+import DndGrid, { DndBlock } from './DndGrid';
+import Dnd2 from './Dnd2';
+
 //temp styles
 const Wrapper = styled.div`
   width: 100vw;
@@ -239,7 +242,7 @@ class Dashboard extends Component {
             setters
           }}
         >
-          <Wrapper>
+          <Wrapper className="DashBoard">
             <NewTabFirst
               type="add"
               onClick={this.newTab}

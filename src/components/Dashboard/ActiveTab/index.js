@@ -12,6 +12,8 @@ import TabSettings from './TabSettings';
 import Charts from './Charts';
 import { withDashboard } from '../context';
 
+import Dnd2 from '../Dnd2';
+
 const TabWrapper = styled.div`
   width: 100%;
   display: flex;

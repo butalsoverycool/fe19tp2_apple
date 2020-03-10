@@ -201,11 +201,6 @@ class Chart extends Component {
           theme={theme}
           flex={flex}
         >
-          {/* <ChartContainer
-            
-          > */}
-          {/* <ChartTemplate data={filtered} theme={theme} flex={flex} /> */}
-
           <FlipCard className="FlipCard" flipped={this.state.flipped}>
             <FlipFront className="FlipFront" flipped={this.state.flipped}>
               <Content className="Content" type={chart.type}>
@@ -235,8 +230,6 @@ class Chart extends Component {
               </FlipBtn>
             </FlipBack>
           </FlipCard>
-
-          {/* </ChartContainer> */}
         </FlipContainer>
       </>
     );
