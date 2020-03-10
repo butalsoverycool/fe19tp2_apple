@@ -1,26 +1,6 @@
 import styled from 'styled-components';
 import { device } from '../device';
 
-export const Grid = styled.div`
-  @media ${device.mobileS} {
-  }
-  @media ${device.mobileM} {
-  }
-  @media ${device.mobileL} {
-  }
-  @media ${device.tablet} {
-  }
-  @media ${device.laptop} {
-  }
-  @media ${device.laptopL} {
-  }
-  @media ${device.desktop} {
-  }
-
-  grid-column-start: 4;
-  grid-column-end: 8;
-`;
-
 export const Submit = styled.button`
   background: #e8f0fe;
   border: none;
@@ -37,15 +17,20 @@ export const Form = styled.input`
 `;
 
 export const Wrapper = styled.div`
-  margin: 0 auto;
-  max-width: 290px;
-  height: 500px;
+  flex: 1;
+  margin: 0.5rem 0.5rem;
+  height: 35rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   background: ${props => props.theme.cardColor};
   box-shadow: 0 0 20px #ddd;
   border-radius: 10px;
+
+  @media(max-width: 748px) {
+    min-width: 95vw;
+    height: 25rem;
+  }
 `;
 
 export const H2 = styled.h2`

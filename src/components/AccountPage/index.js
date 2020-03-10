@@ -9,7 +9,28 @@ import LogoUploader from './LogoUploader';
 import Colorpicker from './Colorpicker';
 import * as Styled from './styled';
 import UserManagement from './UserManagement';
+import CompanyConfig from './CompanyConfig';
 
+const Container = styled.div`
+display: flex;
+margin: 0 auto;
+width: 100vw;
+flex-wrap: wrap;
+justify-content: center;
+
+`;
+
+const Wrapper = styled.div`
+flex: 1;
+padding: 0.5rem;
+`;
+
+const AdminWrapper = styled.div`
+width: 100vw;
+height: 50px;
+text-align: center;
+margin: 0rem 2rem 3rem 2rem;
+`;
 
 class AccountPage extends Component {
   render() {
@@ -18,38 +39,27 @@ class AccountPage extends Component {
     const { saveChanges } = this.props.theme.setters;
     return (
       <>
-        {/* <Styled.Wrapper themeBg={color.hex}> */}
+        <Container themeBg={color.hex}>
 
-        <Styled.HeaderGrid>
           < AuthUserContext.Consumer >
             {authUser => (
-              <div>
+              <AdminWrapper>
                 <h1>Admin: {authUser.email}</h1>
-              </div>
+              </AdminWrapper>
             )}
           </AuthUserContext.Consumer>
 
-        </Styled.HeaderGrid>
-
-        <Styled.PasswordGrid>
-          {/* <PasswordWrapper> */}
-          <PasswordChangePage />
-          {/* </PasswordWrapper> */}
-        </Styled.PasswordGrid>
-
-        <Styled.CompanyGrid>
-          <Styled.CompanyWrapper>
-            <LogoUploader />
-            <Colorpicker />
-            <Styled.Button type="button" onClick={saveChanges}>
-              Save Changes
-            </Styled.Button>
-          </Styled.CompanyWrapper>
-        </Styled.CompanyGrid>
-
-        <Styled.UserGrid>
+          {/* <Wrapper> */}
+          <CompanyConfig saveChanges={saveChanges} />
+          {/* </Wrapper> */}
+          {/* <Wrapper> */}
           <UserManagement />
-        </Styled.UserGrid>
+          {/* </Wrapper> */}
+          {/* <Wrapper> */}
+          <PasswordChangePage />
+          {/* </Wrapper> */}
+
+        </Container>
       </>
     );
   }

@@ -3,18 +3,23 @@ import { withFirebase } from '../Firebase';
 import { AuthUserContext } from '../Session';
 import * as ROLES from '../../constants/roles';
 import styled from 'styled-components';
+import { device } from '../device';
 
 const Wrapper = styled.div`
-  margin: 0 auto;
-  max-width: 290px;
-  height: 550px;
+  flex: 1;
+  margin: 0.5rem 0.5rem;
   display: flex;
+  height: 35rem;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
   background: ${props => props.theme.cardColor};
   box-shadow: 0 0 20px #ddd;
   border-radius: 10px;
+
+  @media(max-width: 748px) {
+    min-width: 95vw;
+  }
 `;
 
 const H2 = styled.h2`
