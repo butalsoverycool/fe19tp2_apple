@@ -27,6 +27,7 @@ const ChartsWrapper = styled.div`
   top: 40px;
   position: relative;
 
+
   @media print {
     display: block !important;
   }

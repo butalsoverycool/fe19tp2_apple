@@ -74,7 +74,7 @@ export const Wrapper = styled.div`
 	height: 400px;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-around;
+	justify-content: space-between;
 	align-items: center;
 	background: ${(props) => props.theme.cardColor};
 	box-shadow: 0 0 20px #ddd;

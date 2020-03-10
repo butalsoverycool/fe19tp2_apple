@@ -7,8 +7,9 @@ import * as Styled from './styled';
 const PasswordForgotPage = () => {
   return (
     <Styled.Grid>
+
+      <Styled.Header>Password Forgot</Styled.Header>
       <Styled.Wrapper>
-        <Styled.Header>Password Forgot</Styled.Header>
         <PasswordForgetForm />
       </Styled.Wrapper>
     </Styled.Grid>

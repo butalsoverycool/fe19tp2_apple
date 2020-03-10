@@ -3,8 +3,20 @@ import styled from 'styled-components';
 import { withTheme } from '../Theme';
 
 const Logo = styled.img`
-  max-width: 200px;
-  max-height: 200px;
+  max-width: 120px;
+  max-height: 120px;
+`;
+
+const H2 = styled.h2`
+font-weight: lighter;
+align-self: flex-start;
+margin-bottom: 2em;
+`;
+
+const FileInput = styled.input`
+display: flex;
+justify-content:center;
+align-items: center;
 `;
 
 class LogoUploader extends Component {
@@ -40,7 +52,7 @@ class LogoUploader extends Component {
     }
   };
 
-  changeHandler = e => {};
+  changeHandler = e => { };
 
   render() {
     const { logo, logoUrl, defaultLogoUrl } = this.state;
@@ -51,16 +63,16 @@ class LogoUploader extends Component {
     const uploadInfo = !this.props.theme.state.logo ? (
       ''
     ) : (
-      <>
-        <p>Name: {this.props.theme.state.logo.name}</p>
-        <p>Size: {this.props.theme.state.logo.size}</p>
-        <p>Type: {this.props.theme.state.logo.type}</p>
-      </>
-    );
+        <>
+          <p>Name: {this.props.theme.state.logo.name}</p>
+          {/* <p>Size: {this.props.theme.state.logo.size}</p>
+          <p>Type: {this.props.theme.state.logo.type}</p> */}
+        </>
+      );
 
     return (
       <div className="logoContainer">
-        <p>Upload company logo</p>
+        <H2>Upload company logo</H2>
         {logoUrl ? (
           <Logo
             className="logoPreview"
@@ -70,7 +82,7 @@ class LogoUploader extends Component {
         ) : null}
         <div>{uploadInfo}</div>
 
-        <input type="file" onChange={previewLogo} />
+        <FileInput type="file" onChange={previewLogo} />
       </div>
     );
   }
