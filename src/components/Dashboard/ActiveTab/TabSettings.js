@@ -70,11 +70,26 @@ class TabSettings extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      fetching: false,
+      _isMounted: false
+    };
+
     this.dropDownHandler = this.dropDownHandler.bind(this);
   }
+
+  componentDidMount() {
+    this.setState({ _isMounted: true });
+  }
+
+  componentWillUnmount() {
+    this.setState({ _isMounted: false });
+  }
+
   dropDownHandler = (key, val) => {
     const { dataTitles, activeTab } = this.props.dashboard.state;
-    const { updateTab, updateData } = this.props.dashboard.setters;
+
+    const { updateTab } = this.props.dashboard.setters;
 
     activeTab[key] = val;
 
@@ -108,6 +123,13 @@ class TabSettings extends Component {
   };
 
   updateData = () => {
+    if (this.state._isMounted) {
+      this.setState({ fetching: true });
+    }
+
+    //const { setFetchingCharts } = this.props.dashboard.setters;
+    //setFetchingCharts({ started: true, ended: false });
+
     const { activeTab, dataTitles } = this.props.dashboard.state;
     const { updateTab, setStorage } = this.props.dashboard.setters;
     const { catKey, catVal, catRes } = activeTab;
@@ -182,17 +204,20 @@ class TabSettings extends Component {
   };
 
   render() {
-    const { dataTitles, tabIndex, activeTab: tab } = this.props.dashboard.state;
-    const { updateTab } = this.props.dashboard.setters;
+    const { dataTitles, activeTab: tab } = this.props.dashboard.state;
 
-    const { catKey, catVal, catRes, data, name, timespan, chartType } = tab;
+    const { catKey, catVal, name, timespan, chartType } = tab;
 
     const tabPlaceholder = 'Give this tab a name';
 
-    const loaderEnter = Boolean(catVal && tab.charts.length < 1);
-    const loaderExit = Boolean(tab.charts);
+    if (this.state.fetching) console.log('fetching data charts');
+
     return (
       <Wrapper className="TabSettingsWrapper">
+        {this.state.fetching && (
+          <PopupMsg txt="Fetching your charts" enter={true} loader={true} />
+        )}
+
         <TabWrapper>
           <DropdownContainer className="DropdownContainer">
             <TabName
@@ -242,13 +267,6 @@ class TabSettings extends Component {
             {catVal ? (
               <>
                 {/* PopupMsg */}
-                <PopupMsg
-                  txt="Fetching your charts"
-                  enter={loaderEnter}
-                  exit={loaderExit}
-                  timeout={0}
-                  loader={true}
-                />
 
                 {/* Timespan dropdowns */}
                 <Select

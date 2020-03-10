@@ -16,8 +16,7 @@ const FlipContainer = styled.div`
   perspective: 1000px;
 
   ${props =>
-
-  props.type === 'Radar' ? `max-width: 300px;` : 'max-width: auto'};
+    props.type === 'Radar' ? `max-width: 300px;` : 'max-width: auto'};
 
   min-width: 300px;
   height: 300px;
@@ -168,7 +167,6 @@ class Chart extends Component {
 
     const { charts, timespan } = activeTab;
 
-
     const chart = this.props.chart;
 
     /* if (!charts || charts.length < 1) return null; */
@@ -185,9 +183,6 @@ class Chart extends Component {
     let flex = titleName.length > 30 ? 'auto' : '1';
     flex = chart.type === 'radar' ? 'auto' : '1';
 
-    const cutYear = titleName.length > 30 ? false : true;
-
-
     const ChartTemplate = Template[chart.type + 'Template'];
 
     const nth = this.props.chartIndex;
@@ -203,11 +198,6 @@ class Chart extends Component {
           theme={theme}
           flex={flex}
         >
-          {/* <ChartContainer
-            
-          > */}
-          {/* <ChartTemplate data={filtered} theme={theme} flex={flex} /> */}
-
           <FlipCard className="FlipCard" flipped={this.state.flipped}>
             <FlipFront className="FlipFront" flipped={this.state.flipped}>
               <Content className="Content" type={chart.type}>
@@ -237,8 +227,6 @@ class Chart extends Component {
               </FlipBtn>
             </FlipBack>
           </FlipCard>
-
-          {/* </ChartContainer> */}
         </FlipContainer>
       </>
     );

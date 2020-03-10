@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import LogoUploader from './LogoUploader'
-import Colorpicker from './Colorpicker'
-import * as Styled from './styled'
-import { device } from '../device';
+import LogoUploader from './LogoUploader';
+import Colorpicker from './Colorpicker';
+import * as Styled from './styled';
 
 const Wrapper = styled.div`
   flex: 1;
@@ -19,12 +18,12 @@ const Wrapper = styled.div`
   max-width: 360px;
   min-width: 360px;
 
-  @media(max-width: 748px) {
+  @media (max-width: 748px) {
     min-width: 95vw;
   }
-  `;
+`;
 
-const CompanyConfig = (props) => {
+const CompanyConfig = props => {
   return (
     <>
       <Wrapper>
@@ -35,7 +34,7 @@ const CompanyConfig = (props) => {
         </Styled.Button>
       </Wrapper>
     </>
-  )
-}
+  );
+};
 
-export default CompanyConfig; 
+export default CompanyConfig;

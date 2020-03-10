@@ -159,15 +159,6 @@ const ChartConfig = props => {
       <h3>Settings</h3>
 
       <ScrollBox>
-        {/*  Toggle switch */}
-        {/* <Setting>
-          <p>Hide chart</p>
-          <Switch className="switch">
-            <CheckBox type="checkbox" />
-            <Slider className="slider"></Slider>
-          </Switch>
-        </Setting> */}
-
         <Setting>
           <Label>Chart type</Label>
           <Select
