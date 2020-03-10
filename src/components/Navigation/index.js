@@ -32,8 +32,6 @@ const Navigation = props => (
   </AuthUserContext.Consumer>
 );
 
-
-
 const NavigationAuth = props => (
   <>
     <Styled.Grid>
@@ -51,11 +49,11 @@ const NavigationAuth = props => (
         </Link>
         <Styled.LI>
           <Link to={ROUTES.DASHBOARD}>
-           <img className="SVG" src={DashLogo}></img>
+            <img className="SVG" src={DashLogo}></img>
           </Link>
 
           <Link to={ROUTES.ACCOUNT}>
-          <img className="SVG" src={AccountLogo}></img>
+            <img className="SVG" src={AccountLogo}></img>
           </Link>
         </Styled.LI>
         <SignOutButton />
@@ -80,9 +78,9 @@ const NavigationNonAuth = props => (
             <Logo />
           </Circle>
         </Link>
-        <Styled.LI>
+        <Styled.Button>
           <Link to={ROUTES.SIGN_IN}>Sign In</Link>
-        </Styled.LI>
+        </Styled.Button>
       </Styled.Container>
     </Styled.Grid>
   </>
