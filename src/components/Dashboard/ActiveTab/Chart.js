@@ -20,7 +20,7 @@ const FlipContainer = styled.div`
   perspective: 1000px;
 
   ${props =>
-    props.type === 'Radar' ? `max-width: 300px;` : 'max-width: 500px'};
+    props.type === 'Radar' ? `max-width: 300px;` : 'max-width: auto'};
   min-width: 300px;
   height: 300px;
   margin: 2rem;

@@ -24,7 +24,7 @@ const ChartsWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  top: 90px;
+  top: 40px;
   position: relative;
 
   @media print {
