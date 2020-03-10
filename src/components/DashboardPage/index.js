@@ -17,7 +17,7 @@ const Wrapper = styled.div`
   background-color: ${props => props.themeBg || 'none'};
 `;
 const Header = styled.div`
-  height: 90px;
+  height: 40px;
   width: auto;
   position: absolute;
   width: 100%;
@@ -28,9 +28,10 @@ const Title = styled.div`
   margin-left: 2rem;
 `;
 const P = styled.div`
-  margin: 0.3rem 2rem 0 2.5rem;
+  margin: 0.3rem 1rem 0 1rem;
   font-size: 14px;
   float: right;
+  color: #aaaaaa;
 `;
 
 let today = new Date();

@@ -1,5 +1,16 @@
 import React, { Component } from 'react';
 import { withFirebase } from '../Firebase';
+import * as Styled from './styled';
+
+const PasswordChangePage = () => (
+  <>
+    <Styled.Wrapper>
+      <Styled.H2>Change Password</Styled.H2>
+      <PasswordChangeForm />
+    </Styled.Wrapper>
+  </>
+);
+
 
 const INITIAL_STATE = {
   passwordOne: '',
@@ -30,8 +41,8 @@ class PasswordChangeForm extends Component {
 
     const isInvalid = passwordOne !== passwordTwo || passwordOne === '';
     return (
-      <form onSubmit={this.onSubmit}>
-        <input
+      <Styled.FormWrapper onSubmit={this.onSubmit}>
+        <Styled.Form
           name="passwordOne"
           value={passwordOne}
           onChange={this.onChange}
@@ -39,7 +50,8 @@ class PasswordChangeForm extends Component {
           placeholder="New Password"
           autoComplete="off"
         />
-        <input
+        <br />
+        <Styled.Form
           name="passwordTwo"
           value={passwordTwo}
           onChange={this.onChange}
@@ -47,12 +59,14 @@ class PasswordChangeForm extends Component {
           placeholder="Confirm New Password"
           autoComplete="off"
         />
-        <button disabled={isInvalid} type="submit">
-          Reset My Password
-        </button>
+        <br />
+        <Styled.Submit disabled={isInvalid} type="submit">
+          Change password
+        </Styled.Submit>
         {error && <p>{error.message}</p>}
-      </form>
+      </Styled.FormWrapper>
     );
   }
 }
 export default withFirebase(PasswordChangeForm);
+export { PasswordChangePage };
