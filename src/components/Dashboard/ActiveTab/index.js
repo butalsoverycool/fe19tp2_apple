@@ -19,6 +19,35 @@ const TabWrapper = styled.div`
   justify-content: flex-start;
 `;
 
+const TabTitle = styled.h2`
+  position: absolute;
+  left: 2rem;
+  top: 2.5rem;
+  font-size: 2rem;
+
+  @media screen and (max-width: 700px) {
+    font-size: 1.5rem;
+    top: 3.5rem;
+  }
+
+  @media screen and (max-width: 500px) {
+    font-size: 1rem;
+    top: 4.5rem;
+  }
+
+  @media screen and (max-width: 380px) {
+    font-size: 0.7rem;
+    top: 5rem;
+  }
+
+  background-color: #ccc;
+  color: transparent;
+  text-shadow: 2px 2px 3px rgba(255, 255, 255, 0.5);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+`;
+
 const ChartsWrapper = styled.div`
   margin: auto;
   display: flex;
@@ -26,7 +55,6 @@ const ChartsWrapper = styled.div`
   justify-content: flex-start;
   top: 40px;
   position: relative;
-
 
   @media print {
     display: block !important;
@@ -183,10 +211,17 @@ class ActiveTab extends Component {
   render() {
     const { activeTab: tab } = this.props.dashboard.state;
 
-    const { catVal } = tab;
+    const { catVal, name } = tab;
+
+    let tabName = name;
+    if (tabName.length > 25) {
+      tabName = tabName.slice(0, 25) + '...';
+    }
 
     return (
       <TabWrapper className={'Tab-' + tab.name}>
+        {tab.charts.length > 0 && <TabTitle>{tabName}</TabTitle>}
+
         {tab.charts.length < 1 && <TabSettings />}
 
         <ChartsWrapper>

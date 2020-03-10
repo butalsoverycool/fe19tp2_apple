@@ -107,23 +107,31 @@ class AllTabs extends Component {
             <Item>
               <Label fat>Tabs</Label> <AddTabBtn />
             </Item>
-            {tabs.map(tab => (
-              <Item key={tab.id}>
-                <Btn
-                  weight={tab.id === activeId && '700'}
-                  onClick={() => setActiveTab(tab)}
-                  margin="auto 0.4rem auto 0"
-                  flex="1"
-                  align="left"
-                  childLineHeight="line-height: 0"
-                >
-                  <Label>{tab.name || `(${tab.id})`}</Label>
-                </Btn>
-                <Btn onClick={() => this.deleteHandler(tab)}>
-                  <IconTemplate src={icons.deleteCross} />
-                </Btn>
-              </Item>
-            ))}
+            {tabs.map(tab => {
+              let tabName = tab.name;
+
+              if (tabName.length > 20) {
+                tabName = tabName.slice(0, 20) + '...';
+              }
+
+              return (
+                <Item key={tab.id}>
+                  <Btn
+                    weight={tab.id === activeId && '700'}
+                    onClick={() => setActiveTab(tab)}
+                    margin="auto 0.4rem auto 0"
+                    flex="1"
+                    align="left"
+                    childLineHeight="line-height: 0"
+                  >
+                    <Label>{tabName || `(${tab.id})`}</Label>
+                  </Btn>
+                  <Btn onClick={() => this.deleteHandler(tab)}>
+                    <IconTemplate src={icons.deleteCross} />
+                  </Btn>
+                </Item>
+              );
+            })}
           </List>
         </Wrapper>
       </>
