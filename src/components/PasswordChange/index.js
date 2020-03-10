@@ -41,7 +41,7 @@ class PasswordChangeForm extends Component {
 
     const isInvalid = passwordOne !== passwordTwo || passwordOne === '';
     return (
-      <form onSubmit={this.onSubmit}>
+      <Styled.FormWrapper onSubmit={this.onSubmit}>
         <Styled.Form
           name="passwordOne"
           value={passwordOne}
@@ -64,7 +64,7 @@ class PasswordChangeForm extends Component {
           Reset My Password
         </Styled.Submit>
         {error && <p>{error.message}</p>}
-      </form>
+      </Styled.FormWrapper>
     );
   }
 }

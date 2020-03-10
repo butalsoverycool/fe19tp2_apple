@@ -32,4 +32,9 @@ export const CompanyWrapper = styled.div`
 	box-shadow: 0 0 20px #ddd;
 `;
 
-export const Button = styled.button`height: 2rem;`;
+export const Button = styled.button`
+	margin-top: 2em;
+	height: 2rem;
+	border: none;
+	background: #eaeaea;
+`;

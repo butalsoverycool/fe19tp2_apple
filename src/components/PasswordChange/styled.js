@@ -2,9 +2,10 @@ import styled from 'styled-components';
 import { device } from '../device';
 
 export const Submit = styled.button`
-	background: #e8f0fe;
+	background: #eaeaea;
 	border: none;
 	font-size: 12px;
+	border-radius: 0.2rem;
 `;
 
 export const Form = styled.input`
@@ -13,7 +14,10 @@ export const Form = styled.input`
 	border: none;
 	margin-top: 1em;
 	background: #eaeaea;
+	border-radius: 0.2rem;
 `;
+
+export const FormWrapper = styled.form`margin-top: 10em;`;
 
 export const Wrapper = styled.div`
 	flex: 1;

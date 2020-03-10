@@ -3,13 +3,20 @@ import styled from 'styled-components';
 import { withTheme } from '../Theme';
 
 const Logo = styled.img`
-  max-width: 200px;
-  max-height: 200px;
+  max-width: 120px;
+  max-height: 120px;
 `;
 
 const H2 = styled.h2`
 font-weight: lighter;
 align-self: flex-start;
+margin-bottom: 2em;
+`;
+
+const FileInput = styled.input`
+display: flex;
+justify-content:center;
+align-items: center;
 `;
 
 class LogoUploader extends Component {
@@ -75,7 +82,7 @@ class LogoUploader extends Component {
         ) : null}
         <div>{uploadInfo}</div>
 
-        <input type="file" onChange={previewLogo} />
+        <FileInput type="file" onChange={previewLogo} />
       </div>
     );
   }

@@ -34,8 +34,9 @@ const Input = styled.input`
 	padding: 9px;
 	font-size: 14px;
 	border: none;
-	margin-bottom: 1em;
 	background: #eaeaea;
+	margin-top: 2em;
+	border-radius: 0.2rem;
 `;
 
 const Button = styled.button`
@@ -43,7 +44,7 @@ const Button = styled.button`
 	border: none;
 	font-size: 12px;
 	/* display: block; */
-	margin-left: 5px;
+	border-radius: 0.2rem;
 `;
 
 const Select = styled.select`
@@ -55,7 +56,7 @@ const Select = styled.select`
 	border: none;
 	font-weight: ${(props) => (props.selected ? '700' : '100')};
 
-	width: 80%;
+	width: 46%;
 	max-width: 200px;
 	margin: 0.1rem auto;
 
@@ -67,7 +68,8 @@ const UlWrapper = styled.div`
 	height: 300px;
 	/* background: #eaeaea; */
 	margin-bottom: 30px;
-	/* margin-top: 30px; */
+	margin-top: 25px;
+	font-size: 14px;
 `;
 
 const List = styled.li`margin-bottom: 10px;`;
