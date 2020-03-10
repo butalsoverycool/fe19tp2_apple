@@ -8,7 +8,8 @@ const Logo = styled.img`
 `;
 
 const H2 = styled.h2`
-font-weight: lighter
+font-weight: lighter;
+align-self: flex-start;
 `;
 
 class LogoUploader extends Component {

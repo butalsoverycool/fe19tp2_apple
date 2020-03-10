@@ -1,45 +1,35 @@
 import styled from 'styled-components';
 import { device } from '../device';
 
-
 export const Wrapper = styled.div`
-  margin: auto;
-  width: 100vw;
-  max-width: 600px;
-  background-color: ${props => props.themeBg || 'none'};
+	margin: auto;
+	width: 100%;
+	max-width: 600px;
+	background-color: ${(props) => props.themeBg || 'none'};
 `;
 
-export const UserGrid = styled.div`
-grid-area: 3 / 1 / auto / span 3;
-`;
+export const UserGrid = styled.div`grid-area: 3 / 1 / auto / span 3;`;
 
-export const CompanyGrid = styled.div`
-grid-area: 3 / 4 / auto / span 4;
-`;
+export const CompanyGrid = styled.div`grid-area: 3 / 4 / auto / span 4;`;
 
-export const HeaderGrid = styled.div`
-grid-area: 1 / 5 / span 3 / span 4; 
-`;
+export const HeaderGrid = styled.div`grid-area: 1 / 5 / span 3 / span 4;`;
 
 export const PasswordGrid = styled.div`
-grid-area: 3 / 8 / span 9 / span 3;
+	grid-area: 3 / 8 / span 9 / span 3;
 `;
 
 export const CompanyWrapper = styled.div`
-width: 100%;
-display: flex;
-border-radius: 10px;
-height: 550px;
-margin: 0 auto;
-display: flex;
-flex-direction: column;
-justify-content: space-around;
-align-items: center;
-background: ${ props => props.theme.cardColor};
-box-shadow: 0 0 20px #ddd;
+	width: 100%;
+	display: flex;
+	border-radius: 10px;
+	height: 550px;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+	background: ${(props) => props.theme.cardColor};
+	box-shadow: 0 0 20px #ddd;
 `;
 
-export const Button = styled.button`
-height: 2rem;`;
-
-
+export const Button = styled.button`height: 2rem;`;

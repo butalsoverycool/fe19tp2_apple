@@ -11,11 +11,13 @@ const Wrapper = styled.div`
   display: flex;
   height: 35rem;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: flex-start;
   align-items: center;
   background: ${props => props.theme.cardColor};
   box-shadow: 0 0 20px #ddd;
   border-radius: 10px;
+  max-width: 360px;
+  min-width: 360px;
 
   @media(max-width: 748px) {
     min-width: 95vw;
