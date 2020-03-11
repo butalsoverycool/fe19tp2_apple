@@ -6,6 +6,7 @@ export const Button = styled.button`
 	height: 2rem;
 	border: none;
 	background: #eaeaea;
+	border-radius: 0.2rem;
 `;
 
 export const Grid = styled.div`

@@ -21,6 +21,17 @@ const FileInput = styled.input`
 
   width: 150px;
   margin: 1rem;
+  font-weight: lighter;
+  margin-bottom: 2em;
+`;
+
+/* const FileInput = styled.input`
+margin-left: 7em;
+margin-top: 3em;
+`; */
+
+const Logotext = styled.p`
+  margin: 0;
 `;
 
 class LogoUploader extends Component {
@@ -68,7 +79,10 @@ class LogoUploader extends Component {
       ''
     ) : (
       <>
-        <p>Name: {this.props.theme.state.logo.name}</p>
+        {/* <p>Name: {this.props.theme.state.logo.name}</p>
+        <p>Size: {this.props.theme.state.logo.size}</p>
+        <> */}
+        <Logotext>Name: {this.props.theme.state.logo.name}</Logotext>
         {/* <p>Size: {this.props.theme.state.logo.size}</p>
           <p>Type: {this.props.theme.state.logo.type}</p> */}
       </>
