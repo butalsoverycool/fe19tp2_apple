@@ -152,7 +152,29 @@ const CheckBox = styled.input`
 
 const ChartConfig = props => {
   const { chart, children, dashboard } = props;
-  const { updateChart, setDisabledChart } = dashboard.setters;
+  const { activeTab } = props.dashboard.state;
+  const { updateTab, setDisabledChart } = dashboard.setters;
+
+  const updateChart = (chart, key, newVal) => {
+    // updated chart-instance
+    const newChart = {
+      ...chart,
+      [key]: newVal
+    };
+
+    // updated tab-instance
+    /*     const { activeTab } = this.state; */
+    const newTab = activeTab;
+    newTab.charts = activeTab.charts.map(chart =>
+      chart.id === newChart.id ? newChart : chart
+    );
+
+    if (key === 'type') {
+      newTab.chartType = 'random';
+    }
+
+    updateTab(newTab);
+  };
 
   return (
     <Container className="SettingsContainer">

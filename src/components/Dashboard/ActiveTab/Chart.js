@@ -140,6 +140,12 @@ class Chart extends Component {
     this.deleteHandler = this.deleteHandler.bind(this);
   }
 
+  componentDidMount() {
+    const { setFetchingCharts } = this.props.dashboard.setters;
+    const { started } = this.props.dashboard.state.fetchingCharts;
+    setFetchingCharts({ started, ended: true });
+  }
+
   toggleFlip() {
     const isFlipped = this.state.flipped;
 
@@ -165,7 +171,7 @@ class Chart extends Component {
     const { activeTab } = this.props.dashboard.state;
     const { catRes } = activeTab;
 
-    const { charts, timespan } = activeTab;
+    const { timespan } = activeTab;
 
     const chart = this.props.chart;
 

@@ -21,6 +21,10 @@ const Wrapper = styled.div`
   @media (max-width: 748px) {
     min-width: 95vw;
   }
+
+  & * {
+    outline: none;
+  }
 `;
 
 const CompanyConfig = props => {

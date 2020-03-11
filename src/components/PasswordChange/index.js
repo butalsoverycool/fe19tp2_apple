@@ -11,7 +11,6 @@ const PasswordChangePage = () => (
   </>
 );
 
-
 const INITIAL_STATE = {
   passwordOne: '',
   passwordTwo: '',
@@ -42,7 +41,7 @@ class PasswordChangeForm extends Component {
     const isInvalid = passwordOne !== passwordTwo || passwordOne === '';
     return (
       <Styled.FormWrapper onSubmit={this.onSubmit}>
-        <Styled.Form
+        <Styled.Input
           name="passwordOne"
           value={passwordOne}
           onChange={this.onChange}
@@ -51,7 +50,7 @@ class PasswordChangeForm extends Component {
           autoComplete="off"
         />
         <br />
-        <Styled.Form
+        <Styled.Input
           name="passwordTwo"
           value={passwordTwo}
           onChange={this.onChange}

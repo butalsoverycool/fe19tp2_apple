@@ -29,13 +29,29 @@ const H2 = styled.h2`
   justify-self: flex-start;
 `;
 
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+
+  & * {
+    outline: none;
+  }
+`;
+
+const FormSection = styled.div`
+  display: flex;
+  margin-top: 2rem;
+  justify-content: stretch;
+`;
+
 const Input = styled.input`
   padding: 9px;
   font-size: 14px;
   border: none;
   background: #eaeaea;
-  margin-top: 2em;
+  /* margin-top: 2em; */
   border-radius: 0.2rem;
+  flex: 1;
 `;
 
 const Button = styled.button`
@@ -44,6 +60,10 @@ const Button = styled.button`
   font-size: 12px;
   /* display: block; */
   border-radius: 0.2rem;
+  margin-left: 1rem;
+  float: right;
+
+  box-shadow: 0 0 5px #ddd;
 `;
 
 const Select = styled.select`
@@ -55,7 +75,7 @@ const Select = styled.select`
   border: none;
   font-weight: ${props => (props.selected ? '700' : '100')};
 
-  width: 46%;
+  width: 100%;
   max-width: 200px;
   margin: 0.1rem auto;
 
@@ -119,15 +139,17 @@ const UserManagement = ({ firebase }) => {
   return (
     <Wrapper>
       <H2>Add User</H2>
-      <form onSubmit={handleAddUser}>
+      <Form onSubmit={handleAddUser}>
         <Select name="role" defaultValue={ROLES.USER}>
           <option value={ROLES.ADMIN}>Admin</option>
           <option value={ROLES.USER}>User</option>
         </Select>
-        <Input name="email" type="email" placeholder="jane.doe@domain.tld" />
-        <br />
-        <Button type="submit">Add user</Button>
-      </form>
+        <FormSection>
+          <Input name="email" type="email" placeholder="jane.doe@domain.tld" />
+          <br />
+          <Button type="submit">Add user</Button>
+        </FormSection>
+      </Form>
       <UlWrapper>
         <ul>
           {users &&

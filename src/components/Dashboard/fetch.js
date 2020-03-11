@@ -2,17 +2,20 @@ import axios from 'axios';
 
 import { proxy, apiUrl, defaultChartTypes, queryBakery } from './default';
 
-export const fetchDataTitles = () => {
+export const fetchDataTitles = callback => {
+  // ---- temp*** session not used
   const stored = JSON.parse(sessionStorage.getItem('dataTitles'));
 
   if (stored) {
     console.log('got dataTitles from sessionStorage.');
     return stored;
   }
+  // ---- temp***
 
   axios
     .get(proxy + apiUrl)
     .then(res => {
+      // sort chaos res into readable "sections"
       const substances = res.data.variables[0].values.map((item, nth) => ({
         name: res.data.variables[0].valueTexts[nth],
         code: item
@@ -25,6 +28,7 @@ export const fetchDataTitles = () => {
 
       const years = res.data.variables[3].values;
 
+      // our available chartTypes fit in here too
       const chartTypes = defaultChartTypes;
 
       const dataTitles = {
@@ -34,10 +38,8 @@ export const fetchDataTitles = () => {
         years
       };
 
-      // save in session
-      localStorage.setItem('dataTitles', JSON.stringify(dataTitles));
-
-      return dataTitles;
+      // use callback to update state
+      if (typeof callback === 'function') callback(dataTitles);
     })
     .catch(error => {
       console.log('DATA TITLES GET ERROR', error);
@@ -100,6 +102,4 @@ export const fetchData = (by, value, dataTitles) => {
     .catch(error => {
       console.log('POST ERROR', error);
     });
-  //}
-  //this.getEmissionData();
 };
