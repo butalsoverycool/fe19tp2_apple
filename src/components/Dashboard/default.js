@@ -1,21 +1,18 @@
+// workaround proxy for blocking cors policy
 export const proxy = 'https://cors-anywhere.herokuapp.com/';
+
+// url for the emission table from API
 export const apiUrl =
   'http://api.scb.se/OV0104/v1/doris/en/ssd/START/MI/MI0108/TotaltUtslapp';
 
+// available chart types (mar 2020)
 export const defaultChartTypes = [
   'Bar',
   'Area',
   'Radar' /*, 'scatter', 'pie' */
 ];
 
-export const defaultState = {
-  dataTitles: null,
-  tabs: [],
-  activeTab: null,
-  menuIsOpen: false,
-  creatingTab: false
-};
-
+// tab obj template
 export const defaultTab = newIndex => {
   return {
     id: 'tab-' + String((Math.random() * 100).toFixed(0)) + String(newIndex),
@@ -29,6 +26,7 @@ export const defaultTab = newIndex => {
   };
 };
 
+// chart obj template
 export const defaultChart = (input, index, chartType) => {
   const randType = Math.floor(Math.random() * defaultChartTypes.length); // rand chartType
 
@@ -43,6 +41,7 @@ export const defaultChart = (input, index, chartType) => {
   };
 };
 
+// data point obj template
 export const defaultDataPoint = (data, index) => {
   return {
     id: 'dataPoint-' + String((Math.random() * 100).toFixed(0)) + String(index),
@@ -53,6 +52,7 @@ export const defaultDataPoint = (data, index) => {
   };
 };
 
+// create query based on user choices
 export const queryBakery = (by, value) => {
   // eng -> se
   const code = by === 'substances' ? 'Luftfororening' : 'Sektor';
@@ -73,6 +73,7 @@ export const queryBakery = (by, value) => {
   };
 };
 
+// backup dataTitles (feb 2020) - 200 res
 export const defaultDataTitles = {
   substances: [
     {

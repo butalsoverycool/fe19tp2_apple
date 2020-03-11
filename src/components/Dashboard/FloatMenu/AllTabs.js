@@ -24,22 +24,27 @@ class AllTabs extends Component {
     this.outsideClickHandler = this.outsideClickHandler.bind(this);
   }
 
+  // on mount, listen for doc click
   componentDidMount() {
     document.addEventListener('mousedown', this.outsideClickHandler, false);
   }
 
+  // remove listener on unmount
   componentWillUnmount() {
     document.removeEventListener('mousedown', this.outsideClickHandler, false);
   }
 
+  // set wrapper ref, called by ref-selector itself
   setWrapperRef(node) {
     this.wrapperRef = node;
   }
 
+  // set list ref, called by ref-selector itself
   setListRef(node) {
     this.listRef = node;
   }
 
+  // handle clicks, determine if target is sidemenu
   outsideClickHandler(e) {
     const tabMenuChild = e.target.closest('.tabMenuWrapper');
 

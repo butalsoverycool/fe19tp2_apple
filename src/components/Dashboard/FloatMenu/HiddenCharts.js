@@ -17,22 +17,27 @@ class HiddenCharts extends Component {
     this.outsideClickHandler = this.outsideClickHandler.bind(this);
   }
 
+  // on mount, listen for doc click
   componentDidMount() {
     document.addEventListener('mousedown', this.outsideClickHandler, false);
   }
 
+  // remove listener on unmount
   componentWillUnmount() {
     document.removeEventListener('mousedown', this.outsideClickHandler, false);
   }
 
+  // set wrapper ref, called by ref-selector itself
   setWrapperRef(node) {
     this.wrapperRef = node;
   }
 
+  // set list ref, called by ref-selector itself
   setListRef(node) {
     this.listRef = node;
   }
 
+  // handle clicks, determine if target is sidemenu
   outsideClickHandler(e) {
     const wrapper = e.target.closest('.hiddenChartsMenuWrapper');
     const clickedRestore = e.target.classList.contains('restoreChartBtn');
@@ -54,7 +59,6 @@ class HiddenCharts extends Component {
 
   render() {
     const { isOpen } = this.state;
-
     const { charts, catRes } = this.props.dashboard.state.activeTab;
     const { setDisabledChart } = this.props.dashboard.setters;
 

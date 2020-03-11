@@ -111,9 +111,6 @@ class ActiveTab extends Component {
   };
 
   updateData = () => {
-    //const { setFetchingCharts } = this.props.dashboard.setters;
-    //setFetchingCharts({ started: true, ended: false });
-
     const { activeTab, dataTitles } = this.props.dashboard.state;
     const { updateTab, setStorage } = this.props.dashboard.setters;
     const { catKey, catVal, catRes, chartType } = activeTab;
@@ -130,7 +127,6 @@ class ActiveTab extends Component {
           code: item.key[1]
         };
 
-        //const substance = item.key[0];
         const substance = {
           name: dataTitles.substances.filter(
             subs => subs.code === item.key[0]
@@ -140,7 +136,6 @@ class ActiveTab extends Component {
 
         const value = parseInt(item.values[0]) || 0;
 
-        /* return defaultChart({ year, sector, substance, value }, nth); */
         return {
           year,
           sector,
@@ -170,7 +165,6 @@ class ActiveTab extends Component {
       const charts = sortedArr.map((item, nth) =>
         defaultChart(item, nth, chartType)
       );
-      //console.log('data sorted based on catKey/Val', sortedArr);
 
       activeTab.charts = charts;
 
@@ -184,7 +178,7 @@ class ActiveTab extends Component {
         processData(res.data.data);
       })
       .catch(error => {
-        console.log('POST ERROR', error);
+        console.log('Tried to fetch data', error);
         processData(allEmissionData);
       });
   };

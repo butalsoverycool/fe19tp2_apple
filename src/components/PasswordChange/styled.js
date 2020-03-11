@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { device } from '../device';
 
 export const Submit = styled.button`
   background: #eaeaea;
@@ -9,14 +8,14 @@ export const Submit = styled.button`
 
   height: 2rem;
   width: 100%;
-  margin-top: 1rem;
+  margin-bottom: 1rem;
 `;
 
 export const Input = styled.input`
   padding: 9px;
   font-size: 13px;
   border: none;
-  margin-top: 1em;
+  margin-bottom: 1em;
   background: #eaeaea;
   border-radius: 0.2rem;
   text-align: center;
@@ -27,9 +26,7 @@ export const Input = styled.input`
   outline: none;
 `;
 
-export const FormWrapper = styled.form`
-  margin-top: 10em;
-`;
+export const FormWrapper = styled.form``;
 
 export const Wrapper = styled.div`
   flex: 1;
@@ -53,4 +50,5 @@ export const Wrapper = styled.div`
 
 export const H2 = styled.h2`
   font-weight: lighter;
+  margin-bottom: 2em;
 `;

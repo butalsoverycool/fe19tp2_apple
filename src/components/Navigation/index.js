@@ -49,11 +49,15 @@ const NavigationAuth = props => (
         </NavLink>
         <Styled.LI>
           <NavLink to={ROUTES.DASHBOARD} activeClassName="is-active">
-            <img className="SVG" src={DashLogo}></img>
+            <img className="SVG" src={DashLogo} alt="dashboard-page-icon"></img>
           </NavLink>
 
           <NavLink to={ROUTES.ACCOUNT} activeClassName="is-active">
-            <img className="SVG" src={AccountLogo}></img>
+            <img
+              className="SVG"
+              src={AccountLogo}
+              alt="account-page-icon"
+            ></img>
           </NavLink>
         </Styled.LI>
         <SignOutButton />

@@ -50,8 +50,6 @@ class Firebase {
     this.user(uid)
       .update(newUser)
       .then(res => {
-        //console.log(`Updated user (${JSON.stringify(newUser)})`);
-
         typeof callback === 'function' && callback();
       })
       .catch(err => {

@@ -39,18 +39,6 @@ const Container = styled(ResponsiveContainer)`
   flex: 1;
 `;
 
-const ChartTitle = styled.h4`
-  font-size: 16px;
-  margin: 0;
-
-  & > span {
-    opacity: 0.6;
-    color: #666;
-    font-weight: 100;
-    font-style: italic;
-  }
-`;
-
 export const AreaTemplate = ({ data, theme }) => {
   return (
     <Container width={'99%'} height={'99%'}>

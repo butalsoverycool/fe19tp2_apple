@@ -27,6 +27,7 @@ const Wrapper = styled.div`
 const H2 = styled.h2`
   font-weight: lighter;
   justify-self: flex-start;
+  margin-bottom: 2em;
 `;
 
 const Form = styled.form`
@@ -114,7 +115,6 @@ const UserManagement = ({ firebase }) => {
 
   const handleAddUser = e => {
     e.preventDefault();
-    console.log('hej');
 
     const email = e.target.email.value;
     const role = e.target.role.value;

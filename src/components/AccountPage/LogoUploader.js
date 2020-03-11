@@ -32,6 +32,7 @@ margin-top: 3em;
 
 const Logotext = styled.p`
   margin: 0;
+  margin-bottom: 2em;
 `;
 
 class LogoUploader extends Component {
@@ -72,8 +73,6 @@ class LogoUploader extends Component {
   render() {
     const { logo, logoUrl } = this.state;
     const { previewLogo } = this.props.theme.setters;
-
-    //console.log('in LOGOUPLOADER logo', logo, 'logoUrl', logoUrl);
 
     const uploadInfo = !this.props.theme.state.logo ? (
       ''

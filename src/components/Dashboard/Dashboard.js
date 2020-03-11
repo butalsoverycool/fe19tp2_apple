@@ -6,12 +6,11 @@ import ActiveTab from './ActiveTab/index.js';
 import FloatMenu from './FloatMenu';
 import NewTabFirst from './NewTabFirst';
 
-import { defaultTab } from './default';
+import { defaultTab, defaultDataTitles } from './default';
 
 import { withFirebase } from '../Firebase';
 import { fetchDataTitles } from './fetch';
 
-//temp styles
 const Wrapper = styled.div`
   width: 100vw;
   display: flex;
@@ -24,7 +23,7 @@ class Dashboard extends Component {
     super(props);
 
     this.state = {
-      // Table of contents of API-data, get from LStorage, else API
+      // Table of contents of API-data, start fresh
       dataTitles: [],
 
       // Tab = Previously saved chart presets, get from LStorage, else API
@@ -46,6 +45,7 @@ class Dashboard extends Component {
       }
     };
 
+    // funcs to update state
     this.getStorage = this.getStorage.bind(this);
     this.setStorage = this.setStorage.bind(this);
     this.updateFirebaseTabs = this.updateFirebaseTabs.bind(this);
@@ -61,14 +61,17 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
+    // Table of contents of API-data, get from LStorage, else API, else server backup-version
     this.setState({
       dataTitles:
         this.getStorage('dataTitles') ||
         fetchDataTitles(this.handleDataTitleFetch) ||
+        defaultDataTitles ||
         []
     });
   }
 
+  // callback with res from fetching dataTitles with axios
   handleDataTitleFetch(dataTitles) {
     this.setState({
       dataTitles
@@ -89,15 +92,11 @@ class Dashboard extends Component {
 
       // if no tabs, bail...
       if (!tabs) return [];
-      console.log('Found saved tabs in db. Loading...');
 
       // tab to edit
       const activeTab = tabs.length > 0 ? tabs[0] : null;
 
-      //we use no callback so skip seperate updates:
-      //this.updateAllTabs(tabs);
-      //this.setActiveTab(activeTab);
-
+      //(we need no callback here so skip seperate this-funcs to update)
       // and instead update state here
       this.setState({
         tabs,
@@ -122,24 +121,10 @@ class Dashboard extends Component {
   }
 
   // load from LStorage
-  getStorage = key => {
-    const res = JSON.parse(localStorage.getItem(key));
-    if (res !== undefined && res !== null) {
-      console.log(`Got ${key} from storage.`);
-    }
-    return res;
-  };
+  getStorage = key => JSON.parse(localStorage.getItem(key));
 
   // save to LStorage
-  setStorage = (key, val) => {
-    let valStr = JSON.stringify(val);
-
-    localStorage.setItem(key, valStr);
-
-    if (valStr.length > 20) valStr = valStr.slice(0, 20) + '...';
-
-    console.log(`Stored ${key} (${valStr})`);
-  };
+  setStorage = (key, val) => localStorage.setItem(key, JSON.stringify(val));
 
   // create a new tab
   newTab() {
@@ -200,18 +185,12 @@ class Dashboard extends Component {
         : tabs[tabIndex] || tabs[tabIndex - 1] || tabs[tabIndex + 1] || null;
 
     if (tabs.length < 1) newActive = null;
-    console.log('len', tabs.length);
 
     this.setActiveTab(newActive);
 
     this.updateAllTabs(tabs, callback);
 
-    /* this.setState({ tabs, activeTab: newActive }, () =>
-      typeof callback === 'function' ? callback() : null
-    ); */
-
     this.updateFirebaseTabs(tabs);
-    //this.setStorage('tabs', tabs);
   };
 
   setDisabledChart(chartId, currentState) {
@@ -232,7 +211,7 @@ class Dashboard extends Component {
   }
 
   render() {
-    // ctx setters
+    // setter-funcs to distribute in dashboard ctx
     const setters = {
       getStorage: this.getStorage,
       setStorage: this.setStorage,

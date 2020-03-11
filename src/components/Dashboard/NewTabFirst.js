@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { keyframes, css } from 'styled-components';
+import styled from 'styled-components';
 import { withDashboard } from './context';
 
 const Btn = styled.button`
@@ -54,9 +54,11 @@ const Txt = styled.p`
 `;
 
 const NewFirstTab = props => {
+  // ctx-vars
   const { newTab } = props.dashboard.setters;
   const { tabs, activeTab, creatingTab } = props.dashboard.state;
 
+  // usable vars for conditions
   const tabLen = tabs ? tabs.length : 0;
   const charts = activeTab ? activeTab.charts : null;
   const hiddenCharts = charts ? charts.filter(chart => chart.disabled) : [];
