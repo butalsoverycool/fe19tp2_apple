@@ -214,7 +214,7 @@ class TabSettings extends Component {
         processData(res.data.data);
       })
       .catch(error => {
-        console.log('POST ERROR', error);
+        console.log('Tried to fetch data', error);
         processData(allEmissionData); // temp** PLAN B!
       });
   };
@@ -235,8 +235,6 @@ class TabSettings extends Component {
     if (dataTitles.length < 1) {
       return null;
     }
-
-    if (this.state.fetching) console.log('fetching data charts');
 
     return (
       <Wrapper className="TabSettingsWrapper">
@@ -264,7 +262,6 @@ class TabSettings extends Component {
               }}
             ></TabName>
 
-            {/*  <DropdownContainer className="dropdown-container-category"> */}
             <Select
               value={catKey || 'default'}
               selected={catKey}
@@ -371,7 +368,6 @@ class TabSettings extends Component {
                 </Select>
               </>
             ) : null}
-            {/* </DropdownContainer> */}
           </DropdownContainer>
         </TabWrapper>
       </Wrapper>

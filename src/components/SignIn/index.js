@@ -6,7 +6,7 @@ import { PasswordForgetLink } from '../PasswordForget';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
 import * as Styled from './styled';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 const Form = styled.form`
   & * {

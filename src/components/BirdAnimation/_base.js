@@ -1,17 +1,17 @@
 /* eslint-disable */
-import { extend, mobileCheck, q, color2Hex } from './helpers.js'
+import { extend, mobileCheck, q, color2Hex } from './helpers.js';
 // const DEBUGMODE = window.location.toString().indexOf('VANTADEBUG') !== -1
 
-const win = typeof window == 'object'
-let THREE = (win && window.THREE) || {}
-if (win && !window.VANTA) window.VANTA = {}
-const VANTA = (win && window.VANTA) || {}
+const win = typeof window == 'object';
+let THREE = (win && window.THREE) || {};
+if (win && !window.VANTA) window.VANTA = {};
+const VANTA = (win && window.VANTA) || {};
 VANTA.register = (name, Effect) => {
-  return VANTA[name] = (opts) => new Effect(opts)
-}
-VANTA.version = '0.5.11'
+  return (VANTA[name] = opts => new Effect(opts));
+};
+VANTA.version = '0.5.11';
 
-export { VANTA }
+export { VANTA };
 
 // const ORBITCONTROLS = {
 //   enableZoom: false,
@@ -34,121 +34,126 @@ export { VANTA }
 // }
 
 // Namespace for errors
-const error = function () {
-  Array.prototype.unshift.call(arguments, '[VANTA]')
-  return console.error.apply(this, arguments)
-}
+const error = function() {
+  Array.prototype.unshift.call(arguments, '[VANTA]');
+  return console.error.apply(this, arguments);
+};
 
 VANTA.VantaBase = class VantaBase {
   constructor(userOptions = {}) {
-    if (!win) return false
-    VANTA.current = this
-    this.windowMouseMoveWrapper = this.windowMouseMoveWrapper.bind(this)
-    this.windowTouchWrapper = this.windowTouchWrapper.bind(this)
-    this.resize = this.resize.bind(this)
-    this.animationLoop = this.animationLoop.bind(this)
-    this.restart = this.restart.bind(this)
+    if (!win) return false;
+    VANTA.current = this;
+    this.windowMouseMoveWrapper = this.windowMouseMoveWrapper.bind(this);
+    this.windowTouchWrapper = this.windowTouchWrapper.bind(this);
+    this.resize = this.resize.bind(this);
+    this.animationLoop = this.animationLoop.bind(this);
+    this.restart = this.restart.bind(this);
 
-    const defaultOptions = (typeof this.getDefaultOptions === 'function') ? this.getDefaultOptions() : this.defaultOptions
-    this.options = extend({
-      mouseControls: true,
-      touchControls: true,
-      minHeight: 200,
-      minWidth: 200,
-      scale: 1,
-      scaleMobile: 1,
-    }, defaultOptions)
+    const defaultOptions =
+      typeof this.getDefaultOptions === 'function'
+        ? this.getDefaultOptions()
+        : this.defaultOptions;
+    this.options = extend(
+      {
+        mouseControls: true,
+        touchControls: true,
+        minHeight: 200,
+        minWidth: 200,
+        scale: 1,
+        scaleMobile: 1
+      },
+      defaultOptions
+    );
 
     if (userOptions instanceof HTMLElement || typeof userOptions === 'string') {
-      userOptions = { el: userOptions }
+      userOptions = { el: userOptions };
     }
-    extend(this.options, userOptions)
+    extend(this.options, userOptions);
 
     if (this.options.THREE) {
-      THREE = this.options.THREE // Optionally use a custom build of three.js
+      THREE = this.options.THREE; // Optionally use a custom build of three.js
     }
 
     // Set element
-    this.el = this.options.el
+    this.el = this.options.el;
     if (this.el == null) {
-      error("Instance needs \"el\" param!")
+      error('Instance needs "el" param!');
     } else if (!(this.options.el instanceof HTMLElement)) {
-      const selector = this.el
-      this.el = q(selector)
+      const selector = this.el;
+      this.el = q(selector);
       if (!this.el) {
-        error("Cannot find element", selector)
-        return
+        error('Cannot find element', selector);
+        return;
       }
     }
 
-    this.prepareEl()
-    this.initThree()
-    this.setSize() // Init needs size
+    this.prepareEl();
+    this.initThree();
+    this.setSize(); // Init needs size
 
     try {
-      this.init()
+      this.init();
     } catch (e) {
       // FALLBACK - just use color
-      error('Init error', e)
+      error('Init error', e);
       if (this.renderer && this.renderer.domElement) {
-        this.el.removeChild(this.renderer.domElement)
+        this.el.removeChild(this.renderer.domElement);
       }
       if (this.options.backgroundColor) {
-        console.log('[VANTA] Falling back to backgroundColor')
-        this.el.style.background = color2Hex(this.options.backgroundColor)
+        this.el.style.background = color2Hex(this.options.backgroundColor);
       }
-      return
+      return;
     }
 
-    const ad = window.addEventListener
-    ad('resize', this.resize)
-    window.requestAnimationFrame(this.resize) // Force a resize after the first frame
+    const ad = window.addEventListener;
+    ad('resize', this.resize);
+    window.requestAnimationFrame(this.resize); // Force a resize after the first frame
 
-    this.resize()
-    this.animationLoop()
+    this.resize();
+    this.animationLoop();
 
     // Add event listeners on window, because this element may be below other elements, which would block the element's own mousemove event
     if (this.options.mouseControls) {
-      ad('scroll', this.windowMouseMoveWrapper)
-      ad('mousemove', this.windowMouseMoveWrapper)
+      ad('scroll', this.windowMouseMoveWrapper);
+      ad('mousemove', this.windowMouseMoveWrapper);
     }
     if (this.options.touchControls) {
-      ad('touchstart', this.windowTouchWrapper)
-      ad('touchmove', this.windowTouchWrapper)
+      ad('touchstart', this.windowTouchWrapper);
+      ad('touchmove', this.windowTouchWrapper);
     }
   }
 
   setOptions(userOptions = {}) {
-    extend(this.options, userOptions)
+    extend(this.options, userOptions);
   }
 
   prepareEl() {
-    let i, child
+    let i, child;
     // wrapInner for text nodes
     if (typeof Node !== 'undefined' && Node.TEXT_NODE) {
       for (i = 0; i < this.el.childNodes.length; i++) {
-        const n = this.el.childNodes[i]
+        const n = this.el.childNodes[i];
         if (n.nodeType === Node.TEXT_NODE) {
-          const s = document.createElement('span')
-          s.textContent = n.textContent
-          n.parentElement.insertBefore(s, n)
-          n.remove()
+          const s = document.createElement('span');
+          s.textContent = n.textContent;
+          n.parentElement.insertBefore(s, n);
+          n.remove();
         }
       }
     }
     // Set foreground elements
     for (i = 0; i < this.el.children.length; i++) {
-      child = this.el.children[i]
+      child = this.el.children[i];
       if (getComputedStyle(child).position === 'static') {
-        child.style.position = 'relative'
+        child.style.position = 'relative';
       }
       if (getComputedStyle(child).zIndex === 'auto') {
-        child.style.zIndex = 1
+        child.style.zIndex = 1;
       }
     }
     // Set canvas and container style
     if (getComputedStyle(this.el).position === 'static') {
-      this.el.style.position = 'relative'
+      this.el.style.position = 'relative';
     }
   }
 
@@ -159,158 +164,171 @@ VANTA.VantaBase = class VantaBase {
       top: 0,
       left: 0,
       background: ''
-    })
-    extend(canvasEl.style, opts)
-    canvasEl.classList.add('vanta-canvas')
+    });
+    extend(canvasEl.style, opts);
+    canvasEl.classList.add('vanta-canvas');
   }
 
   initThree() {
     if (!THREE.WebGLRenderer) {
-      console.warn("[VANTA] No THREE defined on window")
-      return
+      console.warn('[VANTA] No THREE defined on window');
+      return;
     }
     // Set renderer
     this.renderer = new THREE.WebGLRenderer({
       alpha: true,
       antialias: true
-    })
-    this.el.appendChild(this.renderer.domElement)
-    this.applyCanvasStyles(this.renderer.domElement)
+    });
+    this.el.appendChild(this.renderer.domElement);
+    this.applyCanvasStyles(this.renderer.domElement);
     if (isNaN(this.options.backgroundAlpha)) {
-      this.options.backgroundAlpha = 1
+      this.options.backgroundAlpha = 1;
     }
 
-    this.scene = new THREE.Scene()
+    this.scene = new THREE.Scene();
   }
 
   getCanvasElement() {
     if (this.renderer) {
-      return this.renderer.domElement
+      return this.renderer.domElement;
     }
     if (this.p5renderer) {
-      return this.p5renderer.canvas
+      return this.p5renderer.canvas;
     }
   }
 
   windowMouseMoveWrapper(e) {
-    const canvas = this.getCanvasElement()
-    if (!canvas) return false
-    const rect = canvas.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
+    const canvas = this.getCanvasElement();
+    if (!canvas) return false;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
     if (x >= 0 && y >= 0 && x <= rect.width && y <= rect.height) {
-      this.mouseX = x
-      this.mouseY = y
-      if (!this.options.mouseEase) this.triggerMouseMove(x, y)
+      this.mouseX = x;
+      this.mouseY = y;
+      if (!this.options.mouseEase) this.triggerMouseMove(x, y);
     }
   }
   windowTouchWrapper(e) {
     if (e.touches.length === 1) {
-      const canvas = this.getCanvasElement()
-      if (!canvas) return false
-      const rect = canvas.getBoundingClientRect()
-      const x = e.touches[0].clientX - rect.left
-      const y = e.touches[0].clientY - rect.top
+      const canvas = this.getCanvasElement();
+      if (!canvas) return false;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.touches[0].clientX - rect.left;
+      const y = e.touches[0].clientY - rect.top;
       if (x >= 0 && y >= 0 && x <= rect.width && y <= rect.height) {
-        this.mouseX = x
-        this.mouseY = y
-        if (!this.options.mouseEase) this.triggerMouseMove(x, y)
+        this.mouseX = x;
+        this.mouseY = y;
+        if (!this.options.mouseEase) this.triggerMouseMove(x, y);
       }
     }
   }
 
   triggerMouseMove(x, y) {
     if (this.uniforms) {
-      this.uniforms.iMouse.value.x = x / this.scale // pixel values
-      this.uniforms.iMouse.value.y = y / this.scale // pixel values
+      this.uniforms.iMouse.value.x = x / this.scale; // pixel values
+      this.uniforms.iMouse.value.y = y / this.scale; // pixel values
     }
-    const xNorm = x / this.width // 0 to 1
-    const yNorm = y / this.height // 0 to 1
-    typeof this.onMouseMove === "function" ? this.onMouseMove(xNorm, yNorm) : void 0
+    const xNorm = x / this.width; // 0 to 1
+    const yNorm = y / this.height; // 0 to 1
+    typeof this.onMouseMove === 'function'
+      ? this.onMouseMove(xNorm, yNorm)
+      : void 0;
   }
 
   setSize() {
-    this.scale || (this.scale = 1)
+    this.scale || (this.scale = 1);
     if (mobileCheck() && this.options.scaleMobile) {
-      this.scale = this.options.scaleMobile
+      this.scale = this.options.scaleMobile;
     } else if (this.options.scale) {
-      this.scale = this.options.scale
+      this.scale = this.options.scale;
     }
-    this.width = Math.max(this.el.offsetWidth, this.options.minWidth)
-    this.height = Math.max(this.el.offsetHeight, this.options.minHeight)
+    this.width = Math.max(this.el.offsetWidth, this.options.minWidth);
+    this.height = Math.max(this.el.offsetHeight, this.options.minHeight);
 
     // Init mouseX and mouseY
-    if ((!this.mouseX && !this.mouseY) ||
-      (this.mouseX === this.options.minWidth / 2 && this.mouseY === this.options.minHeight / 2)) {
-      this.mouseX = this.width / 2
-      this.mouseY = this.height / 2
-      this.triggerMouseMove(this.mouseX, this.mouseY)
+    if (
+      (!this.mouseX && !this.mouseY) ||
+      (this.mouseX === this.options.minWidth / 2 &&
+        this.mouseY === this.options.minHeight / 2)
+    ) {
+      this.mouseX = this.width / 2;
+      this.mouseY = this.height / 2;
+      this.triggerMouseMove(this.mouseX, this.mouseY);
     }
   }
 
   resize() {
-    this.setSize()
+    this.setSize();
     if (this.camera) {
-      this.camera.aspect = this.width / this.height
-      if (typeof this.camera.updateProjectionMatrix === "function") {
-        this.camera.updateProjectionMatrix()
+      this.camera.aspect = this.width / this.height;
+      if (typeof this.camera.updateProjectionMatrix === 'function') {
+        this.camera.updateProjectionMatrix();
       }
     }
     if (this.renderer) {
-      this.renderer.setSize(this.width, this.height)
-      this.renderer.setPixelRatio(window.devicePixelRatio / this.scale)
+      this.renderer.setSize(this.width, this.height);
+      this.renderer.setPixelRatio(window.devicePixelRatio / this.scale);
     }
-    typeof this.onResize === "function" ? this.onResize() : void 0
+    typeof this.onResize === 'function' ? this.onResize() : void 0;
   }
 
   isOnScreen() {
-    const elHeight = this.el.offsetHeight
-    const elRect = this.el.getBoundingClientRect()
-    const scrollTop = (window.pageYOffset ||
-      (document.documentElement || document.body.parentNode || document.body).scrollTop
-    )
-    const offsetTop = elRect.top + scrollTop
-    const minScrollTop = offsetTop - window.innerHeight
-    const maxScrollTop = offsetTop + elHeight
-    return minScrollTop <= scrollTop && scrollTop <= maxScrollTop
+    const elHeight = this.el.offsetHeight;
+    const elRect = this.el.getBoundingClientRect();
+    const scrollTop =
+      window.pageYOffset ||
+      (document.documentElement || document.body.parentNode || document.body)
+        .scrollTop;
+    const offsetTop = elRect.top + scrollTop;
+    const minScrollTop = offsetTop - window.innerHeight;
+    const maxScrollTop = offsetTop + elHeight;
+    return minScrollTop <= scrollTop && scrollTop <= maxScrollTop;
   }
 
   animationLoop() {
     // Step time
-    this.t || (this.t = 0)
-    this.t += 1
+    this.t || (this.t = 0);
+    this.t += 1;
     // Uniform time
-    this.t2 || (this.t2 = 0)
-    this.t2 += (this.options.speed || 1)
+    this.t2 || (this.t2 = 0);
+    this.t2 += this.options.speed || 1;
     if (this.uniforms) {
-      this.uniforms.iTime.value = this.t2 * 0.016667 // u_time is in seconds
+      this.uniforms.iTime.value = this.t2 * 0.016667; // u_time is in seconds
     }
 
     if (this.options.mouseEase) {
-      this.mouseEaseX = this.mouseEaseX || this.mouseX || 0
-      this.mouseEaseY = this.mouseEaseY || this.mouseY || 0
-      if (Math.abs(this.mouseEaseX - this.mouseX) + Math.abs(this.mouseEaseY - this.mouseY) > 0.1) {
-        this.mouseEaseX += (this.mouseX - this.mouseEaseX) * 0.05
-        this.mouseEaseY += (this.mouseY - this.mouseEaseY) * 0.05
-        this.triggerMouseMove(this.mouseEaseX, this.mouseEaseY)
+      this.mouseEaseX = this.mouseEaseX || this.mouseX || 0;
+      this.mouseEaseY = this.mouseEaseY || this.mouseY || 0;
+      if (
+        Math.abs(this.mouseEaseX - this.mouseX) +
+          Math.abs(this.mouseEaseY - this.mouseY) >
+        0.1
+      ) {
+        this.mouseEaseX += (this.mouseX - this.mouseEaseX) * 0.05;
+        this.mouseEaseY += (this.mouseY - this.mouseEaseY) * 0.05;
+        this.triggerMouseMove(this.mouseEaseX, this.mouseEaseY);
       }
     }
 
     // Only animate if element is within view
     if (this.isOnScreen() || this.options.forceAnimate) {
-      if (typeof this.onUpdate === "function") {
-        this.onUpdate()
+      if (typeof this.onUpdate === 'function') {
+        this.onUpdate();
       }
       if (this.scene && this.camera) {
-        this.renderer.render(this.scene, this.camera)
-        this.renderer.setClearColor(this.options.backgroundColor, this.options.backgroundAlpha)
+        this.renderer.render(this.scene, this.camera);
+        this.renderer.setClearColor(
+          this.options.backgroundColor,
+          this.options.backgroundAlpha
+        );
       }
       // if (this.stats) this.stats.update()
       // if (this.renderStats) this.renderStats.update(this.renderer)
       // if (this.fps && this.fps.update) this.fps.update()
       // if (typeof this.afterRender === "function") this.afterRender()
     }
-    return this.req = window.requestAnimationFrame(this.animationLoop)
+    return (this.req = window.requestAnimationFrame(this.animationLoop));
   }
 
   // setupControls() {
@@ -325,42 +343,42 @@ VANTA.VantaBase = class VantaBase {
     // Restart the effect without destroying the renderer
     if (this.scene) {
       while (this.scene.children.length) {
-        this.scene.remove(this.scene.children[0])
+        this.scene.remove(this.scene.children[0]);
       }
     }
-    if (typeof this.onRestart === "function") {
-      this.onRestart()
+    if (typeof this.onRestart === 'function') {
+      this.onRestart();
     }
-    this.init()
+    this.init();
   }
 
   init() {
-    if (typeof this.onInit === "function") {
-      this.onInit()
+    if (typeof this.onInit === 'function') {
+      this.onInit();
     }
     // this.setupControls()
   }
 
   destroy() {
-    if (typeof this.onDestroy === "function") {
-      this.onDestroy()
+    if (typeof this.onDestroy === 'function') {
+      this.onDestroy();
     }
-    const rm = window.removeEventListener
-    rm('touchstart', this.windowTouchWrapper)
-    rm('touchmove', this.windowTouchWrapper)
-    rm('scroll', this.windowMouseMoveWrapper)
-    rm('mousemove', this.windowMouseMoveWrapper)
-    rm('resize', this.resize)
+    const rm = window.removeEventListener;
+    rm('touchstart', this.windowTouchWrapper);
+    rm('touchmove', this.windowTouchWrapper);
+    rm('scroll', this.windowMouseMoveWrapper);
+    rm('mousemove', this.windowMouseMoveWrapper);
+    rm('resize', this.resize);
 
-    window.cancelAnimationFrame(this.req)
+    window.cancelAnimationFrame(this.req);
     if (this.renderer) {
       if (this.renderer.domElement) {
-        this.el.removeChild(this.renderer.domElement)
+        this.el.removeChild(this.renderer.domElement);
       }
-      this.renderer = null
-      this.scene = null
+      this.renderer = null;
+      this.scene = null;
     }
   }
-}
+};
 
-export default VANTA.VantaBase
+export default VANTA.VantaBase;

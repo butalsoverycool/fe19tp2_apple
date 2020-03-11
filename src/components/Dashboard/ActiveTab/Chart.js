@@ -175,7 +175,6 @@ class Chart extends Component {
 
     const chart = this.props.chart;
 
-    /* if (!charts || charts.length < 1) return null; */
     const filtered = chart.data.filter(
       entry => entry.year >= timespan.from && entry.year <= timespan.to
     );
