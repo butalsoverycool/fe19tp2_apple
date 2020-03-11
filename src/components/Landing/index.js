@@ -7,7 +7,10 @@ class Landing extends Component {
       <Styled.Grid>
         <Styled.Wrapper>
           <Styled.Intro>Birds Eye View</Styled.Intro>
-          <Styled.Info>Lorem Ipsum miljö environment starry sky bon jovi, great information <br /> here and more cool stuff wish greta thunberg saw this</Styled.Info>
+          <Styled.Info>
+            B.E.V is a personal dashboard for your company. <br /> Take your
+            environmental impact to the next level.{' '}
+          </Styled.Info>
         </Styled.Wrapper>
       </Styled.Grid>
     );
