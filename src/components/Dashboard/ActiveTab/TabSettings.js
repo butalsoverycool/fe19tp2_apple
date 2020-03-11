@@ -230,6 +230,8 @@ class TabSettings extends Component {
 
     const tabPlaceholder = 'Give this tab a name';
 
+    if (!dataTitles) return null;
+
     if (dataTitles.length < 1) {
       return null;
     }

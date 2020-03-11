@@ -25,10 +25,7 @@ class Dashboard extends Component {
 
     this.state = {
       // Table of contents of API-data, get from LStorage, else API
-      dataTitles:
-        this.getStorage('dataTitles') ||
-        fetchDataTitles(this.handleDataTitleFetch) ||
-        [],
+      dataTitles: [],
 
       // Tab = Previously saved chart presets, get from LStorage, else API
       tabs: this.getStorage('tabs') || this.loadTabs() || [],
@@ -61,6 +58,15 @@ class Dashboard extends Component {
     this.loadTabs = this.loadTabs.bind(this);
     this.setFetchingCharts = this.setFetchingCharts.bind(this);
     this.handleDataTitleFetch = this.handleDataTitleFetch.bind(this);
+  }
+
+  componentDidMount() {
+    this.setState({
+      dataTitles:
+        this.getStorage('dataTitles') ||
+        fetchDataTitles(this.handleDataTitleFetch) ||
+        []
+    });
   }
 
   handleDataTitleFetch(dataTitles) {
