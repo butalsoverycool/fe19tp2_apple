@@ -213,16 +213,20 @@ class ActiveTab extends Component {
 
     const { catVal, name } = tab;
 
-    let tabName = name;
+    let tabName = name || '';
     if (tabName.length > 25) {
       tabName = tabName.slice(0, 25) + '...';
     }
 
+    tab.charts = tab.charts || [];
+
     return (
       <TabWrapper className={'Tab-' + tab.name}>
-        {tab.charts.length > 0 && <TabTitle>{tabName}</TabTitle>}
-
-        {tab.charts.length < 1 && <TabSettings />}
+        {tab.charts.length > 0 ? (
+          <TabTitle>{tabName}</TabTitle>
+        ) : (
+          <TabSettings />
+        )}
 
         <ChartsWrapper>
           {catVal ? <Charts /> : null}

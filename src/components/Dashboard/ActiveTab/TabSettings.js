@@ -123,71 +123,87 @@ class TabSettings extends Component {
   };
 
   updateData = () => {
+    // we are officially waiting for charts to load...
     if (this.state._isMounted) {
-      this.setState({ fetching: true });
+      const { setFetchingCharts } = this.props.dashboard.setters;
+      setFetchingCharts({
+        started: true,
+        ended: false
+      });
     }
 
-    //const { setFetchingCharts } = this.props.dashboard.setters;
-    //setFetchingCharts({ started: true, ended: false });
-
+    // some relevant vars and funcs from dashboard ctx
     const { activeTab, dataTitles } = this.props.dashboard.state;
     const { updateTab, setStorage } = this.props.dashboard.setters;
     const { catKey, catVal, catRes } = activeTab;
 
+    // (catRes = the not chosen cat)
+    // singular version of catRes (eg substances - substance) for pointing to the right data-prop later
+    const catResSingular = catRes.slice(0, -1);
+
+    // bake our query based on user choice (catVal)
     const query = queryBakery(catKey, catVal);
 
+    // going down to axios...
+
     const processData = input => {
+      // 1. pick out each subdata pack into arr
       const data = input.map((item, nth) => {
-        const year = parseInt(item.key[2]);
-
-        const sector = {
-          name: dataTitles.sectors.filter(sect => sect.code === item.key[1])[0]
-            .name,
-          code: item.key[1]
-        };
-
-        //const substance = item.key[0];
-        const substance = {
-          name: dataTitles.substances.filter(
-            subs => subs.code === item.key[0]
-          )[0].name,
-          code: item.key[0]
-        };
-
-        const value = parseInt(item.values[0]) || 0;
-
-        /* return defaultChart({ year, sector, substance, value }, nth); */
         return {
-          year,
-          sector,
-          substance,
-          value
+          //year
+          year: parseInt(item.key[2]),
+
+          // sector: only got code so get corresponding name from dataTitles by comparing code
+          sector: {
+            name: dataTitles.sectors.filter(
+              sect => sect.code === item.key[1]
+            )[0].name,
+            code: item.key[1]
+          },
+
+          // subst: same with substance
+          substance: {
+            name: dataTitles.substances.filter(
+              subs => subs.code === item.key[0]
+            )[0].name,
+            code: item.key[0]
+          },
+
+          // value
+          value: parseInt(item.values[0]) || 0
         };
       });
 
+      // 2.
+      // we want 1 chart for each of the catRes:ess
+      // and each chart with all the data vals of the chosen catVal
+
+      // create obj with catRes-keys
       // sort data based on category key/val
       const sortedObj = {};
 
-      dataTitles[catRes].forEach(item => {
-        sortedObj[item.code] = [];
-      });
-
-      const catResSingular = catRes.slice(0, -1);
-
-      data.forEach((item, nth) => {
+      // put each fetched data-item in the right obj-arr based on key
+      data.forEach(item => {
+        // current key to match from item's prop
         const itemKey = item[catResSingular].code || item[catResSingular];
 
-        sortedObj[itemKey].id = 'chart-' + nth;
+        // if not exists, create arr to push into
+        if (typeof sortedObj[itemKey] !== 'object') sortedObj[itemKey] = [];
         sortedObj[itemKey].push(item);
       });
 
+      // but hey, we wanted an arr all along...
       const sortedArr = Object.values(sortedObj);
 
-      const charts = sortedArr.map((item, nth) => defaultChart(item, nth));
-      //console.log('data sorted based on catKey/Val', sortedArr);
+      // data structure completed!
 
+      // make chart-template of each item in our arr
+      const charts = sortedArr.map((item, nth) => defaultChart(item, nth));
+
+      // put charts in current tab
       activeTab.charts = charts;
 
+      // update tab (and all tabs in dashboard ctx)
       setStorage('activeTab', activeTab);
       updateTab(activeTab);
     };
@@ -199,23 +215,39 @@ class TabSettings extends Component {
       })
       .catch(error => {
         console.log('POST ERROR', error);
-        processData(allEmissionData);
+        processData(allEmissionData); // temp** PLAN B!
       });
   };
 
   render() {
-    const { dataTitles, activeTab: tab } = this.props.dashboard.state;
+    const {
+      dataTitles,
+      activeTab: tab,
+      fetchingCharts
+    } = this.props.dashboard.state;
 
     const { catKey, catVal, name, timespan, chartType } = tab;
 
     const tabPlaceholder = 'Give this tab a name';
 
+    if (!dataTitles) return null;
+
+    if (dataTitles.length < 1) {
+      return null;
+    }
+
     if (this.state.fetching) console.log('fetching data charts');
 
     return (
       <Wrapper className="TabSettingsWrapper">
-        {this.state.fetching && (
-          <PopupMsg txt="Fetching your charts" enter={true} loader={true} />
+        {fetchingCharts.started && (
+          <PopupMsg
+            txt="Fetching your charts"
+            enter={true}
+            exit={fetchingCharts.ended}
+            loader={true}
+            exDelay=".5s"
+          />
         )}
 
         <TabWrapper>

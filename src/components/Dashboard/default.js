@@ -54,15 +54,16 @@ export const defaultDataPoint = (data, index) => {
 };
 
 export const queryBakery = (by, value) => {
+  // eng -> se
   const code = by === 'substances' ? 'Luftfororening' : 'Sektor';
 
   return {
     query: [
       {
-        code,
+        code, // (catKey)
         selection: {
           filter: 'item',
-          values: [value]
+          values: [value] // (catVal)
         }
       }
     ],

@@ -35,13 +35,8 @@ const labelSize = dataLen => {
 };
 
 const Container = styled(ResponsiveContainer)`
-  backface-visibility: hidden;
   margin: auto;
   flex: 1;
-
-  & * {
-    backface-visibility: hidden;
-  }
 `;
 
 const ChartTitle = styled.h4`

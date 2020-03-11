@@ -24,15 +24,25 @@ class Dashboard extends Component {
     super(props);
 
     this.state = {
-      dataTitles: this.getStorage('dataTitles') || null,
-      tabs: this.getStorage('tabs') || [],
+      // Table of contents of API-data, get from LStorage, else API
+      dataTitles: [],
+
+      // Tab = Previously saved chart presets, get from LStorage, else API
+      tabs: this.getStorage('tabs') || this.loadTabs() || [],
+
+      // Tab to display
       activeTab: this.getStorage('activeTab') || null,
+
+      // Switch for sidemenu state
       menuIsOpen: this.getStorage('tabMenuIsOpen') || false,
+
+      // Check if tab is being created
       creatingTab: false,
+
+      // temp** when to play bossanova pause-music
       fetchingCharts: {
         started: false,
-        ended: false,
-        count: 0
+        ended: false
       }
     };
 
@@ -43,46 +53,60 @@ class Dashboard extends Component {
     this.updateAllTabs = this.updateAllTabs.bind(this);
     this.updateTab = this.updateTab.bind(this);
     this.setActiveTab = this.setActiveTab.bind(this);
-    this.updateChart = this.updateChart.bind(this);
     this.setDisabledChart = this.setDisabledChart.bind(this);
     this.deleteTab = this.deleteTab.bind(this);
     this.loadTabs = this.loadTabs.bind(this);
+    this.setFetchingCharts = this.setFetchingCharts.bind(this);
+    this.handleDataTitleFetch = this.handleDataTitleFetch.bind(this);
   }
 
   componentDidMount() {
-    // if no dataTitles, fetch from API
-    if (!this.state.dataTitles) fetchDataTitles();
-
-    // if tabs in db, load (+ activeTab)
-    this.state.tabs.length < 1 && this.loadTabs();
+    this.setState({
+      dataTitles:
+        this.getStorage('dataTitles') ||
+        fetchDataTitles(this.handleDataTitleFetch) ||
+        []
+    });
   }
 
-  componentWillUnmount() {
-    //this.listener(); bugging right now...
+  handleDataTitleFetch(dataTitles) {
+    this.setState({
+      dataTitles
+    });
+
+    // save in LStorage for next visit
+    this.setStorage('dataTitles', dataTitles);
   }
 
   // load tabs from db, else localstorage, else set empty arr
   loadTabs() {
     const { firebase } = this.props;
-    //const backupTabs = () => this.getStorage('tabs') || [];
 
+    // get authUser info
     firebase.onAuthUserListener(authUser => {
-      //const tabs = authUser ? authUser.tabs || backupTabs() : backupTabs();
-
+      // get user tabs from db
       const tabs = authUser ? authUser.tabs : null;
-      if (!tabs) return;
 
+      // if no tabs, bail...
+      if (!tabs) return [];
       console.log('Found saved tabs in db. Loading...');
 
+      // tab to edit
       const activeTab = tabs.length > 0 ? tabs[0] : null;
 
+      //we use no callback so skip seperate updates:
+      //this.updateAllTabs(tabs);
+      //this.setActiveTab(activeTab);
+
+      // and instead update state here
       this.setState({
         tabs,
         activeTab
       });
 
-      localStorage.setItem('tabs', JSON.stringify(tabs));
-      localStorage.setItem('activeTab', JSON.stringify(activeTab));
+      // and LStorage
+      this.setStorage('tabs', tabs);
+      this.setStorage('activeTab', activeTab);
     });
   }
 
@@ -97,7 +121,7 @@ class Dashboard extends Component {
     });
   }
 
-  // clear localstorge on logout
+  // load from LStorage
   getStorage = key => {
     const res = JSON.parse(localStorage.getItem(key));
     if (res !== undefined && res !== null) {
@@ -106,6 +130,7 @@ class Dashboard extends Component {
     return res;
   };
 
+  // save to LStorage
   setStorage = (key, val) => {
     let valStr = JSON.stringify(val);
 
@@ -116,6 +141,7 @@ class Dashboard extends Component {
     console.log(`Stored ${key} (${valStr})`);
   };
 
+  // create a new tab
   newTab() {
     const { tabs } = this.state;
 
@@ -130,6 +156,7 @@ class Dashboard extends Component {
     this.updateFirebaseTabs(tabs);
   }
 
+  // update tabs
   updateAllTabs(tabs, callback) {
     this.setState({ tabs }, () =>
       typeof callback === 'function' ? callback() : null
@@ -138,6 +165,7 @@ class Dashboard extends Component {
     this.setStorage('tabs', tabs);
   }
 
+  // update active tab
   updateTab = (tab, callback) => {
     const { tabs } = this.state;
 
@@ -150,6 +178,7 @@ class Dashboard extends Component {
     this.setActiveTab(tab);
   };
 
+  // load tab / set tab as active
   setActiveTab(activeTab) {
     this.setState({
       activeTab
@@ -158,45 +187,32 @@ class Dashboard extends Component {
     this.setStorage('activeTab', activeTab);
   }
 
+  // delete tab
   deleteTab = (tab, callback) => {
     const { tabs, activeTab } = this.state;
     const tabIndex = tabs.indexOf(tab);
     tabs.splice(tabIndex, 1);
 
     // if not active deleted, keep active, else switch to closest (prio prev), else null
-    const newActive =
+    let newActive =
       tab.id !== activeTab.id
         ? activeTab
         : tabs[tabIndex] || tabs[tabIndex - 1] || tabs[tabIndex + 1] || null;
 
-    this.setState({ tabs, activeTab: newActive }, () =>
+    if (tabs.length < 1) newActive = null;
+    console.log('len', tabs.length);
+
+    this.setActiveTab(newActive);
+
+    this.updateAllTabs(tabs, callback);
+
+    /* this.setState({ tabs, activeTab: newActive }, () =>
       typeof callback === 'function' ? callback() : null
-    );
+    ); */
 
     this.updateFirebaseTabs(tabs);
-
-    this.setStorage('tabs', tabs);
+    //this.setStorage('tabs', tabs);
   };
-
-  updateChart(chart, key, newVal) {
-    // updated chart-instance
-    const newChart = {
-      ...chart,
-      [key]: newVal
-    };
-
-    // updated tab-instance
-    const { activeTab } = this.state;
-    activeTab.charts = activeTab.charts.map(chart =>
-      chart.id === newChart.id ? newChart : chart
-    );
-
-    if (key === 'type') {
-      activeTab.chartType = 'random';
-    }
-
-    this.updateTab(activeTab);
-  }
 
   setDisabledChart(chartId, currentState) {
     const { activeTab } = this.state;
@@ -207,6 +223,12 @@ class Dashboard extends Component {
     });
 
     this.updateTab(activeTab);
+  }
+
+  setFetchingCharts(newStatus) {
+    this.setState({
+      fetchingCharts: newStatus
+    });
   }
 
   render() {
@@ -220,21 +242,29 @@ class Dashboard extends Component {
       updateTab: this.updateTab,
       setActiveTab: this.setActiveTab,
       deleteTab: this.deleteTab,
-      updateChart: this.updateChart,
       setDisabledChart: this.setDisabledChart,
-      updateHiddenCharts: this.updateHiddenCharts
+      updateHiddenCharts: this.updateHiddenCharts,
+      setFetchingCharts: this.setFetchingCharts
     };
 
-    const { tabs, activeTab } = this.state;
+    let { tabs, activeTab } = this.state;
 
     const tabLen = tabs ? tabs.length : 0;
+
+    // ---- temp**
     const chartLen = activeTab
       ? activeTab.charts
         ? activeTab.charts.length
         : 0
       : 0;
-    const disabledCharts =
-      activeTab && activeTab.charts.some(chart => chart.disabled);
+
+    let disabledCharts = false;
+    activeTab = activeTab || { charts: [] };
+
+    activeTab.charts = activeTab.charts || [];
+
+    disabledCharts = activeTab.charts.some(chart => chart.disabled);
+    // ----- temp**
 
     return (
       <>
