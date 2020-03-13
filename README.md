@@ -34,3 +34,5 @@ Frontend built with [React](https://reactjs.org/). User authentication and datab
 ## Contributors
 
 Martin, Joakim, Kim, Siham, Johan.
+
+[Link to Trello](https://trello.com/b/BjJ7AfWw/fe19tp2apple)
